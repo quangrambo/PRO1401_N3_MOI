@@ -7,8 +7,18 @@ package view.contains;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.table.DefaultTableModel;
+import service.HDCTService;
+import service.HDService;
+import service.HDTableService;
 import service.SanPhamChiTietService;
+import service.impl.HDCTVServiceIMpl;
+import service.impl.HDServiceImpl;
+import service.impl.HDTableSeriveImpl;
 import service.impl.SanPhamChiTietServiceImpl;
+import viewmodel.GioHangViewModel;
+import viewmodel.HDCTViewModel;
+import viewmodel.HDTableVIewModel;
+import viewmodel.HDViewModel;
 import viewmodel.SPCTViewModel;
 import viewmodel.SanPhamChiTietViewModel;
 
@@ -17,28 +27,97 @@ import viewmodel.SanPhamChiTietViewModel;
  * @author Admin
  */
 public class ViewBanHang extends javax.swing.JPanel {
+
     private List<SPCTViewModel> listSPCT = new ArrayList<>();
     private List<SanPhamChiTietViewModel> listSP = new ArrayList<>();
     private DefaultTableModel dtmSP = new DefaultTableModel();
     private SanPhamChiTietService serviceSPCT = new SanPhamChiTietServiceImpl();
     private DefaultTableModel dtmCTSP = new DefaultTableModel();
     private List<SPCTViewModel> listSPThemGioHang = new ArrayList<>();
+    private List<HDViewModel> listHD = new ArrayList<>();
+    private HDService serviceHD = new HDServiceImpl();
+    private DefaultTableModel dtmHD = new DefaultTableModel();
+    private List<HDTableVIewModel> listHDTable = new ArrayList<>();
+    private List<HDTableVIewModel> listHDTableChuaThanhToan = new ArrayList<>();
+    private HDTableService serviceHDTable = new HDTableSeriveImpl();
+    private int idHD = 0;
+    private String maHD = null;
+
+    private List<HDCTViewModel> listGioHang = new ArrayList<>();
+    private HDCTService serviceGioHang = new HDCTVServiceIMpl();
+    private DefaultTableModel dtmGioHang = new DefaultTableModel();
+    private List<GioHangViewModel> listSPInHD = new ArrayList<>();
+
+    private List<GioHangViewModel> listSpGiohang = new ArrayList<>();
+    private int idNV = 0;
+
+    private int idPGG = 0;
+    private int tienPGG = 0;
+    private int tienQuyDoi = 0;
+    private int tongTien = 0;
+    private int tienKhachDua = 0;
+    private int tienThua = 0;
+    private int tienKhachPhaiTra = 0;
+    private int tienGiam = 0;
 
     /**
      * Creates new form ViewBanHang1
      */
     public ViewBanHang() {
         initComponents();
-         listSPCT = serviceSPCT.getAllTable();
-         listSPThemGioHang = listSPCT;
+        listSPCT = serviceSPCT.getAllTable();
+        listSPThemGioHang = listSPCT;
         showDataTable(listSPCT);
+        dtmHD = (DefaultTableModel) this.tblHoaDon.getModel();
+
+        listSPCT = serviceSPCT.getAllTable();
+
+        listHD = serviceHD.getAll();
+        listHDTable = serviceHDTable.getAll();
+        for (HDTableVIewModel hdctt : listHDTable) {
+            if (hdctt.getTrangThai().trim().equals("0")) {
+                listHDTableChuaThanhToan.add(hdctt);
+            }
+        }
+        listSpGiohang = serviceGioHang.getGioHang();
+
+        listGioHang = serviceGioHang.getAll();
+        dtmGioHang = (DefaultTableModel) this.tblGioHang.getModel();
+
+        dtmHD = (DefaultTableModel) this.tblHoaDon.getModel();
+        showDataHoaDon(listHDTableChuaThanhToan);
 
     }
+
+    private void showDataHoaDon(List<HDTableVIewModel> listTable) {
+        dtmHD.setRowCount(0);
+        for (HDTableVIewModel hd : listTable) {
+            dtmHD.addRow(hd.toRowDataHD());
+        }
+    }
+
     private void showDataTable(List<SPCTViewModel> listTable) {
         dtmCTSP.setRowCount(0);
         dtmCTSP = (DefaultTableModel) tblLocSanPham3.getModel();
         for (SPCTViewModel spct : listTable) {
             dtmCTSP.addRow(spct.toRowDataBanHang());
+        }
+    }
+
+    private HDCTViewModel sanPhamGioHang(SPCTViewModel spct) {
+        HDCTViewModel hdct = new HDCTViewModel();
+        hdct.setIdHD(idHD);
+        hdct.setIdSPCT(spct.getId());
+        hdct.setKichCo(spct.getKichCo());
+        hdct.setSoLuong(Integer.parseInt(txtSoLuongMua2.getText()));
+        hdct.setDonGia(spct.getGiaBan() * Integer.parseInt(txtSoLuongMua2.getText()));
+        return hdct;
+    }
+
+    private void gioHangTable(List<GioHangViewModel> listGioHang) {
+        dtmGioHang.setRowCount(0);
+        for (GioHangViewModel hdct : listGioHang) {
+            dtmGioHang.addRow(hdct.toRowData());
         }
     }
 
@@ -1052,6 +1131,20 @@ public class ViewBanHang extends javax.swing.JPanel {
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
     private void tblHoaDonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblHoaDonMouseClicked
+        int index = tblHoaDon.getSelectedRow();
+        listSPInHD = new ArrayList<>();
+        HDTableVIewModel hd = listHDTableChuaThanhToan.get(index);
+        tongTien = 0;
+        idHD = hd.getId();
+        maHD = hd.getMa();
+        jlbMaHD.setText(maHD);
+        for (GioHangViewModel gh : listSpGiohang) {
+            if (gh.getMaHD().trim().equals(hd.getMa())) {
+                listSPInHD.add(gh);
+                tongTien += gh.getDonGia();
+            }
+        }
+        gioHangTable(listSPInHD);
 
     }//GEN-LAST:event_tblHoaDonMouseClicked
 
