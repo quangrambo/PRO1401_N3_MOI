@@ -4,6 +4,8 @@
  */
 package view;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
 import view.contains.ViewThongKe;
 import view.contains.ViewSanPham;
@@ -12,7 +14,9 @@ import view.contains.ViewHoaDon;
 import view.contains.ViewHeThong;
 import view.contains.ViewBanHang;
 import javax.swing.JPanel;
+import service.NhanVienVMService;
 import viewmodel.NhanVienVM;
+import viewmodel.QLNhanVien;
 
 
 
@@ -23,13 +27,31 @@ import viewmodel.NhanVienVM;
  */
 public class PhanMemQLGiay extends javax.swing.JFrame {
   private JPanel panel;
+  private List<NhanVienVM> lstNhanVienVM;
+    private NhanVienVM nhanVienVM;
+    private NhanVienVMService nhanVienVMService;
+    private NhanVienVM nhanVien;
+    private List<QLNhanVien> listnhanVien = new ArrayList<>();
+    
 
     
    
-    public PhanMemQLGiay() {
+    public PhanMemQLGiay(NhanVienVM nv) {
                 initComponents();
-            panel = new ViewBanHang();
+        panel = new ViewBanHang(nv);
         setPanel(panel);
+        nhanVienVM = nv;
+
+        jlbTenNhanVien.setText(nv.getHoten());
+        jlbMaNV.setText(nv.getMa());
+        jlbTenNV.setText(nv.getHoten());
+        jlbChucVu.setText(nv.getcv());
+        jlbCV.setText("("+nv.getcv()+")");
+        nhanVienVMService = new NhanVienVMService();
+        lstNhanVienVM = nhanVienVMService.getAllNVVM();
+
+         
+        
     }
 
     /**
@@ -450,7 +472,7 @@ public class PhanMemQLGiay extends javax.swing.JFrame {
     }//GEN-LAST:event_btnKhachHangActionPerformed
 
     private void btnBanHangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBanHangActionPerformed
-       panel = new ViewBanHang();
+       panel = new ViewBanHang(nhanVienVM);
         setPanel(panel);
     }//GEN-LAST:event_btnBanHangActionPerformed
 
@@ -508,9 +530,7 @@ public class PhanMemQLGiay extends javax.swing.JFrame {
      */
     public static void main(String args[]) {
        // Create an instance of your application's main frame
-    PhanMemQLGiay mainFrame = new PhanMemQLGiay();
     // Set the frame visible
-    mainFrame.setVisible(true);
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
