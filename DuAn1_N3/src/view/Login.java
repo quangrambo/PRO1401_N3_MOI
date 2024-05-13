@@ -6,7 +6,11 @@ package view;
 import java.nio.charset.StandardCharsets;
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
+import java.util.ArrayList;
+import java.util.List;
 import javax.swing.JOptionPane;
+import service.NhanVienVMService;
+import viewmodel.NhanVienVM;
 
 
 /**
@@ -14,11 +18,15 @@ import javax.swing.JOptionPane;
  * @author pc
  */
 public class Login extends javax.swing.JFrame {
-
+private List<NhanVienVM> listNhanVien;
+    private NhanVienVMService service;
     
     public Login() {
          initComponents();
-         setLocationRelativeTo(null);
+         service = new NhanVienVMService();
+        listNhanVien = new ArrayList<>();
+        listNhanVien = service.getAllNVByTrangThai();
+        setLocationRelativeTo(null);
     }
 
     public void hienThi() {
@@ -221,8 +229,31 @@ public class Login extends javax.swing.JFrame {
     }//GEN-LAST:event_btnThoatActionPerformed
 
     private void btnDangNhapActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDangNhapActionPerformed
-        new PhanMemQLGiay().setVisible(true);
+         String taiKhoan = txtName.getText().trim();
+        String matKhau = txtPassWorld.getText().trim();
+        String hashedPassword = hashPassword(matKhau);
+        System.out.println(hashedPassword);
+        System.out.println(taiKhoan);
+        if (!taiKhoan.equals("") && !matKhau.equals("")) {
+            boolean check = false;
+
+            for (NhanVienVM nvvm : listNhanVien) {
+                if (taiKhoan.equalsIgnoreCase(nvvm.getTendn()) &&hashedPassword.equalsIgnoreCase(nvvm.getMatkhau())) {
+                    new PhanMemQLGiay(nvvm).setVisible(true);
                     this.dispose();
+                    check = true;
+                    break;        
+                }
+            }
+
+            if (!check) {
+                JOptionPane.showMessageDialog(this, "Tài khoản hoặc Mật khẩu không chính xác. Vui lòng nhập lại!");
+                 lbCheck.setText("(!) Đăng nhập thất bại");
+            }
+        } else {
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập Tài khoản và Mật khẩu");
+             lbCheck.setText("(!) Đăng nhập thất bại");
+        }
         // TODO add your handling code here:
     }//GEN-LAST:event_btnDangNhapActionPerformed
 

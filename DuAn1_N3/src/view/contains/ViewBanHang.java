@@ -10,15 +10,19 @@ import javax.swing.table.DefaultTableModel;
 import service.HDCTService;
 import service.HDService;
 import service.HDTableService;
+import service.NhanVienService;
 import service.SanPhamChiTietService;
 import service.impl.HDCTVServiceIMpl;
 import service.impl.HDServiceImpl;
 import service.impl.HDTableSeriveImpl;
+import service.impl.NhanVienServiceImpl;
 import service.impl.SanPhamChiTietServiceImpl;
 import viewmodel.GioHangViewModel;
 import viewmodel.HDCTViewModel;
 import viewmodel.HDTableVIewModel;
 import viewmodel.HDViewModel;
+import viewmodel.NhanVienVM;
+import viewmodel.QLNhanVien;
 import viewmodel.SPCTViewModel;
 import viewmodel.SanPhamChiTietViewModel;
 
@@ -49,6 +53,9 @@ public class ViewBanHang extends javax.swing.JPanel {
     private List<GioHangViewModel> listSPInHD = new ArrayList<>();
 
     private List<GioHangViewModel> listSpGiohang = new ArrayList<>();
+    private NhanVienVM nhanVien;
+    private List<QLNhanVien> listnhanVien = new ArrayList<>();
+    private NhanVienService serviceNV = new NhanVienServiceImpl();
     private int idNV = 0;
 
     private int idPGG = 0;
@@ -63,8 +70,16 @@ public class ViewBanHang extends javax.swing.JPanel {
     /**
      * Creates new form ViewBanHang1
      */
-    public ViewBanHang() {
+    public ViewBanHang(NhanVienVM nv) {
         initComponents();
+        nhanVien = nv;
+        listnhanVien = serviceNV.getList();
+        for (QLNhanVien nv1 : listnhanVien) {
+            if (nv1.getMa().trim().equals(nhanVien.getMa())) {
+                idNV = nv1.getId();
+                jlbTenNhanVien.setText(nv1.getTen());
+            }
+        }
         listSPCT = serviceSPCT.getAllTable();
         listSPThemGioHang = listSPCT;
         showDataTable(listSPCT);
