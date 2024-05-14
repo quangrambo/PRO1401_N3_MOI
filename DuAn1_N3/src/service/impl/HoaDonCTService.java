@@ -26,7 +26,7 @@ public class HoaDonCTService implements IHoaDonCTService {
         List<HoaDonCTView> hdc = new ArrayList<>();
         List<HoaDonCTDomain> list = this.rs.getall();
         for (HoaDonCTDomain x : list) {
-            HoaDonCTView hoaDonCTView = new HoaDonCTView(x.getId(), x.getIdHD(), x.getIdSPCT(), x.getSoluong(), x.getDonGia());
+            HoaDonCTView hoaDonCTView = new HoaDonCTView(x.getId(), x.getIdHD(), x.getIdSPCT(),x.getLoaiSanPham(),x.getThuongHieu(),x.getMauSac(),x.getKichCo(),x.getChatLieu(), x.getSoLuong(), x.getDonGia());
             hdc.add(hoaDonCTView);
         }
         return hdc;
@@ -34,13 +34,13 @@ public class HoaDonCTService implements IHoaDonCTService {
 
     @Override
     public boolean add(HoaDonCTView hd) {
-        HoaDonCTDomain domain = new HoaDonCTDomain(hd.getId(), hd.getIdHD(), hd.getIdSPCT(), hd.getSoluong(), hd.getDonGia());
+        HoaDonCTDomain domain = new HoaDonCTDomain(hd.getId(), hd.getIdHD(), hd.getIdSPCT(),hd.getLoaiSanPham(),hd.getThuongHieu(),hd.getMauSac(),hd.getKichCo(),hd.getChatLieu(), hd.getSoLuong(), hd.getDonGia());
         return this.rs.add(domain);
     }
 
     @Override
     public boolean update(int id, HoaDonCTView hd) {
-        HoaDonCTDomain domain = new HoaDonCTDomain(hd.getId(), hd.getIdHD(), hd.getIdSPCT(), hd.getSoluong(), hd.getDonGia());
+        HoaDonCTDomain domain = new HoaDonCTDomain(hd.getId(), hd.getIdHD(), hd.getIdSPCT(),hd.getLoaiSanPham(),hd.getThuongHieu(),hd.getMauSac(),hd.getKichCo(),hd.getChatLieu(), hd.getSoLuong(), hd.getDonGia());
         return this.rs.update(id, domain);
     }
 

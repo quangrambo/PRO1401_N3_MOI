@@ -54,18 +54,27 @@ public class HDCTRepository {
                    INSERT INTO [dbo].[HOA_DON_CT]
                               ([ID_HD]
                               ,[ID_SPCT]
-                              ,[KICHCO]
+                                                    ,[LOAISANPHAM]
+                                                    ,[THUONGHIEU]
+                                                    ,[MAUSAC]
+                                                    ,[KICHCO]
+                      
+                              ,[CHATLIEU]
                               ,[SOLUONG]
                               ,[DONGIA])
                         VALUES
-                              (?,?,?,?,?)
+                              (?,?,?,?,?,?,?,?,?)
                     """;
         try ( Connection con = DBConnect.getConnection();  PreparedStatement pr = con.prepareStatement(qery)) {
             pr.setObject(1, hd.getIdHD());
             pr.setObject(2, hd.getIdSPCT());
-            pr.setObject(3, hd.getKichCo());
-            pr.setObject(4, hd.getSoLuong());
-            pr.setObject(5, hd.getDonGia());
+            pr.setObject(3, hd.getLoaiSanPham());
+            pr.setObject(4, hd.getThuongHieu());
+            pr.setObject(5, hd.getMauSac());
+            pr.setObject(6, hd.getKichCo());
+            pr.setObject(7, hd.getChatLieu());
+            pr.setObject(8, hd.getSoLuong());
+            pr.setObject(9, hd.getDonGia());
 
             check = pr.executeUpdate();
         } catch (Exception e) {

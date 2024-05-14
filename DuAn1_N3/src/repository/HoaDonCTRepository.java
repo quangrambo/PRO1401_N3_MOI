@@ -24,26 +24,26 @@ public class HoaDonCTRepository implements HoaDonCTRepo {
     @Override
     public List<HoaDonCTDomain> getall() {
         ArrayList<HoaDonCTDomain> hdct = new ArrayList<>();
-        try {
-            Connection cnn = DBConnect.getConnection();
-            String sql = "SELECT\n"
-                    + "HOA_DON_CT.ID_HD,\n"
-                    + "HOA_DON_CT.ID,\n"
-                    + "HOA_DON_CT.ID_SPCT,\n"
-                    + "HOA_DON_CT.SOLUONG,\n"
-                    + "HOA_DON_CT.DONGIA\n"
-                    + "FROM\n"
-                    + "HOA_DON_CT\n";
-            PreparedStatement ps = cnn.prepareStatement(sql);
-            ps.execute();
-            ResultSet rs = ps.getResultSet();
-            while (rs.next()) {
-                HoaDonCTDomain hdd = new HoaDonCTDomain(rs.getInt(1), rs.getInt(2), rs.getInt(3), rs.getInt(4), rs.getInt(5));
-                hdct.add(hdd);
-            }
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+//        try {
+//            Connection cnn = DBConnect.getConnection();
+//            String sql = "SELECT\n"
+//                    + "HOA_DON_CT.ID_HD,\n"
+//                    + "HOA_DON_CT.ID,\n"
+//                    + "HOA_DON_CT.ID_SPCT,\n"
+//                    + "HOA_DON_CT.SOLUONG,\n"
+//                    + "HOA_DON_CT.DONGIA\n"
+//                    + "FROM\n"
+//                    + "HOA_DON_CT\n";
+//            PreparedStatement ps = cnn.prepareStatement(sql);
+//            ps.execute();
+//            ResultSet rs = ps.getResultSet();
+//            while (rs.next()) {
+//                HoaDonCTDomain hdd = new HoaDonCTDomain(rs.getInt(1), rs.getInt(2),rs.getString(3),rs.getString(4),rs.getString(5),rs.getString(6),rs.getString(7), rs.getInt(8), rs.getInt(4), rs.getInt(5));
+//                hdct.add(hdd);
+//            }
+//        } catch (Exception e) {
+//            e.printStackTrace();
+//        }
         return hdct;
     }
 
@@ -51,13 +51,18 @@ public class HoaDonCTRepository implements HoaDonCTRepo {
     public boolean add(HoaDonCTDomain ht) {
         try {
             Connection cnn = DBConnect.getConnection();
-            String sql = "INSERT INTO HOA_DON_CT(ID_HD, ID_SPCT, SOLUONG, DONGIA)"
-                    + "VALUES (?,?,?,?)";
+            String sql = "INSERT INTO HOA_DON_CT(ID_HD, ID_SPCT,LOAISANPHAM,THUONGHIEU,MAUSAC,KICHCO,CHATLIEU, SOLUONG, DONGIA)"
+                    + "VALUES (?,?,?,?,?,?,?,?,?)";
             PreparedStatement ps = cnn.prepareStatement(sql);
             ps.setInt(1, ht.getIdHD());
             ps.setInt(2, ht.getIdSPCT());
-            ps.setInt(3, ht.getSoluong());
-            ps.setInt(4, ht.getDonGia());
+            ps.setString(3, ht.getLoaiSanPham());
+            ps.setString(4, ht.getThuongHieu());
+            ps.setString(5, ht.getMauSac());
+            ps.setString(6, ht.getKichCo());
+            ps.setString(7, ht.getChatLieu());
+            ps.setInt(8,ht.getSoLuong());
+            ps.setInt(9, ht.getDonGia());
             ps.executeUpdate();
             return true;
         } catch (Exception e) {
@@ -74,7 +79,7 @@ public class HoaDonCTRepository implements HoaDonCTRepo {
             PreparedStatement ps = conn.prepareStatement(sql);
             ps.setInt(1, ht.getIdHD());
             ps.setInt(2, ht.getIdSPCT());
-            ps.setInt(3, ht.getSoluong());
+            ps.setInt(3, ht.getSoLuong());
             ps.setInt(4, ht.getDonGia());
             ps.setInt(5, id);
             ps.executeUpdate();

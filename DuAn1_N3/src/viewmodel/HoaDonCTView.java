@@ -9,20 +9,29 @@ package viewmodel;
  * @author Admin
  */
 public class HoaDonCTView {
-    private int id;
-        private int idHD;
-        private int idSPCT;
-        private int soluong;
-        private int donGia;
-
+   private int id;
+    private int idHD;
+    private int idSPCT;
+    private String loaiSanPham;
+    private String thuongHieu;
+    private String mauSac;
+    private String kichCo;
+    private String chatLieu;
+    private int soLuong;
+    private int donGia;
     public HoaDonCTView() {
     }
 
-    public HoaDonCTView(int id, int idHD, int idSPCT, int soluong, int donGia) {
+    public HoaDonCTView(int id, int idHD, int idSPCT, String loaiSanPham, String thuongHieu, String mauSac, String kichCo, String chatLieu, int soLuong, int donGia) {
         this.id = id;
         this.idHD = idHD;
         this.idSPCT = idSPCT;
-        this.soluong = soluong;
+        this.loaiSanPham = loaiSanPham;
+        this.thuongHieu = thuongHieu;
+        this.mauSac = mauSac;
+        this.kichCo = kichCo;
+        this.chatLieu = chatLieu;
+        this.soLuong = soLuong;
         this.donGia = donGia;
     }
 
@@ -50,12 +59,52 @@ public class HoaDonCTView {
         this.idSPCT = idSPCT;
     }
 
-    public int getSoluong() {
-        return soluong;
+    public String getLoaiSanPham() {
+        return loaiSanPham;
     }
 
-    public void setSoluong(int soluong) {
-        this.soluong = soluong;
+    public void setLoaiSanPham(String loaiSanPham) {
+        this.loaiSanPham = loaiSanPham;
+    }
+
+    public String getThuongHieu() {
+        return thuongHieu;
+    }
+
+    public void setThuongHieu(String thuongHieu) {
+        this.thuongHieu = thuongHieu;
+    }
+
+    public String getMauSac() {
+        return mauSac;
+    }
+
+    public void setMauSac(String mauSac) {
+        this.mauSac = mauSac;
+    }
+
+    public String getKichCo() {
+        return kichCo;
+    }
+
+    public void setKichCo(String kichCo) {
+        this.kichCo = kichCo;
+    }
+
+    public String getChatLieu() {
+        return chatLieu;
+    }
+
+    public void setChatLieu(String chatLieu) {
+        this.chatLieu = chatLieu;
+    }
+
+    public int getSoLuong() {
+        return soLuong;
+    }
+
+    public void setSoLuong(int soLuong) {
+        this.soLuong = soLuong;
     }
 
     public int getDonGia() {
@@ -68,7 +117,8 @@ public class HoaDonCTView {
 
     @Override
     public String toString() {
-        return "HoaDonCTView{" + "id=" + id + ", idHD=" + idHD + ", idSPCT=" + idSPCT + ", soluong=" + soluong + ", donGia=" + donGia + '}';
+        return "HoaDonCTView{" + "id=" + id + ", idHD=" + idHD + ", idSPCT=" + idSPCT + ", loaiSanPham=" + loaiSanPham + ", thuongHieu=" + thuongHieu + ", mauSac=" + mauSac + ", kichCo=" + kichCo + ", chatLieu=" + chatLieu + ", soLuong=" + soLuong + ", donGia=" + donGia + '}';
     }
-        
+
+    
 }

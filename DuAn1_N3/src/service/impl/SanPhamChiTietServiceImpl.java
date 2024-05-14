@@ -7,7 +7,9 @@ package service.impl;
 import java.util.ArrayList;
 import java.util.List;
 import model.SPCTModel;
+import model.SanPhamChiTietModel;
 import repository.SPCTRepository;
+import repository.SanPhamChiTietRepository;
 import service.SanPhamChiTietService;
 import viewmodel.SPCTViewModel;
 import viewmodel.SanPhamChiTietViewModel;
@@ -17,11 +19,18 @@ import viewmodel.SanPhamChiTietViewModel;
  * @author Admin
  */
 public class SanPhamChiTietServiceImpl implements SanPhamChiTietService{
+        SanPhamChiTietRepository spctRepo = new SanPhamChiTietRepository();
+
     SPCTRepository spRepo = new SPCTRepository();
 
     @Override
     public List<SanPhamChiTietViewModel> getAll() {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        List<SanPhamChiTietModel> listAll = spctRepo.getAll();
+        List<SanPhamChiTietViewModel> listTable = new ArrayList<>();
+        for (SanPhamChiTietModel spct : listAll) {
+            listTable.add(new SanPhamChiTietViewModel(spct.getId(), spct.getMa(), spct.getMaVach(), spct.getMoTa(), spct.getSoLuong(), spct.getIdSP(), spct.getIdTH(), spct.getId(), spct.getIdKC(), spct.getIdMS(), spct.getIdCL(), spct.getGiaNhap(), spct.getGiaBan(), spct.isTrangThai()));
+        }
+        return listTable;
     }
 
     @Override
@@ -65,7 +74,12 @@ List<SPCTModel> listAll = spRepo.getAll();
 
     @Override
     public String getUpdateSLMua(int soLuong, int id) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        boolean sua = spctRepo.getUpdateSLKhiMua(soLuong, id);
+        if (sua) {
+            return "Sua Thành Công";
+        } else {
+            return "Sua thất bại";
+        }
     }
     
 }
