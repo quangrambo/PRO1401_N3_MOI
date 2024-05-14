@@ -2568,9 +2568,9 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
                     if(soluongmoi <0){
                         JOptionPane.showMessageDialog(this, "Số lượng vượt quá số lượng còn lại  ");
                         return;
-                    } else{
-                      serviceSPCT.getUpdateSLMua(soLuongSanPham + soLuongSanPhamXoa - soLuong, idSpCapNhap);
                     }
+                    serviceSPCT.getUpdateSLMua(soLuongSanPham + soLuongSanPhamXoa - soLuong, idSpCapNhap);
+                   
                     listSPCT = serviceSPCT.getAllTable();
                     listSP = serviceSPCT.getAll();
                     listSPVM = serviceSp.getAll();
@@ -2909,39 +2909,39 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
 
         int index = tblLocSanPham3.getSelectedRow();
 
-        if (index == -1) {
-            JOptionPane.showMessageDialog(this, "Bạn chưa chọn sản phẩm");
-        } else {
+if (index == -1) {
+    JOptionPane.showMessageDialog(this, "Bạn chưa chọn sản phẩm");
+} else {
+    String slnhap = txtSoLuongMua2.getText().trim();
+    if (slnhap.isEmpty()) {
+        JOptionPane.showMessageDialog(this, "Bạn chưa nhập số lượng");
+        return;
+    }
 
-            String slnhap = txtSoLuongMua2.getText();
-            if (slnhap.equals("")) {
-                JOptionPane.showMessageDialog(this, "Bạn chưa nhập số lượng ");
-            }
+    try {
+        int soLuongNhap = Integer.parseInt(slnhap);
 
-            if (index >= 0 && index <= listSPThemGioHang.size()) {
-                SPCTViewModel spct = getSpThemGioHang(index);
+        if (index >= 0 && index < listSPThemGioHang.size()) {
+            SPCTViewModel spct = getSpThemGioHang(index);
 
-                if (Integer.parseInt(txtSoLuongMua2.getText()) > spct.getSoLuong()) {
-                    JOptionPane.showMessageDialog(this, "Số lượng sản phẩm mua vượt quá số lượng tồn tại");
-
-                } else if (Integer.parseInt(txtSoLuongMua2.getText()) <= 0) {
-                    JOptionPane.showMessageDialog(this, "Số lượng nhập vào không hợp lệ");
+            if (soLuongNhap > spct.getSoLuong()) {
+                JOptionPane.showMessageDialog(this, "Số lượng sản phẩm mua vượt quá số lượng tồn tại");
+            } else if (soLuongNhap <= 0) {
+                JOptionPane.showMessageDialog(this, "Số lượng nhập vào không hợp lệ");
+            } else {
+                HDCTViewModel gioHang = sanPhamGioHang(spct);
+                if (gioHang.getIdHD() == 0) {
+                    JOptionPane.showMessageDialog(this, "Chưa chọn hóa đơn");
                 } else {
-
-                    HDCTViewModel gioHang = sanPhamGioHang(spct);
-                    if (gioHang.getIdHD() == 0) {
-                        JOptionPane.showMessageDialog(this, "Chưa chọn hóa đơn");
-                    } else {
-                        for (HDCTViewModel hdct : listGioHang) {
-                            if (hdct.getIdHD() == gioHang.getIdHD() && hdct.getIdSPCT() == gioHang.getIdSPCT()) {
-                                JOptionPane.showMessageDialog(this, "Giỏ hàng đã tồn tại sản phẩm");
-                                return;
-                            }
+                    for (HDCTViewModel hdct : listGioHang) {
+                        if (hdct.getIdHD() == gioHang.getIdHD() && hdct.getIdSPCT() == gioHang.getIdSPCT()) {
+                            JOptionPane.showMessageDialog(this, "Giỏ hàng đã tồn tại sản phẩm");
+                            return;
                         }
-                        JOptionPane.showMessageDialog(this, serviceGioHang.getAdd(gioHang));
                     }
+                    JOptionPane.showMessageDialog(this, serviceGioHang.getAdd(gioHang));
 
-                    int soLuongThayDoi = spct.getSoLuong() - Integer.parseInt(txtSoLuongMua2.getText());
+                    int soLuongThayDoi = spct.getSoLuong() - soLuongNhap;
                     int idSoLuongThayDoi = spct.getId();
                     serviceSPCT.getUpdateSLMua(soLuongThayDoi, idSoLuongThayDoi);
                     listSPCT = serviceSPCT.getAllTable();
@@ -2966,14 +2966,17 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
                     tienKhachPhaiTra = tongTien - (tienPGG + tienQuyDoi);
                     jlbKhachPhaiTra.setText(String.valueOf(tienKhachPhaiTra));
                     gioHangTable(listSPInHD);
-                    spct.setSoLuong(Integer.parseInt(txtSoLuongMua2.getText()));
-
+                    spct.setSoLuong(soLuongThayDoi);
                 }
-
-            } else {
-                JOptionPane.showMessageDialog(this, "Chưa chọn sản phẩm");
             }
+        } else {
+            JOptionPane.showMessageDialog(this, "Chưa chọn sản phẩm");
         }
+    } catch (NumberFormatException e) {
+        JOptionPane.showMessageDialog(this, "Vui lòng nhập một số nguyên hợp lệ");
+    }
+}
+
 
     }//GEN-LAST:event_btnThemGioHang3ActionPerformed
 
