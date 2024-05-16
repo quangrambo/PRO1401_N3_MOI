@@ -36,6 +36,7 @@ import javax.swing.Timer;
 import javax.swing.table.DefaultTableModel;
 //import model.BangTichDiem;
 import model.KhachHang;
+import repository.KhachHangRepository;
 //import model.PGGModel;
 //import model.PhieuGiamGiaCT;
 //import repository.KhachHangRepository;
@@ -43,6 +44,7 @@ import model.KhachHang;
 import service.HDCTService;
 import service.HDService;
 import service.HDTableService;
+import service.KhachHangService;
 //import service.KhachHangService;
 //import service.KichCoService;
 //import service.LoaiTheThaoService;
@@ -54,6 +56,7 @@ import service.SanPhamService;
 import service.impl.HDCTVServiceIMpl;
 import service.impl.HDServiceImpl;
 import service.impl.HDTableSeriveImpl;
+import service.impl.KhachHangServiceImpl;
 //import service.impl.KhachHangServiceImpl;
 //import service.impl.KichCoServiceImpl;
 //import service.impl.LoaiTheThaoServiceImpl;
@@ -123,12 +126,12 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
     private List<GioHangViewModel> listSpGiohang = new ArrayList<>();
 
     private List<QLKhachHang> listKhachHang = new ArrayList<>();
-//    private KhachHangService serviceKhachHang = new KhachHangServiceImpl();
-//    private DefaultTableModel defaultTableModel = new DefaultTableModel();
-//    private int idKhachHang = 0;
-//
-//    private KhachHangRepository repository = new KhachHangRepository();
-//
+    private KhachHangService serviceKhachHang = new KhachHangServiceImpl();
+    private DefaultTableModel defaultTableModel = new DefaultTableModel();
+    private int idKhachHang = 0;
+
+    private KhachHangRepository repository = new KhachHangRepository();
+
 //    private List<QLBangTichDiem> listBangTichDiem = new ArrayList<>();
 //    private BangTichDiemService serviceBangTichDiem = new BangTichDiemImpl();
 //
@@ -228,14 +231,14 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
 //        for (LoaiTheThaoViewModel sp : listLTT) {
 //            listCboLTT.add(sp.getTen());
 //        }
-        showDataCBO(listCboLTT, dcbLTT);
+//        showDataCBO(listCboLTT, dcbLTT);
         showDataHoaDon(listHDTableChuaThanhToan);
 
 //        listBangTichDiem = serviceBangTichDiem.getList();
-//        listKhachHang = serviceKhachHang.getList();
-//        defaultTableModel = (DefaultTableModel) this.tblKhachHang.getModel();
-//        loadDataTable(serviceKhachHang.getList());
-//        idKhachHang = khacLe();
+        listKhachHang = serviceKhachHang.getList();
+        defaultTableModel = (DefaultTableModel) this.tblKhachHang.getModel();
+        loadDataTable(serviceKhachHang.getList());
+        idKhachHang = khacLe();
         txtMaChuyenKhoan.disable();
 
         listSPThemGioHang = listSPCT;
@@ -271,7 +274,7 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
 
     private int khacLe() {
         for (QLKhachHang kh : listKhachHang) {
-            if (kh.getId() == 9) {
+            if (kh.getId() == 7) {
                 jlbTenKhachHang.setText(kh.getTen());
                 jlbSDT.setText(kh.getSdt());
                 jlbEmail.setText(kh.getEmail());
@@ -279,18 +282,18 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
             }
 
         }
-        return 9;
+        return 7;
     }
 
     public void loadDataTable(ArrayList<QLKhachHang> listKH) {
-//        defaultTableModel.setRowCount(0);
-//        for (QLKhachHang kh : listKH) {
-//            defaultTableModel.addRow(new Object[]{kh.getId(),
-//                kh.getMa(), kh.getTen(), kh.getEmail(), kh.getSdt(),
-//                (kh.getGioiTinh() == 1) ? "Nam" : "Nữ", kh.getNgaySinh(), kh.getDiaChi(),
-//                (kh.getTrangThai() == 1) ? "Đã thanh toán" : "Chưa thanh toán"
-//            });
-//        }
+        defaultTableModel.setRowCount(0);
+        for (QLKhachHang kh : listKH) {
+            defaultTableModel.addRow(new Object[]{kh.getId(),
+                kh.getMa(), kh.getTen(), kh.getEmail(), kh.getSdt(),
+                (kh.getGioiTinh() == 1) ? "Nam" : "Nữ", kh.getNgaySinh(), kh.getDiaChi(),
+                (kh.getTrangThai() == 1) ? "Đã thanh toán" : "Chưa thanh toán"
+            });
+        }
 
     }
 
@@ -344,7 +347,7 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
         int i = listHD.size() - 1;
         hd.setMa("HD" + listHD.get(i).getId());
         hd.setIdNV(idNV);
-        hd.setIdKH(9);
+        hd.setIdKH(7);
         hd.setMaPGG("");
         hd.setNgayTao(Date.valueOf(java.time.LocalDate.now()));
         hd.setNgayThanhToan(Date.valueOf(java.time.LocalDate.now()));
@@ -359,25 +362,25 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
         return hd;
     }
 
-//    private HDViewModel taoHoaDon() {
-//        HDViewModel hd = new HDViewModel();
-//        int i = listHD.size() - 1;
-//        hd.setMa("HD" + listHD.get(i).getId());
-//        hd.setIdNV(idNV);
-//        hd.setIdKH(idKhachHang);
-//        hd.setMaPGG("");
-//        hd.setNgayTao(Date.valueOf(java.time.LocalDate.now()));
-//        hd.setNgayThanhToan(Date.valueOf(java.time.LocalDate.now()));
-//        hd.setTienGiam(Integer.parseInt("0"));
-//        hd.setTongTien(Integer.parseInt("0"));
-//        hd.setTienKhachDua(Integer.parseInt("0"));
-//        hd.setTienThua(Integer.parseInt("0"));
-//        hd.setTienKhachPhaiTra(Integer.parseInt("0"));
-//        hd.setHinhThucThanhToan(Integer.parseInt("0"));
-//        hd.setMaChuyenKhoan("");
-//        hd.setTrangThai(Integer.parseInt("0"));
-//        return hd;
-//    }
+    private HDViewModel taoHoaDon() {
+        HDViewModel hd = new HDViewModel();
+        int i = listHD.size() - 1;
+        hd.setMa("HD" + listHD.get(i).getId());
+        hd.setIdNV(idNV);
+        hd.setIdKH(idKhachHang);
+        hd.setMaPGG("");
+        hd.setNgayTao(Date.valueOf(java.time.LocalDate.now()));
+        hd.setNgayThanhToan(Date.valueOf(java.time.LocalDate.now()));
+        hd.setTienGiam(Integer.parseInt("0"));
+        hd.setTongTien(Integer.parseInt("0"));
+        hd.setTienKhachDua(Integer.parseInt("0"));
+        hd.setTienThua(Integer.parseInt("0"));
+        hd.setTienKhachPhaiTra(Integer.parseInt("0"));
+        hd.setHinhThucThanhToan(Integer.parseInt("0"));
+        hd.setMaChuyenKhoan("");
+        hd.setTrangThai(Integer.parseInt("0"));
+        return hd;
+    }
 
     private void showDataHoaDon(List<HDTableVIewModel> listTable) {
         dtmHD.setRowCount(0);
@@ -392,27 +395,27 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
         return hd;
     }
 
-//    private void layKhachHang(int index) {
-//        QLKhachHang khachHang = listKhachHang.get(index);
-//        idKhachHang = khachHang.getId();
-//        jlbTenKhachHang.setText(khachHang.getTen());
-//        jlbSDT.setText(khachHang.getSdt());
-//        jlbEmail.setText(khachHang.getEmail());
-//
-//    }
+    private void layKhachHang(int index) {
+        QLKhachHang khachHang = listKhachHang.get(index);
+        idKhachHang = khachHang.getId();
+        jlbTenKhachHang.setText(khachHang.getTen());
+        jlbSDT.setText(khachHang.getSdt());
+        jlbEmail.setText(khachHang.getEmail());
 
-//    private void layKhachHangLe(int index) {
-//        QLKhachHang khachHang = listKhachHang.get(index);
-//
-//        // Check if the id is equal to 9
-//        if (khachHang.getId() == 9) {
-//            idKhachHang = khachHang.getId();
-//            jlbTenKhachHang.setText(khachHang.getTen());
-//            jlbSDT.setText(khachHang.getSdt());
-//            jlbEmail.setText(khachHang.getEmail());
-//
-//        }
-//    }
+    }
+
+    private void layKhachHangLe(int index) {
+        QLKhachHang khachHang = listKhachHang.get(index);
+
+        // Check if the id is equal to 9
+        if (khachHang.getId() == 7) {
+            idKhachHang = khachHang.getId();
+            jlbTenKhachHang.setText(khachHang.getTen());
+            jlbSDT.setText(khachHang.getSdt());
+            jlbEmail.setText(khachHang.getEmail());
+
+        }
+    }
 
 //    private HDViewModel getThanhToan() {
 //
@@ -624,6 +627,7 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
         jlbEmail = new javax.swing.JLabel();
         jlbTenNhanVien = new javax.swing.JLabel();
         jLabel35 = new javax.swing.JLabel();
+        btnClearForm = new javax.swing.JButton();
         jLabel3 = new javax.swing.JLabel();
         jPanel3 = new javax.swing.JPanel();
         jPanel5 = new javax.swing.JPanel();
@@ -1402,6 +1406,17 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
         jLabel35.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel35.setText("Tên: ");
 
+        btnClearForm.setBackground(new java.awt.Color(0, 0, 0));
+        btnClearForm.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnClearForm.setForeground(new java.awt.Color(255, 255, 255));
+        btnClearForm.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-available-updates-20 (1).png"))); // NOI18N
+        btnClearForm.setText("Clear");
+        btnClearForm.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnClearFormActionPerformed(evt);
+            }
+        });
+
         javax.swing.GroupLayout jPanel2Layout = new javax.swing.GroupLayout(jPanel2);
         jPanel2.setLayout(jPanel2Layout);
         jPanel2Layout.setHorizontalGroup(
@@ -1423,11 +1438,6 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
                     .addGroup(jPanel2Layout.createSequentialGroup()
                         .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addGroup(jPanel2Layout.createSequentialGroup()
-                                .addComponent(jLabel35)
-                                .addGap(18, 18, 18)
-                                .addComponent(jlbTenNhanVien, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE))
-                            .addComponent(jLabel10)
-                            .addGroup(jPanel2Layout.createSequentialGroup()
                                 .addComponent(jLabel8)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jlbSDT, javax.swing.GroupLayout.PREFERRED_SIZE, 204, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -1436,7 +1446,16 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                                 .addComponent(jlbTenKhachHang, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                                .addComponent(jButton1, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addGroup(jPanel2Layout.createSequentialGroup()
+                                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                                    .addGroup(jPanel2Layout.createSequentialGroup()
+                                        .addComponent(jLabel35)
+                                        .addGap(18, 18, 18)
+                                        .addComponent(jlbTenNhanVien, javax.swing.GroupLayout.PREFERRED_SIZE, 196, javax.swing.GroupLayout.PREFERRED_SIZE))
+                                    .addComponent(jLabel10))
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(btnClearForm, javax.swing.GroupLayout.PREFERRED_SIZE, 103, javax.swing.GroupLayout.PREFERRED_SIZE)))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))))
         );
 
@@ -1462,12 +1481,15 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
                     .addComponent(jlbEmail)
                     .addComponent(jButton4, javax.swing.GroupLayout.PREFERRED_SIZE, 35, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(19, 19, 19)
-                .addComponent(jLabel10)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jlbTenNhanVien)
-                    .addComponent(jLabel35))
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+                .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel2Layout.createSequentialGroup()
+                        .addComponent(jLabel10)
+                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                        .addGroup(jPanel2Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                            .addComponent(jlbTenNhanVien)
+                            .addComponent(jLabel35)))
+                    .addComponent(btnClearForm, javax.swing.GroupLayout.PREFERRED_SIZE, 40, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(12, Short.MAX_VALUE))
         );
 
         jPanel2Layout.linkSize(javax.swing.SwingConstants.VERTICAL, new java.awt.Component[] {jlbEmail, jlbSDT, jlbTenKhachHang, jlbTenNhanVien});
@@ -2223,38 +2245,39 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
 
     private void btnTaoHoaDonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTaoHoaDonActionPerformed
 
-//        HDViewModel hd = taoHoaDon();
-//
-//        for (QLKhachHang kh : listKhachHang) {
-//            if (kh.getId() == hd.getIdKH() && kh.getTrangThai() == 0 && kh.getId() != 9) {
-//                JOptionPane.showMessageDialog(this, "Khách hàng đã có hóa đơn chờ");
-//                return;
-//            }
-//
-//        }
-//        JOptionPane.showMessageDialog(this, serviceHD.getAdd(hd));
-//        jlbMaHD.setText(hd.getMa());
-//        listHDTable = serviceHDTable.getAll();
-//        if (idKhachHang != 9) {
-//            serviceKhachHang.khachHangTaoHD(idKhachHang);
-//        }
-//
-//        listHD = serviceHD.getAll();
-//        for (HDViewModel hdid : listHD) {
-//            if (hdid.getMa().trim().equals(hd.getMa())) {
-//                idHD = hdid.getId();
-//                maHD = hdid.getMa();
-//            }
-//        }
-//        listKhachHang = serviceKhachHang.getList();
-//        loadDataTable(serviceKhachHang.getList());
-//        listHDTableChuaThanhToan = new ArrayList<>();
-//        for (HDTableVIewModel hdctt : listHDTable) {
-//            if (hdctt.getTrangThai().trim().equals("0")) {
-//                listHDTableChuaThanhToan.add(hdctt);
-//            }
-//        }
-//        showDataHoaDon(listHDTableChuaThanhToan);
+        HDViewModel hd = taoHoaDon();
+
+        for (QLKhachHang kh : listKhachHang) {
+            if (kh.getId() == hd.getIdKH() && kh.getTrangThai() == 0 && kh.getId() != 7) {
+                System.out.println(kh.getId()+ " abc " +  hd.getIdKH());
+                JOptionPane.showMessageDialog(this, "Khách hàng đã có hóa đơn chờ");
+                return;
+            }
+
+        }
+        JOptionPane.showMessageDialog(this, serviceHD.getAdd(hd));
+        jlbMaHD.setText(hd.getMa());
+        listHDTable = serviceHDTable.getAll();
+        if (idKhachHang != 7) {
+            serviceKhachHang.khachHangTaoHD(idKhachHang);
+        }
+
+        listHD = serviceHD.getAll();
+        for (HDViewModel hdid : listHD) {
+            if (hdid.getMa().trim().equals(hd.getMa())) {
+                idHD = hdid.getId();
+                maHD = hdid.getMa();
+            }
+        }
+        listKhachHang = serviceKhachHang.getList();
+        loadDataTable(serviceKhachHang.getList());
+        listHDTableChuaThanhToan = new ArrayList<>();
+        for (HDTableVIewModel hdctt : listHDTable) {
+            if (hdctt.getTrangThai().trim().equals("0")) {
+                listHDTableChuaThanhToan.add(hdctt);
+            }
+        }
+        showDataHoaDon(listHDTableChuaThanhToan);
     }//GEN-LAST:event_btnTaoHoaDonActionPerformed
 
     private void jMenuItem1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jMenuItem1ActionPerformed
@@ -2299,98 +2322,98 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
 
     private void btnHuyHoaDonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHuyHoaDonActionPerformed
 
-//        int index = tblHoaDon.getSelectedRow();
-//        if (index >= 0 && index <= listHD.size()) {
-//            //lấy sản phẩm trong hóa đơn
-//            int sul = JOptionPane.showConfirmDialog(this, "Có muốn xóa hóa đơn không ?");
-//            if (sul == 0) {
-//                listSPInHD = new ArrayList<>();
-//                for (GioHangViewModel gh : listSpGiohang) {
-//                    if (gh.getMaHD().equals(maHD)) {
-//                        listSPInHD.add(gh);
-//                    }
-//                }
-//                int soLuongSanPhamXoa = 0;
-//                int soLuongSanPham = 0;
-//                int idSpCapNhap = 0;
-//
-//                for (GioHangViewModel ghxoa : listSPInHD) {
-//                    //san phảm cập nhập số lượng
-//                    soLuongSanPhamXoa = ghxoa.getSoLuong();
-//                    for (HDCTViewModel sp : listGioHang) {
-//                        if (sp.getId() == ghxoa.getId()) {
-//                            for (SPCTViewModel spct : listSPCT) {
-//                                if (spct.getId() == sp.getIdSPCT()) {
-//                                    soLuongSanPham = spct.getSoLuong();
-//                                    idSpCapNhap = spct.getId();
-//                                }
-//                            }
-//                        }
-//                    }
-//                    serviceSPCT.getUpdateSLMua(soLuongSanPham + soLuongSanPhamXoa, idSpCapNhap);
-//                    listSPCT = serviceSPCT.getAllTable();
-//                    listSP = serviceSPCT.getAll();
-//                    listSPVM = serviceSp.getAll();
-//                    showDataSanPham(listSPVM);
-//                    showDataSearch(listSPCT);
-//                    // Xoa san phẩm
-//                    serviceGioHang.getDelete(ghxoa.getId());
-//
-//                }
-//                listGioHang = serviceGioHang.getAll();
-//                //Xóa hóa đơn
-//                HDViewModel hd = xoaHD(index);
-//                JOptionPane.showMessageDialog(this, serviceHD.getDelete(idHD));
-//                listHDTable = serviceHDTable.getAll();
-//                listHD = serviceHD.getAll();
-//                listHDTableChuaThanhToan = new ArrayList<>();
-//                for (HDTableVIewModel hdctt : listHDTable) {
-//                    if (hdctt.getTrangThai().trim().equals("0")) {
-//                        listHDTableChuaThanhToan.add(hdctt);
-//                    }
-//                }
-//                showDataHoaDon(listHDTableChuaThanhToan);
-//
-//            } else {
-////                JOptionPane.showMessageDialog(this, "Chưa chọn hóa đơn");
-//                return;
-//            }
-//        }
-//        serviceKhachHang.khachHangThanhToanHD(idKhachHang);
-//        listKhachHang = serviceKhachHang.getList();
-//        loadDataTable(serviceKhachHang.getList());
-//        khacLe();
-//        //Cập nhập lại tổng tiền và giỏ hàng
-//        listSpGiohang = serviceGioHang.getGioHang();
-//        listSPInHD = new ArrayList<>();
-//        listGioHang = serviceGioHang.getAll();
-//        int tongTien = 0;
-//        for (GioHangViewModel gh : listSpGiohang) {
-//            if (gh.getMaHD().equals(maHD)) {
-//                listSPInHD.add(gh);
-//                tongTien += gh.getDonGia();
-//            }
-//        }
-//        jlbTongTien.setText(String.valueOf(tongTien));
-//        jlbTienGiam.setText(String.valueOf(tienPGG + tienQuyDoi));
-//        jlbKhachPhaiTra.setText(String.valueOf(0));
-//        gioHangTable(listSPInHD);
+        int index = tblHoaDon.getSelectedRow();
+        if (index >= 0 && index <= listHD.size()) {
+            //lấy sản phẩm trong hóa đơn
+            int sul = JOptionPane.showConfirmDialog(this, "Có muốn xóa hóa đơn không ?");
+            if (sul == 0) {
+                listSPInHD = new ArrayList<>();
+                for (GioHangViewModel gh : listSpGiohang) {
+                    if (gh.getMaHD().equals(maHD)) {
+                        listSPInHD.add(gh);
+                    }
+                }
+                int soLuongSanPhamXoa = 0;
+                int soLuongSanPham = 0;
+                int idSpCapNhap = 0;
+
+                for (GioHangViewModel ghxoa : listSPInHD) {
+                    //san phảm cập nhập số lượng
+                    soLuongSanPhamXoa = ghxoa.getSoLuong();
+                    for (HDCTViewModel sp : listGioHang) {
+                        if (sp.getId() == ghxoa.getId()) {
+                            for (SPCTViewModel spct : listSPCT) {
+                                if (spct.getId() == sp.getIdSPCT()) {
+                                    soLuongSanPham = spct.getSoLuong();
+                                    idSpCapNhap = spct.getId();
+                                }
+                            }
+                        }
+                    }
+                    serviceSPCT.getUpdateSLMua(soLuongSanPham + soLuongSanPhamXoa, idSpCapNhap);
+                    listSPCT = serviceSPCT.getAllTable();
+                    listSP = serviceSPCT.getAll();
+                    listSPVM = serviceSp.getAll();
+                    showDataSanPham(listSPVM);
+                    showDataSearch(listSPCT);
+                    // Xoa san phẩm
+                    serviceGioHang.getDelete(ghxoa.getId());
+
+                }
+                listGioHang = serviceGioHang.getAll();
+                //Xóa hóa đơn
+                HDViewModel hd = xoaHD(index);
+                JOptionPane.showMessageDialog(this, serviceHD.getDelete(idHD));
+                listHDTable = serviceHDTable.getAll();
+                listHD = serviceHD.getAll();
+                listHDTableChuaThanhToan = new ArrayList<>();
+                for (HDTableVIewModel hdctt : listHDTable) {
+                    if (hdctt.getTrangThai().trim().equals("0")) {
+                        listHDTableChuaThanhToan.add(hdctt);
+                    }
+                }
+                showDataHoaDon(listHDTableChuaThanhToan);
+
+            } else {
+//                JOptionPane.showMessageDialog(this, "Chưa chọn hóa đơn");
+                return;
+            }
+        }
+        serviceKhachHang.khachHangThanhToanHD(idKhachHang);
+        listKhachHang = serviceKhachHang.getList();
+        loadDataTable(serviceKhachHang.getList());
+        khacLe();
+        //Cập nhập lại tổng tiền và giỏ hàng
+        listSpGiohang = serviceGioHang.getGioHang();
+        listSPInHD = new ArrayList<>();
+        listGioHang = serviceGioHang.getAll();
+        int tongTien = 0;
+        for (GioHangViewModel gh : listSpGiohang) {
+            if (gh.getMaHD().equals(maHD)) {
+                listSPInHD.add(gh);
+                tongTien += gh.getDonGia();
+            }
+        }
+        jlbTongTien.setText(String.valueOf(tongTien));
+        jlbTienGiam.setText(String.valueOf(tienPGG + tienQuyDoi));
+        jlbKhachPhaiTra.setText(String.valueOf(0));
+        gioHangTable(listSPInHD);
     }//GEN-LAST:event_btnHuyHoaDonActionPerformed
 
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
-//        int index = tblKhachHang.getSelectedRow();
-//        if (index >= 0 & index <= listKhachHang.size()) {
-//            QLKhachHang khachHang = listKhachHang.get(index);
-//            if (khachHang.getTrangThai() == 0 && khachHang.getId() != 9) {
-//                JOptionPane.showMessageDialog(this, "Khách hàng đã có hóa đơn chờ");
-//            } else {
-//                layKhachHang(index);
-//            }
-//
-//            jdlKhachHang.setVisible(false);
-//        } else {
-//            JOptionPane.showMessageDialog(this, "Chưa chọn khách hàng");
-//        }
+        int index = tblKhachHang.getSelectedRow();
+        if (index >= 0 & index <= listKhachHang.size()) {
+            QLKhachHang khachHang = listKhachHang.get(index);
+            if (khachHang.getTrangThai() == 0 && khachHang.getId() != 7) {
+                JOptionPane.showMessageDialog(this, "Khách hàng đã có hóa đơn chờ");
+            } else {
+                layKhachHang(index);
+            }
+
+            jdlKhachHang.setVisible(false);
+        } else {
+            JOptionPane.showMessageDialog(this, "Chưa chọn khách hàng");
+        }
 
     }//GEN-LAST:event_jButton12ActionPerformed
 
@@ -2425,15 +2448,15 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
         jlbTienThua.setText("");
         txtMaChuyenKhoan.setText("");
 
-//        for (QLKhachHang kh : listKhachHang) {
-//            if (hd.getTenKhachHang().trim().equals(kh.getTen())) {
-//                idKhachHang = kh.getId();
-//                jlbTenKhachHang.setText(kh.getTen());
-//                jlbSDT.setText(kh.getSdt());
-//                jlbEmail.setText(kh.getEmail());
-//
-//            }
-//        }
+        for (QLKhachHang kh : listKhachHang) {
+            if (hd.getTenKhachHang().trim().equals(kh.getTen())) {
+                idKhachHang = kh.getId();
+                jlbTenKhachHang.setText(kh.getTen());
+                jlbSDT.setText(kh.getSdt());
+                jlbEmail.setText(kh.getEmail());
+
+            }
+        }
         for (QLNhanVien nv : listnhanVien) {
             if (hd.getTenNhanVien().trim().equals(nv.getTen())) {
                 jlbTenNhanVien.setText(nv.getTen());
@@ -2662,7 +2685,7 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
 //                    }
 //
 //                }
-//                if (idKhachHang != 9) {
+//                if (idKhachHang != 7) {
 //                    serviceKhachHang.khachHangThanhToanHD(idKhachHang);
 //                }
 //                listKhachHang = serviceKhachHang.getList();
@@ -2697,18 +2720,7 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
     }//GEN-LAST:event_btnThanhToanActionPerformed
 
     private boolean validateThem() {
-//        if (txtMa.getText().trim().isEmpty() || txtTen.getText().trim().isEmpty() || txtEmail.getText().trim().isEmpty()
-//                || txtSDT.getText().trim().isEmpty() || dateNgaySinh.getDate().equals("") || txtDiaChi.getText().trim().isEmpty()) {
-//            JOptionPane.showMessageDialog(this, "Thông tin không để trống");
-//            return false;
-//        }
-//        for (QLKhachHang kh : listKhachHang) {
-//            if (txtMa.getText().trim().equals(kh.getMa())) {
-//                JOptionPane.showMessageDialog(this, "Khách hàng đã tồn tại");
-//                return false;
-//            }
-//        }
-//        return true;
+
 
         if (txtMa.getText().trim().isEmpty() || txtTen.getText().trim().isEmpty() || txtEmail.getText().trim().isEmpty()
                 || txtSDT.getText().trim().isEmpty() || dateNgaySinh.getDate().equals("") || txtDiaChi.getText().trim().isEmpty()) {
@@ -2740,97 +2752,90 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
     }
 
     private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
-//        KhachHang kh = new KhachHang();
-//        if (validateThem()) {
-//            kh.setMa(txtMa.getText().trim());
-//            kh.setTen(txtTen.getText().trim());
-//            kh.setEmail(txtEmail.getText().trim());
-//            kh.setSdt(txtSDT.getText().trim());
-//            int gioiTinh = 0;
-//            if (rdNam.isSelected() == true) {
-//                gioiTinh = 1;
-//            }
-//            kh.setGioiTinh(gioiTinh);
-//            kh.setNgaySinh(dateNgaySinh.getDate());
-//            kh.setDiaChi(txtDiaChi.getText().trim());
-//            int trangThai = 0;
-//            if (cbTrangThai.isSelected() == true) {
-//                trangThai = 1;
-//            }
-//            kh.setTrangThai(trangThai);
-//            serviceKhachHang.Them(kh);
-//            JOptionPane.showMessageDialog(this, "Thêm thành công");
-//            loadDataTable(serviceKhachHang.getList());
-//            int id = 0;
-//            for (int i = 0; i < tblKhachHang.getRowCount(); i++) {
-//                if (txtMa.getText().equalsIgnoreCase(tblKhachHang.getValueAt(i, 1).toString())) {
-//                    id = (int) tblKhachHang.getValueAt(i, 0);
-//                }
-//            }
-//
-//            BangTichDiem bd = new BangTichDiem();
-//            bd.setIdKH(id);
-//            bd.setMa("BTD" + id);
-//            bd.setDiemTich(0);
-//            bd.setTienDuocGiam(0);
-//            serviceBangTichDiem.Them(bd);
-//            listKhachHang = serviceKhachHang.getList();
-//
-//            Clear();
-//        }
+        KhachHang kh = new KhachHang();
+        if (validateThem()) {
+            kh.setMa(txtMa.getText().trim());
+            kh.setTen(txtTen.getText().trim());
+            kh.setEmail(txtEmail.getText().trim());
+            kh.setSdt(txtSDT.getText().trim());
+            int gioiTinh = 0;
+            if (rdNam.isSelected() == true) {
+                gioiTinh = 1;
+            }
+            kh.setGioiTinh(gioiTinh);
+            kh.setNgaySinh(dateNgaySinh.getDate());
+            kh.setDiaChi(txtDiaChi.getText().trim());
+            int trangThai = 0;
+            if (cbTrangThai.isSelected() == true) {
+                trangThai = 1;
+            }
+            kh.setTrangThai(trangThai);
+            serviceKhachHang.Them(kh);
+            JOptionPane.showMessageDialog(this, "Thêm thành công");
+            loadDataTable(serviceKhachHang.getList());
+            int id = 0;
+            for (int i = 0; i < tblKhachHang.getRowCount(); i++) {
+                if (txtMa.getText().equalsIgnoreCase(tblKhachHang.getValueAt(i, 1).toString())) {
+                    id = (int) tblKhachHang.getValueAt(i, 0);
+                }
+            }
+            listKhachHang = serviceKhachHang.getList();
+
+            Clear();
+        }
 
     }//GEN-LAST:event_btnThemActionPerformed
 
     public void TimTheoMa() {
-//        String ma = jTextField1.getText();
-//        defaultTableModel = (DefaultTableModel) tblKhachHang.getModel();
-//        defaultTableModel.setRowCount(0);
-//        for (QLKhachHang kh : repository.TimKiemTheoMa(ma)) {
-//            defaultTableModel.addRow(new Object[]{
-//                kh.getId(), kh.getMa(), kh.getTen(), kh.getEmail(), kh.getSdt(),
-//                (kh.getGioiTinh() == 1) ? "Nam" : "Nữ", kh.getNgaySinh(), kh.getDiaChi(),
-//                (kh.getTrangThai() == 1) ? "Đã thanh toán" : "Chưa thanh toán"
-//            });
-//        }
+        String ma = jTextField1.getText();
+        defaultTableModel = (DefaultTableModel) tblKhachHang.getModel();
+        defaultTableModel.setRowCount(0);
+        for (QLKhachHang kh : repository.TimKiemTheoMa(ma)) {
+            defaultTableModel.addRow(new Object[]{
+                kh.getId(), kh.getMa(), kh.getTen(), kh.getEmail(), kh.getSdt(),
+                (kh.getGioiTinh() == 1) ? "Nam" : "Nữ", kh.getNgaySinh(), kh.getDiaChi(),
+                (kh.getTrangThai() == 1) ? "Đã thanh toán" : "Chưa thanh toán"
+            });
+        }
     }
 
     public void TimTheoTen() {
-//        String ten = jTextField1.getText();
-//        defaultTableModel = (DefaultTableModel) tblKhachHang.getModel();
-//        defaultTableModel.setRowCount(0);
-//        for (QLKhachHang kh : repository.TimKiemTheoTen(ten)) {
-//            defaultTableModel.addRow(new Object[]{
-//                kh.getId(), kh.getMa(), kh.getTen(), kh.getEmail(), kh.getSdt(),
-//                (kh.getGioiTinh() == 1) ? "Nam" : "Nữ", kh.getNgaySinh(), kh.getDiaChi(),
-//                (kh.getTrangThai() == 1) ? "Đã thanh toán" : "Chưa thanh toán"
-//            });
-//        }
+        String ten = jTextField1.getText();
+        defaultTableModel = (DefaultTableModel) tblKhachHang.getModel();
+        defaultTableModel.setRowCount(0);
+        for (QLKhachHang kh : repository.TimKiemTheoTen(ten)) {
+            defaultTableModel.addRow(new Object[]{
+                kh.getId(), kh.getMa(), kh.getTen(), kh.getEmail(), kh.getSdt(),
+                (kh.getGioiTinh() == 1) ? "Nam" : "Nữ", kh.getNgaySinh(), kh.getDiaChi(),
+                (kh.getTrangThai() == 1) ? "Đã thanh toán" : "Chưa thanh toán"
+            });
+        }
     }
 
     public void TimTheoEmail() {
-//        String email = jTextField1.getText();
-//        defaultTableModel = (DefaultTableModel) tblKhachHang.getModel();
-//        defaultTableModel.setRowCount(0);
-//        for (QLKhachHang kh : repository.TimKiemTheoEmail(email)) {
-//            defaultTableModel.addRow(new Object[]{
-//                kh.getId(), kh.getMa(), kh.getTen(), kh.getEmail(), kh.getSdt(),
-//                (kh.getGioiTinh() == 1) ? "Nam" : "Nữ", kh.getNgaySinh(), kh.getDiaChi(),
-//                (kh.getTrangThai() == 1) ? "Đã thanh toán" : "Chưa thanh toán"
-//            });
-//        }
+        String email = jTextField1.getText();
+        defaultTableModel = (DefaultTableModel) tblKhachHang.getModel();
+        defaultTableModel.setRowCount(0);
+        for (QLKhachHang kh : repository.TimKiemTheoEmail(email)) {
+            defaultTableModel.addRow(new Object[]{
+                kh.getId(), kh.getMa(), kh.getTen(), kh.getEmail(), kh.getSdt(),
+                (kh.getGioiTinh() == 1) ? "Nam" : "Nữ", kh.getNgaySinh(), kh.getDiaChi(),
+                (kh.getTrangThai() == 1) ? "Đã thanh toán" : "Chưa thanh toán"
+            });
+        }
     }
 
     public void TimTheoSDT() {
-//        String sdt = jTextField1.getText();
-//        defaultTableModel = (DefaultTableModel) tblKhachHang.getModel();
-//        defaultTableModel.setRowCount(0);
-//        for (QLKhachHang kh : repository.TimKiemTheoSDT(sdt)) {
-//            defaultTableModel.addRow(new Object[]{
-//                kh.getId(), kh.getMa(), kh.getTen(), kh.getEmail(), kh.getSdt(),
-//                (kh.getGioiTinh() == 1) ? "Nam" : "Nữ", kh.getNgaySinh(), kh.getDiaChi(),
-//                (kh.getTrangThai() == 1) ? "Đã thanh toán" : "Chưa thanh toán"
-//            });
-//        }
+        String sdt = jTextField1.getText();
+        defaultTableModel = (DefaultTableModel) tblKhachHang.getModel();
+        defaultTableModel.setRowCount(0);
+        for (QLKhachHang kh : repository.TimKiemTheoSDT(sdt)) {
+            defaultTableModel.addRow(new Object[]{
+                kh.getId(), kh.getMa(), kh.getTen(), kh.getEmail(), kh.getSdt(),
+                (kh.getGioiTinh() == 1) ? "Nam" : "Nữ", kh.getNgaySinh(), kh.getDiaChi(),
+                (kh.getTrangThai() == 1) ? "Đã thanh toán" : "Chưa thanh toán"
+            });
+        }
     }
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
         if (jComboBox1.getSelectedItem().equals("Mã")) {
@@ -3272,6 +3277,12 @@ if (index == -1) {
         // TODO add your handling code here:
     }//GEN-LAST:event_jComboBox2ActionPerformed
 
+    private void btnClearFormActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearFormActionPerformed
+        showDataHoaDon(listHDTableChuaThanhToan);
+        idKhachHang =7;
+        khacLe();
+    }//GEN-LAST:event_btnClearFormActionPerformed
+
     //Quét ma QR
     private void initWebcam() {
         Dimension size = WebcamResolution.QVGA.getSize();
@@ -3332,6 +3343,7 @@ if (index == -1) {
     //Quet ma QR
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnClearForm;
     private javax.swing.JButton btnHuyHoaDon;
     private javax.swing.JButton btnLoc;
     private javax.swing.JButton btnSearch;

@@ -31,8 +31,13 @@ public class HDServiceImpl implements HDService {
 
     @Override
     public String getAdd(HDViewModel hd) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+       HDModel hdAdd=new HDModel(hd.getId(),hd.getMa(),hd.getIdNV(),hd.getIdKH(),hd.getMaPGG(),hd.getNgayTao(),hd.getNgayThanhToan(),hd.getTienGiam(),hd.getTongTien(),hd.getTienKhachDua(),hd.getTienThua(),hd.getTienKhachPhaiTra(),hd.getHinhThucThanhToan(),hd.getMaChuyenKhoan(),hd.getTrangThai());
+        boolean add=hdRepo.getAdd(hdAdd);
+        if(add){
+            return "Thanh cong";
+        }else {
+            return"That bai";
+        } }
 
     @Override
     public String getUpdate(HDViewModel hd, int id) {
@@ -41,7 +46,12 @@ public class HDServiceImpl implements HDService {
 
     @Override
     public String getDelete(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+       boolean add=hdRepo.getDelete(id);
+        if(add){
+            return "Thanh cong";
+        }else {
+            return"That bai";
+        }
     }
 
     @Override
