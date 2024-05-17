@@ -222,6 +222,7 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
                 }
                 
                 if (selectedPhieu != null && selectedIndex !=0) {
+                    // set giá trị và tính tiền sau khi chọn hóa đơn
                     String tongTienText = jlbTongTien.getText();
                     tongTien=Integer.parseInt(tongTienText);
                     System.out.println(tongTien);
@@ -232,6 +233,7 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
                     tienKhachPhaiTra= tongTien-tienGiam;
                     jlbKhachPhaiTra.setText(tienKhachPhaiTra+"");
                 }else if(selectedIndex == 0 || selectedPhieu.equals(null) ){
+                    // set giá trị và tính tiền khi không chọn hóa đơn
                     txtGiaTri.setText("");
                     giaTriPGG =0;
                     String tongTienText = jlbTongTien.getText();
@@ -2354,7 +2356,7 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
         int index = listKhachHang.size() - 1;
         txtMa.setText(String.valueOf("KH" + listKhachHang.get(index).getId()));
     }//GEN-LAST:event_jButton1ActionPerformed
-
+// Tạo Hóa Đơn
     private void btnTaoHoaDonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnTaoHoaDonActionPerformed
 
         HDViewModel hd = taoHoaDon();
@@ -2431,7 +2433,7 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
         int id = (int) tblKhachHang.getValueAt(index, 0);
 
     }//GEN-LAST:event_tblKhachHangMouseClicked
-
+// Hủy Hóa Đơn
     private void btnHuyHoaDonActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHuyHoaDonActionPerformed
 
         int index = tblHoaDon.getSelectedRow();
@@ -2528,7 +2530,7 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
         }
 
     }//GEN-LAST:event_jButton12ActionPerformed
-
+// khi click vào hóa đơn 
     private void tblHoaDonMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblHoaDonMouseClicked
         int index = tblHoaDon.getSelectedRow();
         listSPInHD = new ArrayList<>();
@@ -2595,7 +2597,7 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
         }
 
     }//GEN-LAST:event_btnUpdateSoLuongActionPerformed
-
+// Xóa Sản Phẩm trong giỏ hàng
     private void btnXoaSanPhamActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaSanPhamActionPerformed
         listSPInHD = new ArrayList<>();
         for (GioHangViewModel gh : listSpGiohang) {
@@ -2628,7 +2630,7 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
         } else {
             JOptionPane.showMessageDialog(this, "Chưa chọn sản phẩm");
         }
-
+// thêm lại số lượng vào giỏ hàng
         serviceSPCT.getUpdateSLMua(soLuongSanPham + soLuongSanPhamXoa, idSpCapNhap);
         listSPCT = serviceSPCT.getAllTable();
         listSP = serviceSPCT.getAll();
@@ -2640,6 +2642,7 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
         listSPInHD = new ArrayList<>();
         listGioHang = serviceGioHang.getAll();
         tongTien = 0;
+        
         for (GioHangViewModel gh : listSpGiohang) {
             if (gh.getMaHD().equals(maHD)) {
                 listSPInHD.add(gh);
@@ -2656,7 +2659,7 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
         gioHangTable(listSPInHD);
 
     }//GEN-LAST:event_btnXoaSanPhamActionPerformed
-
+// cập nhật số lượng giỏ hàng
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
 
         int index = tblGioHang.getSelectedRow();
@@ -2742,7 +2745,7 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
     private void txtTienKhachDuaMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_txtTienKhachDuaMouseEntered
 
     }//GEN-LAST:event_txtTienKhachDuaMouseEntered
-
+// Tính Tiền thừa và tiền khách đưa
     private void txtTienKhachDuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTienKhachDuaActionPerformed
         // TODO add your handling code here:
         String pattern = "[1-9][0-9]*";
@@ -2822,7 +2825,7 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
 
 
     }//GEN-LAST:event_btnThanhToanActionPerformed
-
+// Validate thêm khách hàng
     private boolean validateThem() {
 
 
@@ -2854,7 +2857,7 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
         }
         return true;
     }
-
+// Thêm Khách hàng mới
     private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
         KhachHang kh = new KhachHang();
         if (validateThem()) {
@@ -2889,7 +2892,7 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
         }
 
     }//GEN-LAST:event_btnThemActionPerformed
-
+// Tìm KH theo MÃ
     public void TimTheoMa() {
         String ma = jTextField1.getText();
         defaultTableModel = (DefaultTableModel) tblKhachHang.getModel();
@@ -2902,7 +2905,7 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
             });
         }
     }
-
+// Tìm Khách Hàng theo Tên
     public void TimTheoTen() {
         String ten = jTextField1.getText();
         defaultTableModel = (DefaultTableModel) tblKhachHang.getModel();
@@ -2915,7 +2918,7 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
             });
         }
     }
-
+//Tìm Khách Hàng theo email
     public void TimTheoEmail() {
         String email = jTextField1.getText();
         defaultTableModel = (DefaultTableModel) tblKhachHang.getModel();
@@ -2928,7 +2931,7 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
             });
         }
     }
-
+// Tìm Khách Hàng Theo SDT
     public void TimTheoSDT() {
         String sdt = jTextField1.getText();
         defaultTableModel = (DefaultTableModel) tblKhachHang.getModel();
@@ -2941,6 +2944,7 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
             });
         }
     }
+    // Tìm Kiếm
     private void btnSearchActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSearchActionPerformed
         if (jComboBox1.getSelectedItem().equals("Mã")) {
             TimTheoMa();
@@ -3141,7 +3145,7 @@ if (index == -1) {
     private void txtSoLuongMuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSoLuongMuaActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_txtSoLuongMuaActionPerformed
-
+// Thêm Sản Phẩm Giỏ Hàng Bằng Quét Mã
     private void btnThemGioHangActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemGioHangActionPerformed
         int index = tblLocSanPham.getSelectedRow();
         if (index >= 0 && index <= listSPThemGioHang.size()) {
@@ -3200,21 +3204,21 @@ if (index == -1) {
     }//GEN-LAST:event_btnThemGioHangActionPerformed
 
     private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
-        jButton2.setBackground(new java.awt.Color(0, 0, 0));
-        jButton2.setForeground(new java.awt.Color(255, 255, 255));
-        jButton2.setText("Chọn SP");
-
-        btnThemGioHang.setBackground(new java.awt.Color(0, 0, 0));
-        btnThemGioHang.setForeground(new java.awt.Color(255, 255, 255));
-        btnThemGioHang.setText("Thêm vào Giỏ");
-        jDialog1.setSize(490, 410);
-        jDialog1.setResizable(false);
-        jDialog1.setLocationRelativeTo(null);
-        jDialog1.setVisible(true);
-
-//        listSPThemGioHang = listSPCT;
-//        showDataTable(listSPCT);
-        initWebcam();
+//        jButton2.setBackground(new java.awt.Color(0, 0, 0));
+//        jButton2.setForeground(new java.awt.Color(255, 255, 255));
+//        jButton2.setText("Chọn SP");
+//
+//        btnThemGioHang.setBackground(new java.awt.Color(0, 0, 0));
+//        btnThemGioHang.setForeground(new java.awt.Color(255, 255, 255));
+//        btnThemGioHang.setText("Thêm vào Giỏ");
+//        jDialog1.setSize(490, 410);
+//        jDialog1.setResizable(false);
+//        jDialog1.setLocationRelativeTo(null);
+//        jDialog1.setVisible(true);
+//
+////        listSPThemGioHang = listSPCT;
+////        showDataTable(listSPCT);
+//        initWebcam();
     }//GEN-LAST:event_jButton14ActionPerformed
 
     private void result_fieldMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_result_fieldMouseEntered
@@ -3245,11 +3249,6 @@ if (index == -1) {
         for (SPCTViewModel sPCTViewModel : listSPCT) {
             if (sPCTViewModel.getMaVach().trim().equals(result_field.getText())) {
                 listChiTiet.add(sPCTViewModel);
-
-//                jdlLocSanPham.setSize(850, 250);
-//                jdlLocSanPham.setResizable(false);
-//                jdlLocSanPham.setLocationRelativeTo(null);
-//                jdlLocSanPham.setVisible(true);
             }
         }
         txtSoLuongMua.setText("1");
@@ -3265,7 +3264,7 @@ if (index == -1) {
         Clear();
         jDialog1.dispose();
     }//GEN-LAST:event_jButton2ActionPerformed
-
+//Tìm Kiếm SPCT Theo CBB
     private void btnLocActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLocActionPerformed
         List<SPCTViewModel> listLoc = new ArrayList<>();
         for (SPCTViewModel c : listSPCT) {
