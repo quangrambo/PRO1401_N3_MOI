@@ -2509,7 +2509,7 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
             }
         }
         jlbTongTien.setText(String.valueOf(tongTien));
-        jlbTienGiam.setText(String.valueOf(giaTriPGG + tienQuyDoi));
+        jlbTienGiam.setText(String.valueOf(0));
         jlbKhachPhaiTra.setText(String.valueOf(0));
         gioHangTable(listSPInHD);
     }//GEN-LAST:event_btnHuyHoaDonActionPerformed
@@ -2630,7 +2630,7 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
         } else {
             JOptionPane.showMessageDialog(this, "Chưa chọn sản phẩm");
         }
-// thêm lại số lượng vào giỏ hàng
+// thêm lại số lượng vào bảng spct
         serviceSPCT.getUpdateSLMua(soLuongSanPham + soLuongSanPhamXoa, idSpCapNhap);
         listSPCT = serviceSPCT.getAllTable();
         listSP = serviceSPCT.getAll();
@@ -2655,7 +2655,8 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
         jlbTienGiam.setText(String.valueOf(tienGiam));
         tienKhachPhaiTra = tongTien - tienGiam;
         jlbKhachPhaiTra.setText(String.valueOf(tienKhachPhaiTra));
-
+        txtTienKhachDua.setText("");
+        jlbTienThua.setText("");
         gioHangTable(listSPInHD);
 
     }//GEN-LAST:event_btnXoaSanPhamActionPerformed
@@ -2727,6 +2728,8 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
                     jlbTienGiam.setText(String.valueOf(tienGiam));
                     tienKhachPhaiTra = tongTien - tienGiam;
                     jlbKhachPhaiTra.setText(String.valueOf(tienKhachPhaiTra));
+                    txtTienKhachDua.setText("");
+                    jlbTienThua.setText("");
                 }
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(this, "Vui lòng nhập một số nguyên hợp lệ");
@@ -3079,6 +3082,8 @@ if (index == -1) {
                     jlbTienGiam.setText(String.valueOf(tongTien*giaTriPGG/100));
                     tienKhachPhaiTra = tongTien - (tongTien*giaTriPGG/100);
                     jlbKhachPhaiTra.setText(String.valueOf(tienKhachPhaiTra));
+                    txtTienKhachDua.setText("");
+                    jlbTienThua.setText("");
                     gioHangTable(listSPInHD);
                     spct.setSoLuong(soLuongThayDoi);
                 }
