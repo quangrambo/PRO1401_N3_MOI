@@ -167,7 +167,7 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
     private int idNV = 0;
 
     private int idPGG = 0;
-    private int tienPGG = 0;
+    private int giaTriPGG = 0;
     private int tienQuyDoi = 0;
     private int tongTien = 0;
     private int tienKhachDua = 0;
@@ -198,7 +198,7 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
         // Show CBB Phiếu giảm giá (trong thời gian sử dụng, còn lượt , trạng thái đang sử dụng)
         listPGG = servicePGG.getAllPGGCT();
         dcbPGG = (DefaultComboBoxModel) this.cboPGG.getModel();
-        listCboPGG.add("Không Dùng");
+        listCboPGG.add("");
         List<PGGModel> list = servicePGG.getByMaPGGHD();
         for (PGGModel pGGModel : list) {
             if (pGGModel.getLuotSuDung() >= 0 && pGGModel.getTrangThai() == 1) {
@@ -222,9 +222,25 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
                 }
                 
                 if (selectedPhieu != null && selectedIndex !=0) {
+                    String tongTienText = jlbTongTien.getText();
+                    tongTien=Integer.parseInt(tongTienText);
+                    System.out.println(tongTien);
+                    giaTriPGG = selectedPhieu.getGiaTri();
                     txtGiaTri.setText("" + selectedPhieu.getGiaTri());
-                }else{
+                    tienGiam = tongTien*giaTriPGG/100;
+                    jlbTienGiam.setText(tienGiam+"");
+                    tienKhachPhaiTra= tongTien-tienGiam;
+                    jlbKhachPhaiTra.setText(tienKhachPhaiTra+"");
+                }else if(selectedIndex == 0 || selectedPhieu.equals(null) ){
                     txtGiaTri.setText("");
+                    giaTriPGG =0;
+                    String tongTienText = jlbTongTien.getText();
+                    tongTien=Integer.parseInt(tongTienText);
+                    System.out.println(tongTien);
+                    tienGiam = 0;
+                    jlbTienGiam.setText(tienGiam+"");
+                    tienKhachPhaiTra= tongTien;
+                    jlbKhachPhaiTra.setText(tienKhachPhaiTra+"");
                 }
             }
         });
@@ -485,53 +501,62 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
         }
     }
 
-//    private HDViewModel getThanhToan() {
-//
-//        HDViewModel hd = new HDViewModel();
-//        hd.setIdKH(idKhachHang);
-//        hd.setMaPGG(jlbMaGG.getText());
-//        hd.setNgayThanhToan(Date.valueOf(java.time.LocalDate.now()));
-//
-//        // Kiểm tra và chuyển đổi giá trị từ chuỗi sang số nguyên
-//        try {
-//            String tienGiamText = jlbTienGiam.getText();
-//            hd.setTienGiam(tienGiamText.isEmpty() ? 0 : Integer.parseInt(tienGiamText));
-//
-//            String tongTienText = jlbTongTien.getText();
-//            hd.setTongTien(tongTienText.isEmpty() ? 0 : Integer.parseInt(tongTienText));
-//
-//            String tienKhachDuaText = txtTienKhachDua.getText();
-//            hd.setTienKhachDua(tienKhachDuaText.isEmpty() ? 0 : Integer.parseInt(tienKhachDuaText));
-//
-//            String tienThuaText = jlbTienThua.getText();
-//            hd.setTienThua(tienThuaText.isEmpty() ? 0 : Integer.parseInt(tienThuaText));
-//
-//            String tienKhachPhaiTraText = jlbKhachPhaiTra.getText();
-//            hd.setTienKhachPhaiTra(tienKhachPhaiTraText.isEmpty() ? 0 : Integer.parseInt(tienKhachPhaiTraText));
-//        } catch (NumberFormatException e) {
-//            // Xử lý nếu có lỗi chuyển đổi
-//            e.printStackTrace();
-//        }
-//
-//        if (rdoChuyenKhoan.isSelected()) {
-//            hd.setHinhThucThanhToan(0);
-//        } else {
-//            hd.setHinhThucThanhToan(1);
-//        }
-//
-//        hd.setMaChuyenKhoan(txtMaChuyenKhoan.getText());
-//
-//        // Kiểm tra và chuyển đổi giá trị từ chuỗi sang số nguyên
-//        try {
-//            String trangThaiText = "1";
-//            hd.setTrangThai(trangThaiText.isEmpty() ? 0 : Integer.parseInt(trangThaiText));
-//        } catch (NumberFormatException e) {
-//            // Xử lý nếu có lỗi chuyển đổi
-//            e.printStackTrace();
-//        }
-//
-//        return hd;
-//    }
+    private HDViewModel getThanhToan() {
+
+        HDViewModel hd = new HDViewModel();
+        List<PGGModel> list = servicePGG.getByMaPGGHD();
+
+        hd.setIdKH(idKhachHang);
+        for(PGGModel pgg : list){
+            if(cboPGG.getSelectedItem().equals("Không Dùng")){
+                hd.setMaPGG("");
+            }else {
+                hd.setMaPGG(pgg.getMa());
+            }
+        }
+        hd.setNgayThanhToan(Date.valueOf(java.time.LocalDate.now()));
+
+        // Kiểm tra và chuyển đổi giá trị từ chuỗi sang số nguyên
+        try {
+            
+
+            String tongTienText = jlbTongTien.getText();
+            hd.setTongTien(tongTienText.isEmpty() ? 0 : Integer.parseInt(tongTienText));
+            
+            hd.setTienGiam(tongTien*tienGiam/100);
+
+            String tienKhachDuaText = txtTienKhachDua.getText();
+            hd.setTienKhachDua(tienKhachDuaText.isEmpty() ? 0 : Integer.parseInt(tienKhachDuaText));
+
+            String tienThuaText = jlbTienThua.getText();
+            hd.setTienThua(tienThuaText.isEmpty() ? 0 : Integer.parseInt(tienThuaText));
+
+            String tienKhachPhaiTraText = jlbKhachPhaiTra.getText();
+            hd.setTienKhachPhaiTra(tienKhachPhaiTraText.isEmpty() ? 0 : Integer.parseInt(tienKhachPhaiTraText));
+        } catch (NumberFormatException e) {
+            // Xử lý nếu có lỗi chuyển đổi
+            e.printStackTrace();
+        }
+
+        if (rdoChuyenKhoan.isSelected()) {
+            hd.setHinhThucThanhToan(0);
+        } else {
+            hd.setHinhThucThanhToan(1);
+        }
+
+        hd.setMaChuyenKhoan(txtMaChuyenKhoan.getText());
+
+        // Kiểm tra và chuyển đổi giá trị từ chuỗi sang số nguyên
+        try {
+            String trangThaiText = "1";
+            hd.setTrangThai(trangThaiText.isEmpty() ? 0 : Integer.parseInt(trangThaiText));
+        } catch (NumberFormatException e) {
+            // Xử lý nếu có lỗi chuyển đổi
+            e.printStackTrace();
+        }
+
+        return hd;
+    }
 
     private void thanhToanXong() {
         jlbMaHD.setText("MaHD");
@@ -2482,7 +2507,7 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
             }
         }
         jlbTongTien.setText(String.valueOf(tongTien));
-        jlbTienGiam.setText(String.valueOf(tienPGG + tienQuyDoi));
+        jlbTienGiam.setText(String.valueOf(giaTriPGG + tienQuyDoi));
         jlbKhachPhaiTra.setText(String.valueOf(0));
         gioHangTable(listSPInHD);
     }//GEN-LAST:event_btnHuyHoaDonActionPerformed
@@ -2519,17 +2544,15 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
             }
         }
 
+        
         jlbTongTien.setText(String.valueOf(tongTien));
 
-        if (tienGiam > tongTien) {
-            tienGiam = 0;
-            jlbTienGiam.setText(String.valueOf(tienGiam));
-        } else {
-            tienGiam = tienPGG + tienQuyDoi;
+        
+            tienGiam = tongTien*giaTriPGG/100;
             jlbTienGiam.setText(String.valueOf(tienGiam));
 
-        }
-        tienKhachPhaiTra = tongTien - (tienPGG + tienQuyDoi);
+        
+        tienKhachPhaiTra = tongTien - tienGiam;
         jlbKhachPhaiTra.setText(String.valueOf(tienKhachPhaiTra));
         txtTienKhachDua.setText("");
         jlbTienThua.setText("");
@@ -2625,9 +2648,9 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
         }
 
         jlbTongTien.setText(String.valueOf(tongTien));
-        tienGiam = tienPGG + tienQuyDoi;
+        tienGiam = giaTriPGG*tongTien/100;
         jlbTienGiam.setText(String.valueOf(tienGiam));
-        tienKhachPhaiTra = tongTien - (tienPGG + tienQuyDoi);
+        tienKhachPhaiTra = tongTien - tienGiam;
         jlbKhachPhaiTra.setText(String.valueOf(tienKhachPhaiTra));
 
         gioHangTable(listSPInHD);
@@ -2697,9 +2720,9 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
                     }
                     gioHangTable(listSPInHD);
                     jlbTongTien.setText(String.valueOf(tongTien));
-                    tienGiam = tienPGG + tienQuyDoi;
+                    tienGiam = giaTriPGG*tongTien/100;
                     jlbTienGiam.setText(String.valueOf(tienGiam));
-                    tienKhachPhaiTra = tongTien - (tienPGG + tienQuyDoi);
+                    tienKhachPhaiTra = tongTien - tienGiam;
                     jlbKhachPhaiTra.setText(String.valueOf(tienKhachPhaiTra));
                 }
             } catch (NumberFormatException e) {
@@ -2731,7 +2754,7 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
 
         }
 
-        tienKhachPhaiTra = tongTien - (tienPGG + tienQuyDoi);
+        tienKhachPhaiTra = tongTien - (tongTien*giaTriPGG/100) ;
         tienThua = tienKhachDua - tienKhachPhaiTra;
         jlbTienThua.setText(String.valueOf(tienThua));
     }//GEN-LAST:event_txtTienKhachDuaActionPerformed
@@ -2742,61 +2765,60 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
 
     private void btnThanhToanActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThanhToanActionPerformed
 
-//        int choice = JOptionPane.showConfirmDialog(this, "Bạn có muốn thanh toán?");
-//        if (choice == JOptionPane.NO_OPTION) {
-//            // Người dùng đã chọn "No", thực hiện các hành động tương ứng ở đây
-//            // Ví dụ: không thanh toán
-////            JOptionPane.showMessageDialog(this, "Thanh toán thất bại người dùng Chọn No !");
-//            return;
-//        } else if (choice == JOptionPane.YES_OPTION) {
-//            // Người dùng đã chọn "Yes", thực hiện các hành động tương ứng ở đây
-//            // Ví dụ: thanh toán
-//            if (validateThanhToan()) {
-//                HDViewModel hdTT = getThanhToan();
-//                JOptionPane.showMessageDialog(this, serviceHD.getThanhToan(hdTT, idHD));
-//                for (HDViewModel hd : listHD) {
-//                    if (hd.getId() == idHD) {
-//                        for (QLKhachHang kh : listKhachHang) {
-//                            if (kh.getId() == hd.getIdKH()) {
-//                                if (kh.getId() != khacLe()) {
-//
-//                                }
-//                                thanhToanXong();
-//                            }
-//                        }
-//                    }
-//
-//                }
-//                if (idKhachHang != 7) {
-//                    serviceKhachHang.khachHangThanhToanHD(idKhachHang);
-//                }
-//                listKhachHang = serviceKhachHang.getList();
-//                loadDataTable(serviceKhachHang.getList());
-//                listHD = serviceHD.getAll();
-//                listHDTable = serviceHDTable.getAll();
-//                listHDTableChuaThanhToan = new ArrayList<>();
-//                for (HDTableVIewModel hdctt : listHDTable) {
-//                    if (hdctt.getTrangThai().trim().equals("0")) {
-//                        listHDTableChuaThanhToan.add(hdctt);
-//                    }
-//                }
-//                showDataHoaDon(listHDTableChuaThanhToan);
-//                listBangTichDiem = serviceBangTichDiem.getList();
-//                listKhachHang = serviceKhachHang.getList();
-//                listSPInHD = new ArrayList<>();
-//                gioHangTable(listSPInHD);
-//                //print
-//
-//            }
-//        } else if (choice == JOptionPane.CANCEL_OPTION) {
-//            // Người dùng đã chọn "Cancel", thực hiện các hành động tương ứng ở đây
-//            // Ví dụ: hủy bỏ hành động
-////            JOptionPane.showMessageDialog(this, "Thanh toán thất bại người dùng Chọn Cencel !");
-//            return;
-//        } else {
-//            // Người dùng đã đóng hộp thoại hoặc nhấn nút đóng, xử lý tương ứng ở đây
-//            JOptionPane.showMessageDialog(this, "Thanh toán thất bại người dùng Chọn X ");
-//        }
+        int choice = JOptionPane.showConfirmDialog(this, "Bạn có muốn thanh toán?");
+        if (choice == JOptionPane.NO_OPTION) {
+            // Người dùng đã chọn "No", thực hiện các hành động tương ứng ở đây
+            // Ví dụ: không thanh toán
+//            JOptionPane.showMessageDialog(this, "Thanh toán thất bại người dùng Chọn No !");
+            return;
+        } else if (choice == JOptionPane.YES_OPTION) {
+            // Người dùng đã chọn "Yes", thực hiện các hành động tương ứng ở đây
+            // Ví dụ: thanh toán
+            if (validateThanhToan()) {
+                HDViewModel hdTT = getThanhToan();
+                JOptionPane.showMessageDialog(this, serviceHD.getThanhToan(hdTT, idHD));
+                for (HDViewModel hd : listHD) {
+                    if (hd.getId() == idHD) {
+                        for (QLKhachHang kh : listKhachHang) {
+                            if (kh.getId() == hd.getIdKH()) {
+                                if (kh.getId() != khacLe()) {
+
+                                }
+                                thanhToanXong();
+                            }
+                        }
+                    }
+
+                }
+                if (idKhachHang != 7) {
+                    serviceKhachHang.khachHangThanhToanHD(idKhachHang);
+                }
+                listKhachHang = serviceKhachHang.getList();
+                loadDataTable(serviceKhachHang.getList());
+                listHD = serviceHD.getAll();
+                listHDTable = serviceHDTable.getAll();
+                listHDTableChuaThanhToan = new ArrayList<>();
+                for (HDTableVIewModel hdctt : listHDTable) {
+                    if (hdctt.getTrangThai().trim().equals("0")) {
+                        listHDTableChuaThanhToan.add(hdctt);
+                    }
+                }
+                showDataHoaDon(listHDTableChuaThanhToan);
+                listKhachHang = serviceKhachHang.getList();
+                listSPInHD = new ArrayList<>();
+                gioHangTable(listSPInHD);
+                //print
+
+            }
+        } else if (choice == JOptionPane.CANCEL_OPTION) {
+            // Người dùng đã chọn "Cancel", thực hiện các hành động tương ứng ở đây
+            // Ví dụ: hủy bỏ hành động
+//            JOptionPane.showMessageDialog(this, "Thanh toán thất bại người dùng Chọn Cencel !");
+            return;
+        } else {
+            // Người dùng đã đóng hộp thoại hoặc nhấn nút đóng, xử lý tương ứng ở đây
+            JOptionPane.showMessageDialog(this, "Thanh toán thất bại người dùng Chọn X ");
+        }
 
 
     }//GEN-LAST:event_btnThanhToanActionPerformed
@@ -2975,10 +2997,11 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
             jlbTienThua.setText("");
         } else if (!txtTienKhachDua.getText().equals("")) {
             tienKhachDua = Integer.parseInt(txtTienKhachDua.getText());
-            tienKhachPhaiTra = tongTien - (tienPGG + tienQuyDoi);
-            tienGiam = tienPGG + tienQuyDoi;
+            tienGiam = tongTien*giaTriPGG/100;
             jlbTienGiam.setText(String.valueOf(tienGiam));
-            jlbKhachPhaiTra.setText(String.valueOf(tongTien - (tienPGG + tienQuyDoi)));
+
+            tienKhachPhaiTra = tongTien - tienGiam;
+            jlbKhachPhaiTra.setText(String.valueOf(tienKhachPhaiTra));
 
             tienThua = tienKhachDua - tienKhachPhaiTra;
             jlbTienThua.setText(String.valueOf(tienThua));
@@ -3049,8 +3072,8 @@ if (index == -1) {
                         }
                     }
                     jlbTongTien.setText(String.valueOf(tongTien));
-                    jlbTienGiam.setText(String.valueOf(tienPGG + tienQuyDoi));
-                    tienKhachPhaiTra = tongTien - (tienPGG + tienQuyDoi);
+                    jlbTienGiam.setText(String.valueOf(tongTien*giaTriPGG/100));
+                    tienKhachPhaiTra = tongTien - (tongTien*giaTriPGG/100);
                     jlbKhachPhaiTra.setText(String.valueOf(tienKhachPhaiTra));
                     gioHangTable(listSPInHD);
                     spct.setSoLuong(soLuongThayDoi);
@@ -3112,38 +3135,7 @@ if (index == -1) {
     }//GEN-LAST:event_cboLocSanPhamActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
-        //  TODO add your handling code here:
-//        btnThemGioHang.setBackground(new java.awt.Color(0, 0, 0));
-//        btnThemGioHang.setForeground(new java.awt.Color(255, 255, 255));
-//        txtSoLuongMua.setText("0");
-//        List<SPCTViewModel> listLoc = new ArrayList<>();
-//        for (SPCTViewModel spct : listSPCT) {
-//            if (cboLocSanPham.getSelectedItem().equals(spct.getLoaiSanPham()) && cboLocKichCo.getSelectedItem().equals(spct.getKichCo()) && cboLocLTT.getSelectedItem().equals(spct.getLoaiTheThao())) {
-//                listLoc.add(spct);
-//            } else if (cboLocSanPham.getSelectedItem().equals(spct.getLoaiSanPham()) && cboLocKichCo.getSelectedItem().equals("") && cboLocLTT.getSelectedItem().equals("")) {
-//                listLoc.add(spct);
-//            } else if (cboLocSanPham.getSelectedItem().equals(spct.getLoaiSanPham()) && cboLocKichCo.getSelectedItem().equals(spct.getKichCo()) && cboLocLTT.getSelectedItem().equals("")) {
-//                listLoc.add(spct);
-//            } else if (cboLocSanPham.getSelectedItem().equals(spct.getLoaiSanPham()) && cboLocKichCo.getSelectedItem().equals("") && cboLocLTT.getSelectedItem().equals(spct.getLoaiTheThao())) {
-//                listLoc.add(spct);
-//            } else if (cboLocSanPham.getSelectedItem().equals("") && cboLocKichCo.getSelectedItem().equals(spct.getKichCo()) && cboLocLTT.getSelectedItem().equals(spct.getLoaiTheThao())) {
-//                listLoc.add(spct);
-//            } else if (cboLocSanPham.getSelectedItem().equals("") && cboLocKichCo.getSelectedItem().equals(spct.getKichCo()) && cboLocLTT.getSelectedItem().equals("")) {
-//                listLoc.add(spct);
-//            } else if (cboLocSanPham.getSelectedItem().equals("") && cboLocKichCo.getSelectedItem().equals("") && cboLocLTT.getSelectedItem().equals(spct.getLoaiTheThao())) {
-//                listLoc.add(spct);
-//            } else if (cboLocSanPham.getSelectedItem().equals("") && cboLocKichCo.getSelectedItem().equals("") && cboLocLTT.getSelectedItem().equals("")) {
-//                listLoc = listSPCT;
-//            }
-//        }
-//        jdlLocSanPham.setSize(850, 250);
-//        jdlLocSanPham.setResizable(false);
-//        jdlLocSanPham.setLocationRelativeTo(null);
-//        // jdlLocSanPham.setVisible(true);
-//        listSPCT = listLoc;
-//        listSPThemGioHang = listSPCT;
-//        showDataSearch(listSPCT);
-//        listSPCT = serviceSPCT.getAllTable();
+        
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void txtSoLuongMuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtSoLuongMuaActionPerformed
@@ -3195,8 +3187,8 @@ if (index == -1) {
                     }
                 }
                 jlbTongTien.setText(String.valueOf(tongTien));
-                jlbTienGiam.setText(String.valueOf(tienPGG + tienQuyDoi));
-                tienKhachPhaiTra = tongTien - (tienPGG + tienQuyDoi);
+                jlbTienGiam.setText(String.valueOf(tongTien*giaTriPGG/100));
+                tienKhachPhaiTra = tongTien - (tongTien*giaTriPGG/100);
                 jlbKhachPhaiTra.setText(String.valueOf(tienKhachPhaiTra));
                 gioHangTable(listSPInHD);
                 spct.setSoLuong(Integer.parseInt(txtSoLuongMua.getText()));

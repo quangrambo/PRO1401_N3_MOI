@@ -56,7 +56,15 @@ public class HDServiceImpl implements HDService {
 
     @Override
     public String getThanhToan(HDViewModel hd, int id) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        HDModel hdAdd=new HDModel(hd.getId(),hd.getMa(),hd.getIdNV(),hd.getIdKH(),hd.getMaPGG(),hd.getNgayTao(),hd.getNgayThanhToan(),hd.getTienGiam(),hd.getTongTien(),hd.getTienKhachDua(),hd.getTienThua(),hd.getTienKhachPhaiTra(),hd.getHinhThucThanhToan(),hd.getMaChuyenKhoan(),hd.getTrangThai());
+        boolean thanhToan=hdRepo.getThanhToan(hdAdd,id);
+        if(thanhToan){
+          //  JOptionPane.showConfirmDialog(thanhToan, "Ban co");
+            return "Thanh toán thành công";
+        }else {
+            return"That bai";
+        }
     }
+        
     
 }
