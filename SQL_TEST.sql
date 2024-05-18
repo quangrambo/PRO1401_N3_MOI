@@ -409,19 +409,21 @@ INSERT INTO THUONG_HIEU (MA, TEN) VALUES
 
 -- Chèn dữ liệu vào bảng KHACH_HANG
 INSERT INTO KHACH_HANG (MA, HOTEN, EMAIL, SDT, GIOTINH, NGAYSINH, DIACHI, TRANGTHAI) VALUES
-('KH001', N'Nguyễn Văn A', 'nguyenvana@example.com', '0123456789', 1, '1990-01-01', 'Hà Nội', 1),
-('KH002', N'Trần Thị B', 'tranthib@example.com', '0987654321', 0, '1995-05-05', 'Hồ Chí Minh', 1),
-('KH003', N'Phạm Văn C', 'phamvanc@example.com', '0369852147', 1, '1988-12-25', 'Đà Nẵng', 1),
-('KH004', N'Lê Thị D', 'lethid@example.com', '0527419638', 0, '1992-08-15', 'Hải Phòng', 1),
-('KH005', N'Hoàng Văn E', 'hoangvane@example.com', '0147852369', 1, '1998-03-10', 'Cần Thơ', 1);
+('KH001', N'Nguyễn Văn A', 'nguyenvana@example.com', '0123456789', 1, '1990-01-01', N'Hà Nội', 1),
+('KH002', N'Trần Thị B', 'tranthib@example.com', '0987654321', 0, '1995-05-05', N'Hồ Chí Minh', 1),
+('KH003', N'Phạm Văn C', 'phamvanc@example.com', '0369852147', 1, '1988-12-25', N'Đà Nẵng', 1),
+('KH004', N'Lê Thị D', 'lethid@example.com', '0527419638', 0, '1992-08-15', N'Hải Phòng', 1),
+('KH005', N'Hoàng Văn E', 'hoangvane@example.com', '0147852369', 1, '1998-03-10', N'Cần Thơ', 1);
+INSERT [dbo].[KHACH_HANG] ( [MA], [HOTEN], [EMAIL], [SDT], [GIOTINH], [NGAYSINH], [DIACHI], [TRANGTHAI]) VALUES ( N'KHL01', N'Khách Lẻ',null, null, null,null, null, 1)
+
 
 -- Chèn dữ liệu vào bảng NHAN_VIEN
 INSERT INTO NHAN_VIEN (MA, HOTEN, GIOTINH, SDT, CCCD, NGAYSINH, DIACHI, EMAIL, CHUCVU, TRANGTHAI) VALUES
-('NV001', N'Trần Ngọc Quang', 1, '0987654321', '123456789012', '2000-01-01', 'Hà Nội', 'quangtnph3007@gmail.com', 0, 1),
-('NV002', N'Trần Ngọc Lâm', 1, '0123456789', '987654321098', '1995-05-05', 'Hồ Chí Minh', 'lamtn@gmail.com',  1,1),
-('NV003', N'Nguyễn Đình Thắng', 1, '0369852147', '456789012345', '1988-12-25', 'Đà Nẵng', 'thangnd@gmail.com', 1 ,1),
-('NV004', N'Lê Công Vinh', 1, '0527419638', '789012345678', '1992-08-15', 'Hải Phòng', 'Vinhlc@gmail.com', 1, 1),
-('NV005', N'Nguyễn Thu Trang', 0, '0147852369', '234567890123', '1998-03-10', 'Cần Thơ', 'trangnt@gmail.com', 1, 1);
+('NV001', N'Trần Ngọc Quang', 1, '0987654321', '123456789012', '2000-01-01', N'Hà Nội', 'quangtnph3007@gmail.com', 0, 1),
+('NV002', N'Trần Ngọc Lâm', 1, '0123456789', '987654321098', '1995-05-05', N'Hồ Chí Minh', 'lamtn@gmail.com',  1,1),
+('NV003', N'Nguyễn Đình Thắng', 1, '0369852147', '456789012345', '1988-12-25', N'Đà Nẵng', 'thangnd@gmail.com', 1 ,1),
+('NV004', N'Lê Công Vinh', 1, '0527419638', '789012345678', '1992-08-15', N'Hải Phòng', 'Vinhlc@gmail.com', 1, 1),
+('NV005', N'Nguyễn Thu Trang', 0, '0147852369', '234567890123', '1998-03-10', N'Cần Thơ', 'trangnt@gmail.com', 1, 1);
 
 -- Chèn dữ liệu vào bảng SAN_PHAM
 INSERT INTO SAN_PHAM (MA, TEN, SOLUONG) VALUES
@@ -498,7 +500,10 @@ INSERT INTO PHIEU_GIAM_GIA_CHI_TIET (MA, TEN, NGAYBATDAU, NGAYKETTHUC, LUOTSUDUN
 ('PGG002', N'Giảm giá 20% cho sản phẩm mới', '2024-07-01', '2024-07-31', 200, N'Áp dụng cho các sản phẩm mới nhập về', 20, 1),
 ('PGG003', N'Giảm giá 15% cho thành viên VIP', '2024-08-01', '2024-08-31', 150, N'Chỉ áp dụng cho các thành viên VIP', 15, 1),
 ('PGG004', N'Giảm giá 30% cho các đơn hàng trên 3 triệu đồng', '2024-09-01', '2024-09-30', 300, N'Chỉ áp dụng cho đơn hàng trên 3 triệu đồng', 30, 1),
-('PGG005', N'Giảm giá 25% cho sản phẩm cuối cùng còn lại', '2024-10-01', '2024-10-31', 250, N'Chỉ áp dụng cho sản phẩm còn lại cuối cùng trong kho', 25, 1);
+('PGG005', N'Giảm giá 25% cho sản phẩm cuối cùng còn lại', '2024-10-01', '2024-10-31', 250, N'Chỉ áp dụng cho sản phẩm còn lại cuối cùng trong kho', 25, 1),
+('PGG006', N'Giảm giá 10% cho đợt sale mùa hè', '2024-05-01', '2024-06-30', 100, N'Áp dụng cho đợt sale mùa hè', 10, 1),
+('PGG007', N'Giảm giá 20% cho sản phẩm mới', '2024-05-01', '2024-07-31', 200, N'Áp dụng cho các sản phẩm mới nhập về', 20, 1),
+('PGG008', N'Giảm giá 15% cho thành viên VIP', '2024-05-01', '2024-08-31', 150, N'Chỉ áp dụng cho các thành viên VIP', 15, 1);
 
 -- Chèn dữ liệu vào bảng HOA_DON
 INSERT INTO HOA_DON (MA, ID_NV, ID_KH, MAPGG, NGAYTAO, NGAYTHANHTOAN, TIENGIAM, TONGTIEN, TIENKHACHDUA, TIENTHUA, TIENKHACHPHAITRA, HINHTHUCTHANHTOAN, MACHUYENKHOAN, TRANGTHAI) VALUES
@@ -506,11 +511,22 @@ INSERT INTO HOA_DON (MA, ID_NV, ID_KH, MAPGG, NGAYTAO, NGAYTHANHTOAN, TIENGIAM, 
 ('HD002', 2, 2, 'PGG002', '2024-07-10', '2024-07-10', 120000, 480000, 600000, 120000, 0, 1, 'CK002', 1),
 ('HD003', 3, 3, 'PGG003', '2024-08-20', '2024-08-20', 150000, 850000, 1000000, 150000, 0, 1, 'CK003', 1),
 ('HD004', 4, 4, 'PGG004', '2024-09-05', '2024-09-05', 300000, 1200000, 1500000, 300000, 0, 1, 'CK004', 1),
-('HD005', 5, 5, 'PGG005', '2024-10-30', '2024-10-30', 200000, 800000, 1000000, 200000, 0, 1, 'CK005', 1);
+('HD005', 5, 5, 'PGG005', '2024-10-30', '2024-10-30', 200000, 800000, 1000000, 200000, 0, 1, 'CK005', 1),
+('HD006', 3, 3, 'PGG003', '2024-08-20', '2024-08-20', 150000, 850000, 1000000, 150000, 0, 1, 'CK003', 0),
+('HD007', 4, 4, 'PGG004', '2024-09-05', '2024-09-05', 300000, 1200000, 1500000, 300000, 0, 1, 'CK004', 0),
+('HD008', 5, 5, 'PGG005', '2024-10-30', '2024-10-30', 200000, 800000, 1000000, 200000, 0, 1, 'CK005', 0);
+
 
 -- Chèn dữ liệu vào bảng HOA_DON_CT
 INSERT INTO HOA_DON_CT (ID_HD,ID_SPCT, LOAISANPHAM, THUONGHIEU, MAUSAC, KICHCO, CHATLIEU, SOLUONG, DONGIA)
 VALUES
+(6,1, 'Sneaker', 'Adidas', N'Trắng', '39', N'Da', 2, 1500000),
+(6,2, 'Sneaker', 'Nike', N'Đen', '42', N'Vải', 1, 1800000),
+(6,3, 'Sneaker', 'Puma', N'Xanh', '40', N'Da', 3, 1300000),
+(7,4, 'Sneaker', 'Converse', N'Đen', '38', N'Vải', 1, 1200000),
+(7,5, 'Sneaker', 'New Balance', N'Xám', '41', N'Vải', 2, 1700000),
+(8,6, 'Sneaker', 'Reebok', N'Trắng', '37', N'Da', 1, 1600000),
+(8,7, 'Sneaker', 'Vans', N'Đỏ', '39', N'Vải', 1, 1400000),
 (1,1, 'Sneaker', 'Adidas', N'Trắng', '39', N'Da', 2, 1500000),
 (1,2, 'Sneaker', 'Nike', N'Đen', '42', N'Vải', 1, 1800000),
 (1,3, 'Sneaker', 'Puma', N'Xanh', '40', N'Da', 3, 1300000),
@@ -528,8 +544,46 @@ INSERT INTO TAI_KHOAN (ID_NV, TENDANGNHAP, MATKHAU) VALUES
 (3, 'nhanvien1', N'827ccb0eea8a706c4c34a16891f84e7b'),
 (4, 'nhanvien2', N'827ccb0eea8a706c4c34a16891f84e7b'),
 (5, 'nhanvien3', N'827ccb0eea8a706c4c34a16891f84e7b');
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+  create proc [dbo].[xoaKhachHang] @id int
+as
+begin
+   begin try
+       begin tran
+	   delete from KHACH_HANG where ID=@id
+       commit tran
+   end try
+   begin catch
+       print N'Thao tác xóa thất bại'
+       rollback tran -- Roll back nếu không xóa được
+   end catch
+end
+GO
 
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+ create proc [dbo].[xosHoaDon] @id int
+as
+begin
+   begin try
+       begin tran
+       delete from HOA_DON_CT where ID_HD = @id
+	   delete from HOA_DON where ID=@id
+       commit tran
+   end try
+   begin catch
+       print N'Thao tác xóa thất bại'
+       rollback tran 
+   end catch
+end
+GO
 
+select ID, MA, HOTEN, EMAIL, SDT, GIOTINH, NGAYSINH, DIACHI, TRANGTHAI from KHACH_HANG
 select * from SAN_PHAM
 select * from SAN_PHAM_CHI_TIET
 select * from HOA_DON
@@ -543,6 +597,18 @@ select * from NHAN_VIEN
 select * from KHACH_HANG
 select * from LOAISANPHAM
 select * from PHIEU_GIAM_GIA_CHI_TIET
+ SELECT [ID]
+                          ,[MA]
+                          ,[TEN]
+                          ,[NGAYBATDAU]
+                          ,[NGAYKETTHUC]
+                          ,[LUOTSUDUNG]
+                          ,[DIEUKHOAN]
+                          ,[GIATRI]
+                          ,[TRANGTHAI]
+                      FROM [dbo].[PHIEU_GIAM_GIA_CHI_TIET]
+                    WHERE GETDATE() Between [NGAYBATDAU] and [NGAYKETTHUC]
+
 SELECT SAN_PHAM_CHI_TIET.[ID]
                                                     ,SAN_PHAM_CHI_TIET.[MA]
                                                     ,[MAVACH]
@@ -565,3 +631,42 @@ SELECT SAN_PHAM_CHI_TIET.[ID]
                                               	JOIN MAU_SAC ON MAU_SAC.ID=SAN_PHAM_CHI_TIET.ID_MS
                                               	JOIN CHAT_LIEU ON CHAT_LIEU.ID=SAN_PHAM_CHI_TIET.ID_CL
                         			order by MA ASC
+
+
+ SELECT GioHang.[ID]
+                                           ,GioHang.[MA]
+                                           ,SAN_PHAM.TEN 
+                                        ,GioHang.[LOAISANPHAM]
+                                        ,GioHang.[THUONGHIEU]
+                                        ,GioHang.[MAUSAC]
+                                        ,GioHang.[KICHCO]
+                                           ,GioHang.[CHATLIEU]
+                                           ,GioHang.[SOLUONG]
+                                           ,GioHang.[DONGIA]
+                                       FROM (SELECT HOA_DON_CT.[ID]
+                                           ,HOA_DON.[MA]
+                                           ,SAN_PHAM_CHI_TIET.[ID_SP] as TenSP
+                  						 ,  [LOAISANPHAM]
+                  						 ,  [THUONGHIEU]
+                  						 ,  [MAUSAC]
+                  						 ,  [KICHCO]
+                  						 ,[CHATLIEU]
+                                           ,HOA_DON_CT.[SOLUONG]
+                                           ,[DONGIA]
+                                       FROM [dbo].[HOA_DON_CT]
+                                       join HOA_DON on HOA_DON.ID=HOA_DON_CT.ID_HD
+                                       join SAN_PHAM_CHI_TIET on SAN_PHAM_CHI_TIET.ID=HOA_DON_CT.ID_SPCT
+                                       join SAN_PHAM on SAN_PHAM.ID=SAN_PHAM_CHI_TIET.ID_SP) as GioHang
+                                       join SAN_PHAM on SAN_PHAM.ID=GioHang.TenSP
+
+									   SELECT [ID]
+                         ,[ID_HD]
+                         ,[ID_SPCT]
+                         ,[LOAISANPHAM]
+                         ,[THUONGHIEU]
+                         ,[MAUSAC]
+                         ,[KICHCO]
+                         ,[CHATLIEU]
+                         ,[SOLUONG]
+                         ,[DONGIA]
+                     FROM [dbo].[HOA_DON_CT]
