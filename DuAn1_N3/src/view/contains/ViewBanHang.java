@@ -82,6 +82,7 @@ import viewmodel.SPCTViewModel;
 import viewmodel.SanPhamChiTietViewModel;
 import viewmodel.SanPhamViewModel;
 import viewmodel.ThuongHieuViewModel;
+import java.sql.Date;
 
 /**
  *
@@ -684,7 +685,6 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
         txtSDT = new javax.swing.JTextField();
         rdNam = new javax.swing.JRadioButton();
         rdNu = new javax.swing.JRadioButton();
-        dateNgaySinh = new com.toedter.calendar.JDateChooser();
         cbTrangThai = new javax.swing.JCheckBox();
         btnThem = new javax.swing.JButton();
         jDialog2 = new javax.swing.JDialog();
@@ -1088,9 +1088,6 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
         rdNu.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
         rdNu.setText("Nữ");
 
-        dateNgaySinh.setBackground(new java.awt.Color(255, 255, 255));
-        dateNgaySinh.setDateFormatString("yyyy-MM-dd");
-
         cbTrangThai.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         cbTrangThai.setSelected(true);
         cbTrangThai.setText("Đã thanh toán");
@@ -1131,7 +1128,6 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
                                     .addComponent(jLabel50)
                                     .addComponent(jLabel52)
                                     .addComponent(cbTrangThai, javax.swing.GroupLayout.PREFERRED_SIZE, 122, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                    .addComponent(dateNgaySinh, javax.swing.GroupLayout.PREFERRED_SIZE, 136, javax.swing.GroupLayout.PREFERRED_SIZE)
                                     .addComponent(jLabel49)
                                     .addGroup(jPanel14Layout.createSequentialGroup()
                                         .addComponent(rdNam)
@@ -1163,9 +1159,7 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
                     .addComponent(jLabel49)
                     .addComponent(jLabel38))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(txtTen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(dateNgaySinh, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addComponent(txtTen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addGroup(jPanel14Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel37)
@@ -3429,7 +3423,6 @@ if (index == -1) {
     private javax.swing.JComboBox<String> cboLocLTT;
     private javax.swing.JComboBox<String> cboLocSanPham;
     private javax.swing.JComboBox<String> cboPGG;
-    private com.toedter.calendar.JDateChooser dateNgaySinh;
     private javax.swing.JPanel dongAddSL;
     private javax.swing.JPanel dongAddSL3;
     private javax.swing.JButton jButton1;
@@ -3550,4 +3543,6 @@ if (index == -1) {
     private javax.swing.JTextField txtTen;
     private javax.swing.JTextField txtTienKhachDua;
     // End of variables declaration//GEN-END:variables
+private com.toedter.calendar.JDateChooser dateNgaySinh;
 }
+

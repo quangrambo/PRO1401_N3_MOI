@@ -11,7 +11,7 @@ import java.sql.SQLException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 public class JDBCHelper {
-    public  static ResultSet excuteQuery(String sql, Object ...args){
+   public  static ResultSet excuteQuery(String sql, Object ...args){
         Connection cn = null;
         ResultSet rs = null;
         PreparedStatement pr = null;
