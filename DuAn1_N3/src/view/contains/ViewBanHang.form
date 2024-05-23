@@ -476,7 +476,6 @@
                                           <Component id="jLabel50" alignment="0" min="-2" max="-2" attributes="0"/>
                                           <Component id="jLabel52" alignment="0" min="-2" max="-2" attributes="0"/>
                                           <Component id="cbTrangThai" alignment="0" min="-2" pref="122" max="-2" attributes="0"/>
-                                          <Component id="dateNgaySinh" alignment="0" min="-2" pref="136" max="-2" attributes="0"/>
                                           <Component id="jLabel49" alignment="0" min="-2" max="-2" attributes="0"/>
                                           <Group type="102" alignment="0" attributes="0">
                                               <Component id="rdNam" min="-2" max="-2" attributes="0"/>
@@ -521,10 +520,7 @@
                           <Component id="jLabel38" alignment="3" min="-2" max="-2" attributes="0"/>
                       </Group>
                       <EmptySpace max="-2" attributes="0"/>
-                      <Group type="103" groupAlignment="0" attributes="0">
-                          <Component id="txtTen" alignment="0" min="-2" max="-2" attributes="0"/>
-                          <Component id="dateNgaySinh" alignment="0" min="-2" max="-2" attributes="0"/>
-                      </Group>
+                      <Component id="txtTen" min="-2" max="-2" attributes="0"/>
                       <EmptySpace max="-2" attributes="0"/>
                       <Group type="103" groupAlignment="3" attributes="0">
                           <Component id="jLabel37" alignment="3" min="-2" max="-2" attributes="0"/>
@@ -692,14 +688,6 @@
                   <Font name="Segoe UI" size="14" style="1"/>
                 </Property>
                 <Property name="text" type="java.lang.String" value="N&#x1eef;"/>
-              </Properties>
-            </Component>
-            <Component class="com.toedter.calendar.JDateChooser" name="dateNgaySinh">
-              <Properties>
-                <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
-                  <Color blue="ff" green="ff" red="ff" type="rgb"/>
-                </Property>
-                <Property name="dateFormatString" type="java.lang.String" value="yyyy-MM-dd"/>
               </Properties>
             </Component>
             <Component class="javax.swing.JCheckBox" name="cbTrangThai">

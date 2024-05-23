@@ -4,17 +4,232 @@
  */
 package view.contains;
 
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import repository.NhanVienRepository;
+import service.NhanVienService;
+import service.NhanVienVMService;
+import service.impl.NhanVienServiceImpl;
+import utility.Uhelper;
+import viewmodel.NhanVienVM;
+
 /**
  *
  * @author Admin
  */
 public class ViewHeThong extends javax.swing.JPanel {
 
+    private final NhanVienVMService nhanVienVMService;
+    List<NhanVienVM> lstnv;
+    NhanVienRepository repository = new NhanVienRepository();
+    NhanVienService service = new NhanVienServiceImpl();
+
+    private int ht = 0;
+    private int size = 5;
+
     /**
      * Creates new form ViewHeThong1
      */
     public ViewHeThong() {
         initComponents();
+        rdoNam.setSelected(true);
+        rdoTatCa.setSelected(true);
+//      
+        nhanVienVMService = new NhanVienVMService();
+//        
+        txtDieuKhoan.setText("Áp dụng mọi hóa đơn");
+//       
+        lstnv = new ArrayList<>();
+        lstnv = nhanVienVMService.getAllNVVM();
+        loadDataToTableNV(lstnv);
+
+        if (tblQLNVVM.getRowCount() > 0) {
+            tblQLNVVM.setRowSelectionInterval(0, 0);
+            showDetailNV();
+        }
+
+        showDataCboLocChucVu();
+        showDataCboLocTinhTrang();
+        clearFormNV();
+    }
+
+    public String getNhanVienVMFormSelectedRow() {
+        Integer row = tblQLNVVM.getSelectedRow();
+        String nhanVienID = (String) tblQLNVVM.getValueAt(row, 0);
+        return nhanVienID;
+    }
+
+    private void clearForm() {
+        txtMa.setText("");
+        txtTen.setText("");
+
+        txtLuotSuDung.setText("");
+        txtGiaTri.setText("");
+        chkTrangThai.setSelected(false);
+
+    }
+
+    private void clearFormNV() {
+        txtMaNV.setText("");
+        txtTenNV.setText("");
+        rdoNam.setSelected(false);
+        rdoNu.setSelected(false);
+        txtSDTNV.setText("");
+        txtCCCD.setText("");
+        jDateNgaySinh.setDate(null);
+        txtDiaChi.setText("");
+        txtEmailNV.setText("");
+        cbbChucVu.setSelectedIndex(0);
+        txtTenDangNhap.setText("");
+        txtMatKhau.setText("");
+        chkTrangThaiNV.setSelected(false);
+        tblQLNVVM.clearSelection();
+    }
+
+    public void showDetailNV() {
+        Integer row = tblQLNVVM.getSelectedRow();
+        txtMaNV.setText(tblQLNVVM.getValueAt(row, 0).toString());
+        txtTenNV.setText(tblQLNVVM.getValueAt(row, 1).toString());
+        String gioiTinh = tblQLNVVM.getValueAt(row, 2).toString();
+        if (gioiTinh.equalsIgnoreCase("Nam")) {
+            rdoNam.setSelected(true);
+        } else if (gioiTinh.equalsIgnoreCase("Nữ")) {
+            rdoNu.setSelected(true);
+        }
+        txtSDTNV.setText(tblQLNVVM.getValueAt(row, 3).toString());
+        txtCCCD.setText(tblQLNVVM.getValueAt(row, 4).toString());
+        String ngaySinhValue = tblQLNVVM.getValueAt(row, 5).toString();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        try {
+            // Chuyển đổi chuỗi thành đối tượng Date
+            Date ngaySinh = dateFormat.parse(ngaySinhValue);
+
+            // Đặt giá trị cho JDateChooser
+            jDateNgaySinh.setDate(ngaySinh);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        txtDiaChi.setText(tblQLNVVM.getValueAt(row, 6).toString());
+        txtEmailNV.setText(tblQLNVVM.getValueAt(row, 7).toString());
+        cbbChucVu.setSelectedItem(tblQLNVVM.getValueAt(row, 8).toString());
+        txtTenDangNhap.setText(tblQLNVVM.getValueAt(row, 9).toString());
+        txtMatKhau.setText(tblQLNVVM.getValueAt(row, 10).toString());
+
+        if (row >= 0) {
+            String trangthai = tblQLNVVM.getValueAt(row, 11).toString();
+            if (trangthai.equalsIgnoreCase("Làm việc")) {
+                chkTrangThaiNV.setSelected(true);
+            }
+            if (trangthai.equalsIgnoreCase("Nghỉ việc")) {
+                chkTrangThaiNV.setSelected(false);
+            }
+        }
+
+    }
+
+    private void showDataCboLocTinhTrang() {
+        String[] gt = {"", "Làm việc", "Nghỉ việc"};
+        for (String string : gt) {
+            cbbLocTT.addItem(string);
+        }
+    }
+
+    public NhanVienVM getNhanVienVMFormInput() {
+        NhanVienVM nvvm = new NhanVienVM();
+        nvvm.setMa(txtMaNV.getText());
+        nvvm.setHoten(txtTenNV.getText());
+        if (rdoNam.isSelected()) {
+            nvvm.setGioitinh(1);
+        } else {
+            nvvm.setGioitinh(0);
+        }
+        nvvm.setSdt(txtSDTNV.getText());
+        nvvm.setCccd(txtCCCD.getText());
+
+        LocalDate ngaySinh;
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+// Chuyển đổi Date sang String với định dạng "yyyy-MM-dd"
+        String ngayS = dateFormat.format(jDateNgaySinh.getDate());
+// Chuyển đổi String sang LocalDate
+        nvvm.setNgaysinh(LocalDate.parse(ngayS));
+        nvvm.setDiachi(txtDiaChi.getText());
+        nvvm.setEmail(txtEmailNV.getText());
+//        String selectedChucVuS = cbbChucVu.getSelectedItem().toString(); // Chuyển đổi sang String
+//        int selectedChucVu = Integer.parseInt(selectedChucVuS); // Chuyển đổi String sang int
+//        nvvm.setChucvu(selectedChucVu);
+        String chucvu = (String) cbbChucVu.getSelectedItem();
+        if (chucvu.equalsIgnoreCase("Nhân viên")) {
+            nvvm.setChucvu(1);
+        } else {
+            nvvm.setChucvu(0);
+        }
+
+        nvvm.setTendn(txtTenDangNhap.getText());
+        nvvm.setMatkhau(hashPassword(txtMatKhau.getText()));
+        boolean myBooleanValue = chkTrangThaiNV.isSelected(); // Giả sử có một biến boolean
+        int trangThainv = myBooleanValue ? 1 : 0; // Ép kiểu boolean thành int (1 nếu true, 0 nếu false)
+        nvvm.setTrangthai(trangThainv);
+
+        return nvvm;
+    }
+
+    public static String hashPassword(String password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] hashedPassword = md.digest(password.getBytes(StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hashedPassword) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
+    private void showDataCboLocChucVu() {
+        String[] gt = {"", "Nhân viên", "Quản lý"};
+        for (String string : gt) {
+            cbbLocCV.addItem(string);
+        }
+    }
+
+    private void loadDataToTableNV(List<NhanVienVM> lstnv) {
+        DefaultTableModel dtm = new DefaultTableModel();
+        dtm = (DefaultTableModel) tblQLNVVM.getModel();
+        dtm.setRowCount(0);
+        List<NhanVienVM> lst = lstnv;
+        for (NhanVienVM nvvm : lst) {
+            dtm.addRow(new Object[]{
+                nvvm.getMa(),
+                nvvm.getHoten(),
+                nvvm.getgt(),
+                nvvm.getSdt(),
+                nvvm.getCccd(),
+                nvvm.getNgaysinh(),
+                nvvm.getDiachi(),
+                nvvm.getEmail(),
+                nvvm.getcv(),
+                nvvm.getTendn(),
+                nvvm.getMatkhau(),
+                nvvm.gettt()
+            });
+        }
     }
 
     /**
@@ -52,9 +267,9 @@ public class ViewHeThong extends javax.swing.JPanel {
         txtMatKhau = new javax.swing.JTextField();
         rdoNam = new javax.swing.JRadioButton();
         rdoNu = new javax.swing.JRadioButton();
-        jDateNgaySinh = new com.toedter.calendar.JDateChooser();
         cbbChucVu = new javax.swing.JComboBox<>();
         chkTrangThaiNV = new javax.swing.JCheckBox();
+        jDateNgaySinh = new com.toedter.calendar.JDateChooser();
         jLabel3 = new javax.swing.JLabel();
         jPanel4 = new javax.swing.JPanel();
         jScrollPane1 = new javax.swing.JScrollPane();
@@ -102,8 +317,6 @@ public class ViewHeThong extends javax.swing.JPanel {
         txtLuotSuDung = new javax.swing.JTextField();
         txtDieuKhoan = new javax.swing.JTextField();
         txtGiaTri = new javax.swing.JTextField();
-        jDateNgayBatDau = new com.toedter.calendar.JDateChooser();
-        jDateNgayKetThuc = new com.toedter.calendar.JDateChooser();
         jLabel29 = new javax.swing.JLabel();
         chkTrangThai = new javax.swing.JCheckBox();
         jPanel8 = new javax.swing.JPanel();
@@ -199,10 +412,6 @@ public class ViewHeThong extends javax.swing.JPanel {
         rdoNu.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         rdoNu.setText("Nữ");
 
-        jDateNgaySinh.setBackground(new java.awt.Color(255, 255, 255));
-        jDateNgaySinh.setDateFormatString("yyyy-MM-dd");
-        jDateNgaySinh.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-
         cbbChucVu.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         cbbChucVu.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Nhân viên", "Quản lý" }));
 
@@ -213,6 +422,10 @@ public class ViewHeThong extends javax.swing.JPanel {
                 chkTrangThaiNVActionPerformed(evt);
             }
         });
+
+        jDateNgaySinh.setBackground(new java.awt.Color(255, 255, 255));
+        jDateNgaySinh.setDateFormatString("yyyy-MM-dd");
+        jDateNgaySinh.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
 
         javax.swing.GroupLayout jPanel3Layout = new javax.swing.GroupLayout(jPanel3);
         jPanel3.setLayout(jPanel3Layout);
@@ -226,15 +439,16 @@ public class ViewHeThong extends javax.swing.JPanel {
                     .addComponent(jLabel14)
                     .addComponent(jLabel13, javax.swing.GroupLayout.PREFERRED_SIZE, 68, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                    .addComponent(txtMaNV)
-                    .addComponent(txtTenNV)
-                    .addGroup(jPanel3Layout.createSequentialGroup()
-                        .addComponent(rdoNam)
-                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                        .addComponent(rdoNu, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                        .addComponent(txtMaNV, javax.swing.GroupLayout.DEFAULT_SIZE, 183, Short.MAX_VALUE)
+                        .addComponent(txtTenNV)
+                        .addGroup(jPanel3Layout.createSequentialGroup()
+                            .addComponent(rdoNam)
+                            .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                            .addComponent(rdoNu, javax.swing.GroupLayout.PREFERRED_SIZE, 60, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addComponent(jDateNgaySinh, javax.swing.GroupLayout.PREFERRED_SIZE, 183, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 74, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addComponent(jLabel7)
                     .addComponent(jLabel4)
@@ -298,14 +512,14 @@ public class ViewHeThong extends javax.swing.JPanel {
                     .addComponent(rdoNu))
                 .addGap(41, 41, 41)
                 .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jDateNgaySinh, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE)
                     .addGroup(jPanel3Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                         .addComponent(jLabel14)
                         .addComponent(jLabel5)
                         .addComponent(txtDiaChi, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                         .addComponent(jLabel9)
-                        .addComponent(chkTrangThaiNV)))
-                .addContainerGap(43, Short.MAX_VALUE))
+                        .addComponent(chkTrangThaiNV))
+                    .addComponent(jDateNgaySinh, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         jLabel3.setFont(new java.awt.Font("SansSerif", 1, 18)); // NOI18N
@@ -538,7 +752,7 @@ public class ViewHeThong extends javax.swing.JPanel {
                 .addComponent(btnThemNV, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnSuaNV, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 12, Short.MAX_VALUE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 21, Short.MAX_VALUE)
                 .addComponent(btnNVNghi, javax.swing.GroupLayout.PREFERRED_SIZE, 52, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
                 .addComponent(btnClearNV, javax.swing.GroupLayout.PREFERRED_SIZE, 49, javax.swing.GroupLayout.PREFERRED_SIZE)
@@ -776,19 +990,6 @@ public class ViewHeThong extends javax.swing.JPanel {
         txtGiaTri.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         txtGiaTri.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(0, 0, 0)));
 
-        jDateNgayBatDau.setBackground(new java.awt.Color(255, 255, 255));
-        jDateNgayBatDau.setDateFormatString("yyyy-MM-dd");
-        jDateNgayBatDau.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-        jDateNgayBatDau.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                jDateNgayBatDauMouseClicked(evt);
-            }
-        });
-
-        jDateNgayKetThuc.setBackground(new java.awt.Color(255, 255, 255));
-        jDateNgayKetThuc.setDateFormatString("yyyy-MM-dd");
-        jDateNgayKetThuc.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
-
         jLabel29.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         jLabel29.setText("Trạng thái");
 
@@ -810,7 +1011,7 @@ public class ViewHeThong extends javax.swing.JPanel {
                         .addComponent(jLabel22)
                         .addComponent(jLabel28)
                         .addComponent(jLabel29)))
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
+                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addGap(20, 20, 20)
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -820,11 +1021,7 @@ public class ViewHeThong extends javax.swing.JPanel {
                         .addGap(18, 18, 18)
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                             .addComponent(txtDieuKhoan, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
-                            .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                .addComponent(txtLuotSuDung, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jDateNgayKetThuc, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                                    .addComponent(jDateNgayBatDau, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)))))
+                            .addComponent(txtLuotSuDung, javax.swing.GroupLayout.PREFERRED_SIZE, 164, javax.swing.GroupLayout.PREFERRED_SIZE)))
                     .addGroup(jPanel7Layout.createSequentialGroup()
                         .addGap(18, 18, 18)
                         .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -844,14 +1041,10 @@ public class ViewHeThong extends javax.swing.JPanel {
                     .addComponent(jLabel23)
                     .addComponent(txtTen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(18, 18, 18)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel24)
-                    .addComponent(jDateNgayBatDau, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                    .addComponent(jLabel26)
-                    .addComponent(jDateNgayKetThuc, javax.swing.GroupLayout.PREFERRED_SIZE, 28, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(jLabel24)
+                .addGap(18, 18, 18)
+                .addComponent(jLabel26)
+                .addGap(18, 18, 18)
                 .addGroup(jPanel7Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel25)
                     .addComponent(txtLuotSuDung, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
@@ -1000,7 +1193,7 @@ public class ViewHeThong extends javax.swing.JPanel {
     }//GEN-LAST:event_chkTrangThaiNVActionPerformed
 
     private void tblQLNVVMMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblQLNVVMMouseClicked
-        // TODO add your handling code here:
+ showDetailNV();        // TODO add your handling code here:
     }//GEN-LAST:event_tblQLNVVMMouseClicked
 
     private void cbbLocCVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbbLocCVActionPerformed
@@ -1028,23 +1221,190 @@ public class ViewHeThong extends javax.swing.JPanel {
     }//GEN-LAST:event_btnNextActionPerformed
 
     private void btnHoanTac1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHoanTac1ActionPerformed
-
+        loadDataToTableNV(nhanVienVMService.getAllNVVM());
+        cbbLocCV.setSelectedIndex(0);
+        cbbLocTT.setSelectedIndex(0);
     }//GEN-LAST:event_btnHoanTac1ActionPerformed
-
+    private boolean checkTuoi(Date selectedDate) {
+        LocalDate currentDate = LocalDate.now();
+        LocalDate birthLocalDate = selectedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        Period period = Period.between(birthLocalDate, currentDate);
+        return period.getYears() >= 18;
+    }
     private void btnThemNVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemNVActionPerformed
+        if (Uhelper.checkRong(txtMaNV, "Không để trống mã nhân viên")) {
+            return;
+        }
+        if (Uhelper.checkRong(txtTenNV, "Không để trống họ tên")) {
+            return;
+        }
+        if (Uhelper.checkRong(txtSDTNV, "Không để trống số điện thoại")) {
+            return;
+        }
+        if (Uhelper.checkRong(txtEmailNV, "Không để trống email")) {
+            return;
+        }
+        if (Uhelper.checkRong(txtCCCD, "Không để trống căn cước công dân")) {
+            return;
+        }
+        if (Uhelper.checkRong(txtDiaChi, "Không để trống địa chỉ")) {
+            return;
+        }
+        if (Uhelper.checkRong(txtTenDangNhap, "Không để trống tên đăng nhập")) {
+            return;
+        }
+        if (Uhelper.checkRong(txtMatKhau, "Không để trống mật khẩu")) {
+            return;
+        }
+        if (Uhelper.checkRongChoNgay(jDateNgaySinh, "Không để trống ngày sinh")) {
+            return;
+        }
 
+        Date selectedDate = jDateNgaySinh.getDate();
+        if (!checkTuoi(selectedDate)) {
+            JOptionPane.showMessageDialog(this, "Nhân viên phải đủ 18 tuổi trở lên.");
+            return;
+        }
+        String ma = txtMaNV.getText();
+        String sdt = txtSDTNV.getText();
+        String cccd = txtCCCD.getText();
+        String email = txtEmailNV.getText();
+//        if (!txtMa.getText().matches("\\w+")) {
+//            JOptionPane.showMessageDialog(this, "Mã nhân viên không hợp lệ");
+//            return;
+//        }
+
+        for (NhanVienVM nv : nhanVienVMService.getAllNVVM()) {
+            if (ma.equalsIgnoreCase(nv.getMa())) {
+                JOptionPane.showMessageDialog(this, "Mã nhân viên đã tồn tại");
+                return;
+            }
+        }
+        for (NhanVienVM nv : nhanVienVMService.getAllNVVM()) {
+            if (sdt.equalsIgnoreCase(nv.getSdt())) {
+                JOptionPane.showMessageDialog(this, "Số điện thoại đã tồn tại");
+                return;
+            }
+        }
+        for (NhanVienVM nv : nhanVienVMService.getAllNVVM()) {
+            if (cccd.equalsIgnoreCase(nv.getCccd())) {
+                JOptionPane.showMessageDialog(this, "Số căn cước đã tồn tại");
+                return;
+            }
+        }
+        for (NhanVienVM nv : nhanVienVMService.getAllNVVM()) {
+            if (email.equalsIgnoreCase(nv.getEmail())) {
+                JOptionPane.showMessageDialog(this, "Email đã tồn tại");
+                return;
+            }
+        }
+        if (!txtTenNV.getText().matches("^[\\p{L} .'-]+$")) {
+            JOptionPane.showMessageDialog(this, "Tên nhân viên không hợp lệ");
+            return;
+        }
+        if (!txtSDTNV.getText().matches("^0\\d{9}$")) {
+            JOptionPane.showMessageDialog(this, "Số điện thoại không hợp lệ");
+            return;
+        }
+        String regex = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+        if (!txtEmailNV.getText().matches(regex)) {
+            JOptionPane.showMessageDialog(this, "email không hợp lệ");
+            return;
+        }
+        if (!txtCCCD.getText().matches("^[0-9]{9}$|^[0-9]{12}$")) {
+            JOptionPane.showMessageDialog(this, "số căn cước không hợp lệ");
+            return;
+        }
+
+        NhanVienVM nvvm = getNhanVienVMFormInput();
+        if (nhanVienVMService.addNhanVienVM(nvvm) != null) {
+            JOptionPane.showMessageDialog(this, "Thêm thành công");
+            clearFormNV();
+        } else {
+            JOptionPane.showMessageDialog(this, "Thêm thất bại");
+        }
+        loadDataToTableNV(nhanVienVMService.getAllNVVM());
     }//GEN-LAST:event_btnThemNVActionPerformed
 
     private void btnSuaNVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuaNVActionPerformed
+        Integer row = tblQLNVVM.getSelectedRow();
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn nhân viên muốn sửa!");
+            return;
+        }
 
+        if (Uhelper.checkRong(txtMaNV, "Không để trống mã nhân viên")) {
+            return;
+        }
+        if (Uhelper.checkRong(txtTenNV, "Không để trống họ tên")) {
+            return;
+        }
+        if (Uhelper.checkRong(txtSDTNV, "Không để trống số điện thoại")) {
+            return;
+        }
+        if (Uhelper.checkRong(txtEmailNV, "Không để trống email")) {
+            return;
+        }
+        if (Uhelper.checkRong(txtCCCD, "Không để trống căn cước công dân")) {
+            return;
+        }
+        if (Uhelper.checkRong(txtDiaChi, "Không để trống địa chỉ")) {
+            return;
+        }
+        if (Uhelper.checkRong(txtTenDangNhap, "Không để trống tên đăng nhập")) {
+            return;
+        }
+        if (Uhelper.checkRong(txtMatKhau, "Không để trống mật khẩu")) {
+            return;
+        }
+        if (Uhelper.checkRongChoNgay(jDateNgaySinh, "Không để trống ngày sinh")) {
+            return;
+        }
+
+        Date selectedDate = jDateNgaySinh.getDate();
+        if (!checkTuoi(selectedDate)) {
+            JOptionPane.showMessageDialog(this, "Nhân viên phải đủ 18 tuổi trở lên.");
+            return;
+        }
+
+        String ma = txtMaNV.getText();
+        String sdt = txtSDTNV.getText();
+        String cccd = txtCCCD.getText();
+        String email = txtEmailNV.getText();
+        NhanVienVM nvvm = getNhanVienVMFormInput();
+        String nhanVien_ID = getNhanVienVMFormSelectedRow();
+        nvvm.setMa(nhanVien_ID);
+        if (nhanVienVMService.updateNhanVienVM(nvvm) != null) {
+            JOptionPane.showMessageDialog(this, "Sửa nhân viên thành công");
+            clearFormNV();
+        } else {
+            JOptionPane.showMessageDialog(this, "Sửa nhân viên thất bại");
+        }
+        loadDataToTableNV(nhanVienVMService.getAllNVVM());
     }//GEN-LAST:event_btnSuaNVActionPerformed
 
     private void btnClearNVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearNVActionPerformed
-
+        clearFormNV();
     }//GEN-LAST:event_btnClearNVActionPerformed
 
     private void btnNVNghiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNVNghiActionPerformed
+        Integer selectedRow = tblQLNVVM.getSelectedRow();
+        if (selectedRow == -1) {
+            // Người dùng chưa chọn dòng nào trong table
+            JOptionPane.showMessageDialog(this, "Cần chọn 1 nhân viên muốn cho nghỉ việc");
+            return;
+        }
+        chkTrangThaiNV.setSelected(false);
+        NhanVienVM nvvm = getNhanVienVMFormInput();
+        String nhanVien_ID = getNhanVienVMFormSelectedRow();
+        nvvm.setMa(nhanVien_ID);
+        if (nhanVienVMService.voHieuHoaNhanVienVM(nvvm) != null) {
+            JOptionPane.showMessageDialog(this, "vô hiệu hóa nhân viên thành công");
+        } else {
+            JOptionPane.showMessageDialog(this, "vô hiệu hóa nhân viên sửa thất bại");
+        }
 
+        loadDataToTableNV(nhanVienVMService.getAllNVVM());
     }//GEN-LAST:event_btnNVNghiActionPerformed
 
     private void pnlNhanVienMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlNhanVienMouseClicked
@@ -1130,8 +1490,6 @@ public class ViewHeThong extends javax.swing.JPanel {
     private javax.swing.JCheckBox chkTrangThai;
     private javax.swing.JCheckBox chkTrangThaiNV;
     private javax.swing.JButton jButton5;
-    private com.toedter.calendar.JDateChooser jDateNgayBatDau;
-    private com.toedter.calendar.JDateChooser jDateNgayKetThuc;
     private com.toedter.calendar.JDateChooser jDateNgaySinh;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel10;
