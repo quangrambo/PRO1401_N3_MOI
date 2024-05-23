@@ -586,7 +586,7 @@ GO
 select ID, MA, HOTEN, EMAIL, SDT, GIOTINH, NGAYSINH, DIACHI, TRANGTHAI from KHACH_HANG
 select * from SAN_PHAM
 select * from SAN_PHAM_CHI_TIET
-select * from HOA_DON
+select * from HOA_DON where TRANGTHAI = 1
 select * from HOA_DON_CT
 select * from TAI_KHOAN
 select * from THUONG_HIEU

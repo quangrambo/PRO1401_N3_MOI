@@ -493,7 +493,7 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
     private void layKhachHangLe(int index) {
         QLKhachHang khachHang = listKhachHang.get(index);
 
-        // Check if the id is equal to 9
+        // Check if the id is equal to 7
         if (khachHang.getId() == 7) {
             idKhachHang = khachHang.getId();
             jlbTenKhachHang.setText(khachHang.getTen());
@@ -2545,8 +2545,6 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
                 tongTien += gh.getDonGia();
             }
         }
-
-        
         jlbTongTien.setText(String.valueOf(tongTien));
 
         
@@ -3084,6 +3082,8 @@ if (index == -1) {
                     jlbKhachPhaiTra.setText(String.valueOf(tienKhachPhaiTra));
                     txtTienKhachDua.setText("");
                     jlbTienThua.setText("");
+                    txtSoLuongMua.setText("");
+                    txtSoLuongMua2.setText("");
                     gioHangTable(listSPInHD);
                     spct.setSoLuong(soLuongThayDoi);
                 }
@@ -3199,8 +3199,13 @@ if (index == -1) {
                 jlbTienGiam.setText(String.valueOf(tongTien*giaTriPGG/100));
                 tienKhachPhaiTra = tongTien - (tongTien*giaTriPGG/100);
                 jlbKhachPhaiTra.setText(String.valueOf(tienKhachPhaiTra));
+                txtTienKhachDua.setText("");
+                jlbTienThua.setText("");
                 gioHangTable(listSPInHD);
-                spct.setSoLuong(Integer.parseInt(txtSoLuongMua.getText()));
+                spct.setSoLuong(soLuongThayDoi);
+                txtSoLuongMua.setText("");
+                txtSoLuongMua2.setText("");
+                
             }
 
         } else {
@@ -3209,21 +3214,18 @@ if (index == -1) {
     }//GEN-LAST:event_btnThemGioHangActionPerformed
 
     private void jButton14ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton14ActionPerformed
-//        jButton2.setBackground(new java.awt.Color(0, 0, 0));
-//        jButton2.setForeground(new java.awt.Color(255, 255, 255));
-//        jButton2.setText("Chọn SP");
-//
-//        btnThemGioHang.setBackground(new java.awt.Color(0, 0, 0));
-//        btnThemGioHang.setForeground(new java.awt.Color(255, 255, 255));
-//        btnThemGioHang.setText("Thêm vào Giỏ");
-//        jDialog1.setSize(490, 410);
-//        jDialog1.setResizable(false);
-//        jDialog1.setLocationRelativeTo(null);
-//        jDialog1.setVisible(true);
-//
-////        listSPThemGioHang = listSPCT;
-////        showDataTable(listSPCT);
-//        initWebcam();
+        jButton2.setBackground(new java.awt.Color(0, 0, 0));
+        jButton2.setForeground(new java.awt.Color(255, 255, 255));
+        jButton2.setText("Chọn SP");
+
+        btnThemGioHang.setBackground(new java.awt.Color(0, 0, 0));
+        btnThemGioHang.setForeground(new java.awt.Color(255, 255, 255));
+        btnThemGioHang.setText("Thêm vào Giỏ");
+        jDialog1.setSize(490, 410);
+        jDialog1.setResizable(false);
+        jDialog1.setLocationRelativeTo(null);
+        jDialog1.setVisible(true);
+        initWebcam();
     }//GEN-LAST:event_jButton14ActionPerformed
 
     private void result_fieldMouseEntered(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_result_fieldMouseEntered
@@ -3231,21 +3233,7 @@ if (index == -1) {
     }//GEN-LAST:event_result_fieldMouseEntered
 
     private void result_fieldActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_result_fieldActionPerformed
-        //        List<SPCTViewModel> listChiTiet = new ArrayList<>();
-        //
-        //        for (SPCTViewModel sPCTViewModel : listSPCT) {
-        //            if (sPCTViewModel.getMaVach().trim().equals(result_field.getText())) {
-        //                listChiTiet.add(sPCTViewModel);
-        //
-        //                jdlLocSanPham.setSize(850, 250);
-        //                jdlLocSanPham.setResizable(false);
-        //                jdlLocSanPham.setLocationRelativeTo(null);
-        //                jdlLocSanPham.setVisible(true);
-        //            }
-        //        }
-        //        txtSoLuongMua.setText("1");
-        //        listSPCT = listChiTiet;
-        //        showDataSearch(listSPCT);
+        
     }//GEN-LAST:event_result_fieldActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
