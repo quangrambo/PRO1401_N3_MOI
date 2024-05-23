@@ -360,7 +360,7 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
 
     private int khacLe() {
         for (QLKhachHang kh : listKhachHang) {
-            if (kh.getId() == 7) {
+            if (kh.getId() == 6) {
                 jlbTenKhachHang.setText(kh.getTen());
                 jlbSDT.setText(kh.getSdt());
                 jlbEmail.setText(kh.getEmail());
@@ -368,7 +368,7 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
             }
 
         }
-        return 7;
+        return 6;
     }
 
     public void loadDataTable(ArrayList<QLKhachHang> listKH) {
@@ -433,7 +433,7 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
         int i = listHD.size() - 1;
         hd.setMa("HD" + listHD.get(i).getId());
         hd.setIdNV(idNV);
-        hd.setIdKH(7);
+        hd.setIdKH(6);
         hd.setMaPGG("");
         hd.setNgayTao(Date.valueOf(java.time.LocalDate.now()));
         hd.setNgayThanhToan(Date.valueOf(java.time.LocalDate.now()));
@@ -493,8 +493,8 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
     private void layKhachHangLe(int index) {
         QLKhachHang khachHang = listKhachHang.get(index);
 
-        // Check if the id is equal to 7
-        if (khachHang.getId() == 7) {
+        // Check if the id is equal to 6
+        if (khachHang.getId() == 6) {
             idKhachHang = khachHang.getId();
             jlbTenKhachHang.setText(khachHang.getTen());
             jlbSDT.setText(khachHang.getSdt());
@@ -2362,7 +2362,7 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
         HDViewModel hd = taoHoaDon();
 
         for (QLKhachHang kh : listKhachHang) {
-            if (kh.getId() == hd.getIdKH() && kh.getTrangThai() == 0 && kh.getId() != 7) {
+            if (kh.getId() == hd.getIdKH() && kh.getTrangThai() == 0 && kh.getId() != 6) {
                 System.out.println(kh.getId()+ " abc " +  hd.getIdKH());
                 JOptionPane.showMessageDialog(this, "Khách hàng đã có hóa đơn chờ");
                 return;
@@ -2372,7 +2372,7 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
         JOptionPane.showMessageDialog(this, serviceHD.getAdd(hd));
         jlbMaHD.setText(hd.getMa());
         listHDTable = serviceHDTable.getAll();
-        if (idKhachHang != 7) {
+        if (idKhachHang != 6) {
             serviceKhachHang.khachHangTaoHD(idKhachHang);
         }
 
@@ -2518,7 +2518,7 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
         int index = tblKhachHang.getSelectedRow();
         if (index >= 0 & index <= listKhachHang.size()) {
             QLKhachHang khachHang = listKhachHang.get(index);
-            if (khachHang.getTrangThai() == 0 && khachHang.getId() != 7) {
+            if (khachHang.getTrangThai() == 0 && khachHang.getId() != 6) {
                 JOptionPane.showMessageDialog(this, "Khách hàng đã có hóa đơn chờ");
             } else {
                 layKhachHang(index);
@@ -2794,7 +2794,7 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
                     }
 
                 }
-                if (idKhachHang != 7) {
+                if (idKhachHang != 6) {
                     serviceKhachHang.khachHangThanhToanHD(idKhachHang);
                 }
                 listKhachHang = serviceKhachHang.getList();
@@ -3324,7 +3324,7 @@ if (index == -1) {
 
     private void btnClearFormActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearFormActionPerformed
         showDataHoaDon(listHDTableChuaThanhToan);
-        idKhachHang =7;
+        idKhachHang =6;
         khacLe();
     }//GEN-LAST:event_btnClearFormActionPerformed
 
