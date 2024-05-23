@@ -40,6 +40,7 @@ public class SPCTRepository {
                                               	JOIN KICH_CO ON KICH_CO.ID=SAN_PHAM_CHI_TIET.ID_KC
                                               	JOIN MAU_SAC ON MAU_SAC.ID=SAN_PHAM_CHI_TIET.ID_MS
                                               	JOIN CHAT_LIEU ON CHAT_LIEU.ID=SAN_PHAM_CHI_TIET.ID_CL
+                                               
                         			order by MA ASC
                     """;
         try (Connection con = DBConnect.getConnection(); PreparedStatement pr = con.prepareStatement(qery)) {
