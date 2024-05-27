@@ -520,13 +520,13 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
 
         // Kiểm tra và chuyển đổi giá trị từ chuỗi sang số nguyên
         try {
-            
-
+            String tienGiamText = jlbTienGiam.getText();
+            hd.setTienGiam(tienGiamText.isEmpty() ? 0 : Integer.parseInt(tienGiamText));
+             
             String tongTienText = jlbTongTien.getText();
             hd.setTongTien(tongTienText.isEmpty() ? 0 : Integer.parseInt(tongTienText));
             
-            hd.setTienGiam(tongTien*tienGiam/100);
-
+           
             String tienKhachDuaText = txtTienKhachDua.getText();
             hd.setTienKhachDua(tienKhachDuaText.isEmpty() ? 0 : Integer.parseInt(tienKhachDuaText));
 
@@ -2662,7 +2662,6 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
     private void btnUpdateActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnUpdateActionPerformed
 
         int index = tblGioHang.getSelectedRow();
-
         if (index >= 0 && index < listSPInHD.size()) {
             GioHangViewModel gh = listSPInHD.get(index);
             jdlUpdateSoLuong.dispose();
@@ -2728,6 +2727,8 @@ public class ViewBanHang extends javax.swing.JPanel implements Runnable, ThreadF
                     jlbKhachPhaiTra.setText(String.valueOf(tienKhachPhaiTra));
                     txtTienKhachDua.setText("");
                     jlbTienThua.setText("");
+                    txtSoLuongCapNhat.setText("");
+
                 }
             } catch (NumberFormatException e) {
                 JOptionPane.showMessageDialog(this, "Vui lòng nhập một số nguyên hợp lệ");
@@ -3249,6 +3250,7 @@ if (index == -1) {
         showDataSearch(listSPCT);
         listSPThemGioHang = listSPCT;
         listSPCT = serviceSPCT.getAllTable();
+        result_field.setText("");
         try {
             clone();
         } catch (CloneNotSupportedException ex) {

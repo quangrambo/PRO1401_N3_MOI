@@ -41,7 +41,7 @@ public class HoaDonRepository implements HoaDonRepo {
 //                    + "HOA_DON.TIENCHUYENKHOAN,\n"
                     + "HOA_DON.TRANGTHAI\n"
                     + "FROM\n"
-                    + "HOA_DON\n";
+                    + "HOA_DON  \n";
             PreparedStatement ps = cnn.prepareStatement(sql);
             ps.execute();
             ResultSet rs = ps.getResultSet();

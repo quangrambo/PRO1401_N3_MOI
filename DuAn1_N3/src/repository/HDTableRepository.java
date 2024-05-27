@@ -37,7 +37,7 @@ public class HDTableRepository {
                                                  FROM [dbo].[HOA_DON]
                                                  join KHACH_HANG on KHACH_HANG.ID=HOA_DON.ID_KH
                                                  join NHAN_VIEN on NHAN_VIEN.ID=HOA_DON.ID_NV
-                                              order by MA DESC , NGAYTHANHTOAN DESC  
+                                              order by HOA_DON.ID  DESC
                      """;
         try ( Connection con = DBConnect.getConnection();  PreparedStatement pr = con.prepareStatement(query)) {
             ResultSet rs = pr.executeQuery();
