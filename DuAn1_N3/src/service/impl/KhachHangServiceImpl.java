@@ -54,10 +54,10 @@ public class KhachHangServiceImpl implements KhachHangService{
         repository.khachHangThanhToanHoaDon(id);
     }
 
-//    @Override
-//    public List<QLKhachHang> getPhanTrang(int offset, int fetchSize) {
-//        return repository.getPhanTrang(offset, fetchSize);
-//    }
+    @Override
+    public List<QLKhachHang> getPhanTrang(int offset, int fetchSize) {
+        return repository.getPhanTrang(offset, fetchSize);
+    }
 
 
     

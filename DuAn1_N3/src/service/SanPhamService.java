@@ -6,7 +6,7 @@ package service;
 
 import java.sql.Date;
 import java.util.List;
-//import viewmodel.SanPhamThongKe;
+import viewmodel.SanPhamThongKe;
 import viewmodel.SanPhamViewModel;
 
 /**
@@ -31,9 +31,9 @@ public interface SanPhamService {
 
     Integer tongSpDaBanTC();
 
-//    List<SanPhamThongKe> sanPhamThongKe(String id, Date start, Date end, int type);
-//
-//    List<SanPhamThongKe> sanPhamThongKeTC();
+    List<SanPhamThongKe> sanPhamThongKe(String id, Date start, Date end, int type);
+
+    List<SanPhamThongKe> sanPhamThongKeTC();
 
     Integer tinhDoanhThu(Date start, Date end);
 

@@ -4,7 +4,9 @@
     <open-files xmlns="http://www.netbeans.org/ns/projectui-open-files/2">
         <group>
             <file>file:/C:/Users/Admin/Desktop/PRO1401_N3_MOI/DuAn1_N3/src/view/contains/ViewBanHang.java</file>
-            <file>file:/C:/Users/Admin/Desktop/PRO1401_N3_MOI/DuAn1_N3/src/view/Login.java</file>
+            <file>file:/C:/Users/Admin/Desktop/PRO1401_N3_MOI/DuAn1_N3/src/view/contains/ViewHoaDon.java</file>
+            <file>file:/C:/Users/Admin/Desktop/PRO1401_N3_MOI/DuAn1_N3/src/viewmodel/SanPhamHDViewModel.java</file>
+            <file>file:/C:/Users/Admin/Desktop/PRO1401_N3_MOI/DuAn1_N3/src/utility/WriteExcel.java</file>
         </group>
     </open-files>
 </project-private>

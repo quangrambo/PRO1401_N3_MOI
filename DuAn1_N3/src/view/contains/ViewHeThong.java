@@ -3,18 +3,76 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/GUIForms/JPanel.java to edit this template
  */
 package view.contains;
-
+import java.nio.charset.StandardCharsets;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.Period;
+import java.time.ZoneId;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import repository.NhanVienRepository;
+import service.NhanVienService;
+import service.NhanVienVMService;
+import service.PhieuGiamGiaVMService;
+import service.impl.NhanVienServiceImpl;
+import utility.Uhelper;
+import viewmodel.NhanVienVM;
+import viewmodel.PhieuGiamGiaVM;
+import viewmodel.QLNhanVien;
 /**
  *
  * @author Admin
  */
 public class ViewHeThong extends javax.swing.JPanel {
+    private final PhieuGiamGiaVMService phieuGiamGiaVMService;
+    private final NhanVienVMService nhanVienVMService;
+    List<NhanVienVM> lstnv;
+    NhanVienRepository repository = new NhanVienRepository();
+    NhanVienService service = new NhanVienServiceImpl();
 
+    private int ht = 0;
+    private int size = 5;
     /**
      * Creates new form ViewHeThong1
      */
     public ViewHeThong() {
         initComponents();
+        rdoNam.setSelected(true);
+        rdoTatCa.setSelected(true);
+        phieuGiamGiaVMService = new PhieuGiamGiaVMService();
+        nhanVienVMService = new NhanVienVMService();
+        List<PhieuGiamGiaVM> pggvm = new ArrayList<>();
+        phieuGiamGiaVMService.voHieuHoaPGGVMHetHan();
+        txtDieuKhoan.setText("Áp dụng mọi hóa đơn");
+        pggvm = phieuGiamGiaVMService.getAllPGGVM();
+        loadDataToTable(pggvm);
+        lstnv = new ArrayList<>();
+        lstnv = nhanVienVMService.getAllNVVM();
+        loadDataToTableNV(lstnv);
+        jDateNgayBatDau.setDateFormatString("yyyy-MM-dd");
+        jDateNgayKetThuc.setDateFormatString("yyyy-MM-dd");
+//        txtID.setEditable(false); // Không cho phép chỉnh sửa trường input
+
+        if (tblQLPGGVM.getRowCount() > 0) {
+            tblQLPGGVM.setRowSelectionInterval(0, 0);
+            showDetail();
+        }
+        if (tblQLNVVM.getRowCount() > 0) {
+            tblQLNVVM.setRowSelectionInterval(0, 0);
+            showDetailNV();
+        }
+        // loadDataToTableNV(lstnv);
+        showDataCboLocChucVu();
+        showDataCboLocTinhTrang();
+        clearFormNV();
+        loadDataToTableNV(lstnv);
     }
 
     /**
@@ -26,6 +84,8 @@ public class ViewHeThong extends javax.swing.JPanel {
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
 
+        buttonGroup1 = new javax.swing.ButtonGroup();
+        buttonGroup2 = new javax.swing.ButtonGroup();
         jTabbedPane1 = new javax.swing.JTabbedPane();
         pnlNhanVien = new javax.swing.JPanel();
         jLabel2 = new javax.swing.JLabel();
@@ -193,9 +253,11 @@ public class ViewHeThong extends javax.swing.JPanel {
         txtMatKhau.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         txtMatKhau.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(0, 0, 0)));
 
+        buttonGroup1.add(rdoNam);
         rdoNam.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         rdoNam.setText("Nam");
 
+        buttonGroup1.add(rdoNu);
         rdoNu.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         rdoNu.setText("Nữ");
 
@@ -624,6 +686,7 @@ public class ViewHeThong extends javax.swing.JPanel {
         });
         jScrollPane2.setViewportView(tblQLPGGVM);
 
+        buttonGroup2.add(rdoTatCa);
         rdoTatCa.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         rdoTatCa.setSelected(true);
         rdoTatCa.setText("Tất cả");
@@ -633,6 +696,7 @@ public class ViewHeThong extends javax.swing.JPanel {
             }
         });
 
+        buttonGroup2.add(rdoDangDienRa);
         rdoDangDienRa.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         rdoDangDienRa.setText("Đang diễn ra");
         rdoDangDienRa.addActionListener(new java.awt.event.ActionListener() {
@@ -641,6 +705,7 @@ public class ViewHeThong extends javax.swing.JPanel {
             }
         });
 
+        buttonGroup2.add(rdoDaKetThuc);
         rdoDaKetThuc.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         rdoDaKetThuc.setText("Đã kết thúc");
         rdoDaKetThuc.addActionListener(new java.awt.event.ActionListener() {
@@ -995,24 +1060,94 @@ public class ViewHeThong extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    public static String hashPassword(String password) {
+        try {
+            MessageDigest md = MessageDigest.getInstance("MD5");
+            byte[] hashedPassword = md.digest(password.getBytes(StandardCharsets.UTF_8));
+            StringBuilder sb = new StringBuilder();
+            for (byte b : hashedPassword) {
+                sb.append(String.format("%02x", b));
+            }
+            return sb.toString();
+        } catch (NoSuchAlgorithmException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
     private void chkTrangThaiNVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_chkTrangThaiNVActionPerformed
         // TODO add your handling code here:
     }//GEN-LAST:event_chkTrangThaiNVActionPerformed
 
     private void tblQLNVVMMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblQLNVVMMouseClicked
         // TODO add your handling code here:
+                showDetailNV();
+
     }//GEN-LAST:event_tblQLNVVMMouseClicked
 
     private void cbbLocCVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbbLocCVActionPerformed
+        // TODO add your handling code here:
+        String selectedChucVu = "";
+        String selectedTrangThai = "";
+        if (cbbLocCV.getSelectedItem() != null) {
+            selectedChucVu = cbbLocCV.getSelectedItem().toString();
+        }
+        if (cbbLocTT.getSelectedItem() != null) {
+            selectedTrangThai = cbbLocTT.getSelectedItem().toString();
+        }
+        int cv = selectedChucVu.equalsIgnoreCase("Nhân viên") ? 1 : 0;
+        int tt = selectedTrangThai.equalsIgnoreCase("Làm việc") ? 1 : 0;
+        if (cbbLocCV.getSelectedIndex() == 0 && cbbLocTT.getSelectedIndex() == 0) {
+            lstnv = nhanVienVMService.getAllNVVM();
+        } else if (cbbLocCV.getSelectedIndex() != 0 && cbbLocTT.getSelectedIndex() != 0) {
 
+            lstnv = nhanVienVMService.locNhanVien(cv, tt);
+
+        } else if (cbbLocCV.getSelectedIndex() != 0 && cbbLocTT.getSelectedIndex() == 0) {
+            lstnv = nhanVienVMService.locChucVu(cv);
+        } else if (cbbLocCV.getSelectedIndex() == 0 && cbbLocTT.getSelectedIndex() != 0) {
+            lstnv = nhanVienVMService.locTrangThai(tt);
+        }
+        loadDataToTableNV(lstnv);
     }//GEN-LAST:event_cbbLocCVActionPerformed
 
     private void cbbLocTTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_cbbLocTTActionPerformed
+        String selectedChucVu = "";
+        String selectedTrangThai = "";
+        if (cbbLocCV.getSelectedItem() != null) {
+            selectedChucVu = cbbLocCV.getSelectedItem().toString();
+        }
+        if (cbbLocTT.getSelectedItem() != null) {
+            selectedTrangThai = cbbLocTT.getSelectedItem().toString();
+        }
+        int cv = selectedChucVu.equalsIgnoreCase("Nhân viên") ? 1 : 0;
+        int tt = selectedTrangThai.equalsIgnoreCase("Làm việc") ? 1 : 0;
+        if (cbbLocCV.getSelectedIndex() == 0 && cbbLocTT.getSelectedIndex() == 0) {
+            lstnv = nhanVienVMService.getAllNVVM();
+        } else if (cbbLocCV.getSelectedIndex() != 0 && cbbLocTT.getSelectedIndex() != 0) {
 
+            lstnv = nhanVienVMService.locNhanVien(cv, tt);
+
+        } else if (cbbLocCV.getSelectedIndex() != 0 && cbbLocTT.getSelectedIndex() == 0) {
+            lstnv = nhanVienVMService.locChucVu(cv);
+        } else if (cbbLocCV.getSelectedIndex() == 0 && cbbLocTT.getSelectedIndex() != 0) {
+            lstnv = nhanVienVMService.locTrangThai(tt);
+        }
+        loadDataToTableNV(lstnv);
     }//GEN-LAST:event_cbbLocTTActionPerformed
 
     private void txtTimKiemHTCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_txtTimKiemHTCaretUpdate
-
+        String key = txtTimKiemHT.getText().trim().toLowerCase();
+        if (key.isEmpty()) {
+            loadDataToTableNV(nhanVienVMService.getAllNVVM());
+        } else {
+            ArrayList<NhanVienVM> searchResults = new ArrayList<>();
+            for (NhanVienVM nv : lstnv) {
+                if (nv.getHoten().equalsIgnoreCase(key) || startsWithIgnoreCase(nv.getHoten(), key) || endsWithIgnoreCase(nv.getHoten(), key)) {
+                    searchResults.add(nv);
+                }
+            }
+            loadDataToTableNV(searchResults);
+        }
     }//GEN-LAST:event_txtTimKiemHTCaretUpdate
 
     private void txtTimKiemHTActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTimKiemHTActionPerformed
@@ -1020,31 +1155,266 @@ public class ViewHeThong extends javax.swing.JPanel {
     }//GEN-LAST:event_txtTimKiemHTActionPerformed
 
     private void btnPreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPreActionPerformed
+        if (ht > 1) {
+            ht--;
 
+        }
+        int page = (ht - 1) * size;
+        loadPT(page, size);
+        updatePT();
     }//GEN-LAST:event_btnPreActionPerformed
 
     private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
-
+        int totalPageTime = repository.getTotalItems();
+        int totalPage = totalPageTime / size;
+        if (ht < totalPage) {
+            ht++;
+            int page = (ht - 1) * size;
+            loadPT(page, size);
+            updatePT();
+        } else {
+            ht = 1;
+            loadPT(0, size);
+            updatePT();
+        }
     }//GEN-LAST:event_btnNextActionPerformed
 
     private void btnHoanTac1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHoanTac1ActionPerformed
+                loadDataToTableNV(nhanVienVMService.getAllNVVM());
 
     }//GEN-LAST:event_btnHoanTac1ActionPerformed
 
     private void btnThemNVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemNVActionPerformed
+        if (Uhelper.checkRong(txtMaNV, "Không để trống mã nhân viên")) {
+            return;
+        }
+        if (Uhelper.checkRong(txtTenNV, "Không để trống họ tên")) {
+            return;
+        }
+        if (Uhelper.checkRong(txtSDTNV, "Không để trống số điện thoại")) {
+            return;
+        }
+        if (Uhelper.checkRong(txtEmailNV, "Không để trống email")) {
+            return;
+        }
+        if (Uhelper.checkRong(txtCCCD, "Không để trống căn cước công dân")) {
+            return;
+        }
+        if (Uhelper.checkRong(txtDiaChi, "Không để trống địa chỉ")) {
+            return;
+        }
+        if (Uhelper.checkRong(txtTenDangNhap, "Không để trống tên đăng nhập")) {
+            return;
+        }
+        if (Uhelper.checkRong(txtMatKhau, "Không để trống mật khẩu")) {
+            return;
+        }
+        if (Uhelper.checkRongChoNgay(jDateNgaySinh, "Không để trống ngày sinh")) {
+            return;
+        }
 
+        Date selectedDate = jDateNgaySinh.getDate();
+        if (!checkTuoi(selectedDate)) {
+            JOptionPane.showMessageDialog(this, "Nhân viên phải đủ 18 tuổi trở lên.");
+            return;
+        }
+        String ma = txtMaNV.getText();
+        String sdt = txtSDTNV.getText();
+        String cccd = txtCCCD.getText();
+        String email = txtEmailNV.getText();
+        if (!txtMa.getText().matches("\\w+")) {
+            JOptionPane.showMessageDialog(this, "Mã nhân viên không hợp lệ");
+            return;
+        }
+
+        for (NhanVienVM nv : nhanVienVMService.getAllNVVM()) {
+            if (ma.equalsIgnoreCase(nv.getMa())) {
+                JOptionPane.showMessageDialog(this, "Mã nhân viên đã tồn tại");
+                return;
+            }
+        }
+        for (NhanVienVM nv : nhanVienVMService.getAllNVVM()) {
+            if (sdt.equalsIgnoreCase(nv.getSdt())) {
+                JOptionPane.showMessageDialog(this, "Số điện thoại đã tồn tại");
+                return;
+            }
+        }
+        for (NhanVienVM nv : nhanVienVMService.getAllNVVM()) {
+            if (cccd.equalsIgnoreCase(nv.getCccd())) {
+                JOptionPane.showMessageDialog(this, "Số căn cước đã tồn tại");
+                return;
+            }
+        }
+        for (NhanVienVM nv : nhanVienVMService.getAllNVVM()) {
+            if (email.equalsIgnoreCase(nv.getEmail())) {
+                JOptionPane.showMessageDialog(this, "Email đã tồn tại");
+                return;
+            }
+        }
+        if (!txtTenNV.getText().matches("^[\\p{L} .'-]+$")) {
+            JOptionPane.showMessageDialog(this, "Tên nhân viên không hợp lệ");
+            return;
+        }
+        if (!txtSDTNV.getText().matches("^0\\d{9}$")) {
+            JOptionPane.showMessageDialog(this, "Số điện thoại không hợp lệ");
+            return;
+        }
+        String regex = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+        if (!txtEmailNV.getText().matches(regex)) {
+            JOptionPane.showMessageDialog(this, "email không hợp lệ");
+            return;
+        }
+        if (!txtCCCD.getText().matches("^[0-9]{9}$|^[0-9]{12}$")) {
+            JOptionPane.showMessageDialog(this, "số căn cước không hợp lệ");
+            return;
+        }
+
+        NhanVienVM nvvm = getNhanVienVMFormInput();
+        if (nhanVienVMService.addNhanVienVM(nvvm) != null) {
+            JOptionPane.showMessageDialog(this, "Thêm thành công");
+            clearFormNV();
+        } else {
+            JOptionPane.showMessageDialog(this, "Thêm thất bại");
+        }
+        loadDataToTableNV(nhanVienVMService.getAllNVVM());
     }//GEN-LAST:event_btnThemNVActionPerformed
-
+    
+    private boolean checkTuoi(Date selectedDate) {
+        LocalDate currentDate = LocalDate.now();
+        LocalDate birthLocalDate = selectedDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        Period period = Period.between(birthLocalDate, currentDate);
+        return period.getYears() >= 18;
+    }
+    
     private void btnSuaNVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuaNVActionPerformed
+         // TODO add your handling code here:
+        Integer row = tblQLNVVM.getSelectedRow();
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn nhân viên muốn sửa!");
+            return;
+        }
 
+        if (Uhelper.checkRong(txtMaNV, "Không để trống mã nhân viên")) {
+            return;
+        }
+        if (Uhelper.checkRong(txtTenNV, "Không để trống họ tên")) {
+            return;
+        }
+        if (Uhelper.checkRong(txtSDTNV, "Không để trống số điện thoại")) {
+            return;
+        }
+        if (Uhelper.checkRong(txtEmailNV, "Không để trống email")) {
+            return;
+        }
+        if (Uhelper.checkRong(txtCCCD, "Không để trống căn cước công dân")) {
+            return;
+        }
+        if (Uhelper.checkRong(txtDiaChi, "Không để trống địa chỉ")) {
+            return;
+        }
+        if (Uhelper.checkRong(txtTenDangNhap, "Không để trống tên đăng nhập")) {
+            return;
+        }
+        if (Uhelper.checkRong(txtMatKhau, "Không để trống mật khẩu")) {
+            return;
+        }
+        if (Uhelper.checkRongChoNgay(jDateNgaySinh, "Không để trống ngày sinh")) {
+            return;
+        }
+
+        Date selectedDate = jDateNgaySinh.getDate();
+        if (!checkTuoi(selectedDate)) {
+            JOptionPane.showMessageDialog(this, "Nhân viên phải đủ 18 tuổi trở lên.");
+            return;
+        }
+
+        String ma = txtMaNV.getText();
+        String sdt = txtSDTNV.getText();
+        String cccd = txtCCCD.getText();
+        String email = txtEmailNV.getText();
+        if (!txtMa.getText().matches("\\w+")) {
+            JOptionPane.showMessageDialog(this, "Mã nhân viên không hợp lệ");
+            return;
+        }
+
+//        for (NhanVienVM nv : nhanVienVMService.getAllNVVM()) {
+//            if (ma.equalsIgnoreCase(nv.getMa())) {
+//                JOptionPane.showMessageDialog(this, "Mã nhân viên đã tồn tại");
+//                return;
+//            }
+//        }
+//        for (NhanVienVM nv : nhanVienVMService.getAllNVVM()) {
+//            if (sdt.equalsIgnoreCase(nv.getSdt())) {
+//                JOptionPane.showMessageDialog(this, "Số điện thoại đã tồn tại");
+//                return;
+//            }
+//        }
+//        for (NhanVienVM nv : nhanVienVMService.getAllNVVM()) {
+//            if (cccd.equalsIgnoreCase(nv.getCccd())) {
+//                JOptionPane.showMessageDialog(this, "Số căn cước đã tồn tại");
+//                return;
+//            }
+//        }
+//        for (NhanVienVM nv : nhanVienVMService.getAllNVVM()) {
+//            if (email.equalsIgnoreCase(nv.getEmail())) {
+//                JOptionPane.showMessageDialog(this, "Email đã tồn tại");
+//                return;
+//            }
+//        }
+        if (!txtTenNV.getText().matches("^[\\p{L} .'-]+$")) {
+            JOptionPane.showMessageDialog(this, "Tên nhân viên không hợp lệ");
+            return;
+        }
+        if (!txtSDTNV.getText().matches("^0\\d{9}$")) {
+            JOptionPane.showMessageDialog(this, "Số điện thoại không hợp lệ");
+            return;
+        }
+        String regex = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}$";
+        if (!txtEmailNV.getText().matches(regex)) {
+            JOptionPane.showMessageDialog(this, "Email không hợp lệ");
+            return;
+        }
+        if (!txtCCCD.getText().matches("^[0-9]{9}$|^[0-9]{12}$")) {
+            JOptionPane.showMessageDialog(this, "Số căn cước không hợp lệ");
+            return;
+        }
+
+        NhanVienVM nvvm = getNhanVienVMFormInput();
+        String nhanVien_ID = getNhanVienVMFormSelectedRow();
+        nvvm.setMa(nhanVien_ID);
+        if (nhanVienVMService.updateNhanVienVM(nvvm) != null) {
+            JOptionPane.showMessageDialog(this, "Sửa nhân viên thành công");
+            clearFormNV();
+        } else {
+            JOptionPane.showMessageDialog(this, "Sửa nhân viên thất bại");
+        }
+        loadDataToTableNV(nhanVienVMService.getAllNVVM());
     }//GEN-LAST:event_btnSuaNVActionPerformed
 
     private void btnClearNVActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearNVActionPerformed
+                clearFormNV();
 
     }//GEN-LAST:event_btnClearNVActionPerformed
 
     private void btnNVNghiActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNVNghiActionPerformed
+        // TODO add your handling code here:
+        Integer selectedRow = tblQLNVVM.getSelectedRow();
+        if (selectedRow == -1) {
+            // Người dùng chưa chọn dòng nào trong table
+            JOptionPane.showMessageDialog(this, "Cần chọn 1 nhân viên muốn cho nghỉ việc");
+            return;
+        }
+        chkTrangThaiNV.setSelected(false);
+        NhanVienVM nvvm = getNhanVienVMFormInput();
+        String nhanVien_ID = getNhanVienVMFormSelectedRow();
+        nvvm.setMa(nhanVien_ID);
+        if (nhanVienVMService.voHieuHoaNhanVienVM(nvvm) != null) {
+            JOptionPane.showMessageDialog(this, "vô hiệu hóa nhân viên thành công");
+        } else {
+            JOptionPane.showMessageDialog(this, "vô hiệu hóa nhân viên sửa thất bại");
+        }
 
+        loadDataToTableNV(nhanVienVMService.getAllNVVM());
     }//GEN-LAST:event_btnNVNghiActionPerformed
 
     private void pnlNhanVienMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlNhanVienMouseClicked
@@ -1053,22 +1423,35 @@ public class ViewHeThong extends javax.swing.JPanel {
 
     private void tblQLPGGVMMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblQLPGGVMMouseClicked
         // TODO add your handling code here:
+                showDetail();
+
     }//GEN-LAST:event_tblQLPGGVMMouseClicked
 
     private void rdoTatCaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdoTatCaActionPerformed
+                loadDataToTable(phieuGiamGiaVMService.getAllPGGVM());
 
     }//GEN-LAST:event_rdoTatCaActionPerformed
 
     private void rdoDangDienRaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdoDangDienRaActionPerformed
+                loadDataToTable(phieuGiamGiaVMService.getDangDienRa());
 
     }//GEN-LAST:event_rdoDangDienRaActionPerformed
 
     private void rdoDaKetThucActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_rdoDaKetThucActionPerformed
-
+                loadDataToTable(phieuGiamGiaVMService.getDaKetThuc());
     }//GEN-LAST:event_rdoDaKetThucActionPerformed
 
     private void txtTimKiemCaretUpdate(javax.swing.event.CaretEvent evt) {//GEN-FIRST:event_txtTimKiemCaretUpdate
-
+        if (txtTimKiem.getText().trim().isEmpty()) {
+            loadDataToTable(phieuGiamGiaVMService.getAllPGGVM());
+        } else {
+            String tim = txtTimKiem.getText().toLowerCase().trim();
+            if (cbbTimKiem.getSelectedIndex() == 0) {
+                loadDataToTable(phieuGiamGiaVMService.getByMa(tim));
+            } else {
+                loadDataToTable(phieuGiamGiaVMService.getByTen(tim));
+            }
+        }
     }//GEN-LAST:event_txtTimKiemCaretUpdate
 
     private void txtTimKiemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtTimKiemActionPerformed
@@ -1088,19 +1471,195 @@ public class ViewHeThong extends javax.swing.JPanel {
     }//GEN-LAST:event_jDateNgayBatDauMouseClicked
 
     private void btnThemPGGActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemPGGActionPerformed
+        // TODO add your handling code here:
 
+        if (Uhelper.checkRong(txtTen, "Không để trống tên phiếu giảm giá")) {
+            return;
+        }
+        if (Uhelper.checkRong(txtLuotSuDung, "Không để trống lượt sử dụng")) {
+            return;
+        }
+        if (Uhelper.checkRong(txtDieuKhoan, "Không để trống điều khoản")) {
+            return;
+        }
+        if (Uhelper.checkRong(txtGiaTri, "Không để trống giá trị")) {
+            return;
+        }
+        if (Uhelper.checkRongChoNgay(jDateNgayBatDau, "Không để trống ngày bắt đầu")) {
+            return;
+        }
+        if (Uhelper.checkRongChoNgay(jDateNgayKetThuc, "Không để trống ngày kết thúc")) {
+            return;
+        }
+        if (Uhelper.checkKhongAm(txtLuotSuDung, "lượt sử dụng phải là số dương")) {
+            return;
+        }
+        if (Uhelper.checkKhongAm(txtGiaTri, "giá trị giảm phải là số dương")) {
+            return;
+        }
+        String ma = txtMa.getText();
+        if (!txtMa.getText().matches("\\w+")) {
+            JOptionPane.showMessageDialog(this, "Mã giảm giá không hợp lệ");
+            return;
+        }
+        for (PhieuGiamGiaVM pgg : phieuGiamGiaVMService.getAllPGGVM()) {
+            if (ma.equalsIgnoreCase(pgg.getMa())) {
+                JOptionPane.showMessageDialog(this, "Mã giảm giá đã tồn tại");
+                return;
+            }
+        }
+
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date bd;
+        bd = jDateNgayBatDau.getDate();
+        Date kt;
+        kt = jDateNgayKetThuc.getDate();
+
+        long millis = System.currentTimeMillis();
+        Date now = new Date(millis);
+        if (bd.compareTo(kt) >= 0) {
+            JOptionPane.showMessageDialog(this, "Thêm không thành công, Kiểm tra lại ngày của Phiếu giảm giá!");
+            return;
+        }
+
+        double giaTriGiam = Double.parseDouble(txtGiaTri.getText());
+        if (giaTriGiam >= 50000) {
+            JOptionPane.showMessageDialog(this, "Giá trị giảm phải nhỏ hơn 50000 VNĐ");
+            return;
+        }
+
+        Date ngayKetThuc = jDateNgayKetThuc.getDate();
+        if (ngayKetThuc != null && ngayKetThuc.before(now)) {
+            JOptionPane.showMessageDialog(this, "Thêm thất bại, ngày kết thúc không thể là ngày trong quá khứ");
+            return;
+        }
+
+        // Kiểm tra và không cho phép chọn checkbox trạng thái nếu ngày kết thúc là ngày trong quá khứ
+        if (ngayKetThuc != null && ngayKetThuc.before(now)) {
+            chkTrangThai.setSelected(false);
+        } else {
+            chkTrangThai.setSelected(true);
+        }
+
+        PhieuGiamGiaVM pggvm = getPhieuGiamGiaVMFormInput();
+        if (phieuGiamGiaVMService.addPGGVM(pggvm) != null) {
+            JOptionPane.showMessageDialog(this, "Thêm thành công");
+        } else {
+            JOptionPane.showMessageDialog(this, "Thêm thất bại");
+        }
+        loadDataToTable(phieuGiamGiaVMService.getAllPGGVM());
     }//GEN-LAST:event_btnThemPGGActionPerformed
 
     private void jButton5ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton5ActionPerformed
+        // TODO add your handling code here:
+        if (Uhelper.checkRong(txtMa, "Không để trống mã giảm giá")) {
+            return;
+        }
+        if (Uhelper.checkRong(txtTen, "Không để trống tên phiếu giảm giá")) {
+            return;
+        }
+        if (Uhelper.checkRong(txtLuotSuDung, "Không để trống lượt sử dụng")) {
+            return;
+        }
+        if (Uhelper.checkRong(txtDieuKhoan, "Không để trống điều khoản")) {
+            return;
+        }
+        if (Uhelper.checkRong(txtGiaTri, "Không để trống giá trị")) {
+            return;
+        }
+        if (Uhelper.checkRongChoNgay(jDateNgayBatDau, "Không để trống ngày bắt đầu")) {
+            return;
+        }
+        if (Uhelper.checkRongChoNgay(jDateNgayKetThuc, "Không để trống ngày kết thúc")) {
+            return;
+        }
+        if (Uhelper.checkKhongAm(txtLuotSuDung, "lượt sử dụng phải là số dương")) {
+            return;
+        }
+        if (Uhelper.checkKhongAm(txtGiaTri, "giá trị giảm phải là số dương")) {
+            return;
+        }
+        String ma = txtMa.getText();
+        if (!txtMa.getText().matches("\\w+")) {
+            JOptionPane.showMessageDialog(this, "Mã giảm giá không hợp lệ");
+            return;
+        }
 
+//        for (PhieuGiamGiaVM pgg : phieuGiamGiaVMService.getAllPGGVM()) {
+//            if (ma.equalsIgnoreCase(pgg.getMa())) {
+//                JOptionPane.showMessageDialog(this, "Mã giảm giá đã tồn tại");
+//                return;
+//            }
+//        }
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+        Date bd;
+        bd = jDateNgayBatDau.getDate();
+        Date kt;
+        kt = jDateNgayKetThuc.getDate();
+
+        long millis = System.currentTimeMillis();
+        Date now = new Date(millis);
+        if (bd.compareTo(kt) >= 0) {
+            JOptionPane.showMessageDialog(this, "Chương trình giảm giá phải kéo dài ít nhất 1 ngày");
+            return;
+        }
+
+        double giaTriGiam = Double.parseDouble(txtGiaTri.getText());
+        if (giaTriGiam >= 50000) {
+            JOptionPane.showMessageDialog(this, "Giá trị giảm phải nhỏ hơn 50000 VNĐ");
+            return;
+        }
+
+        Date ngayKetThuc = jDateNgayKetThuc.getDate();
+        if (ngayKetThuc != null && ngayKetThuc.before(now) && chkTrangThai.isSelected()) {
+            JOptionPane.showMessageDialog(this, "Sửa thất bại. Không thể chọn trạng thái Hoạt động, nếu ngày kết thúc là ngày trong quá khứ");
+            return;
+        }
+        if (ngayKetThuc != null && ngayKetThuc.after(now) && !chkTrangThai.isSelected()) {
+            chkTrangThai.setSelected(true);
+        }
+
+        Integer row = tblQLPGGVM.getSelectedRow();
+        if (row < 0) {
+            JOptionPane.showMessageDialog(this, "Vui lòng chọn 1 dòng trên table");
+            return;
+        }
+        PhieuGiamGiaVM pggvm = getPhieuGiamGiaVMFormInput();
+        String phieuGiamGiaCT_ID = getPhieuGiamGiaVMFormSelectedRow();
+        pggvm.setMa(phieuGiamGiaCT_ID);
+        if (phieuGiamGiaVMService.updatePGGVM(pggvm) != null) {
+            JOptionPane.showMessageDialog(this, "Sửa thành công");
+        } else {
+            JOptionPane.showMessageDialog(this, "Sửa thất bại");
+        }
+        loadDataToTable(phieuGiamGiaVMService.getAllPGGVM());
     }//GEN-LAST:event_jButton5ActionPerformed
 
     private void btnVoHieuHoaPGGActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVoHieuHoaPGGActionPerformed
+        // TODO add your handling code here:
+        Integer selectedRow = tblQLPGGVM.getSelectedRow();
+        if (selectedRow == -1) {
+            // Người dùng chưa chọn dòng nào trong table
+            JOptionPane.showMessageDialog(this, "Hãy chọn một dòng trong table trước khi thực hiện hành động!", "Thông báo", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        chkTrangThai.setSelected(false);
+        PhieuGiamGiaVM pggvm = getPhieuGiamGiaVMFormInput();
+        String phieuGiamGiaCT_ID = getPhieuGiamGiaVMFormSelectedRow();
+        pggvm.setMa(phieuGiamGiaCT_ID);
+        if (phieuGiamGiaVMService.voHieuHoaPGGVM(pggvm) != null) {
+            JOptionPane.showMessageDialog(this, "vô hiệu hóa pgg thành công");
+        } else {
+            JOptionPane.showMessageDialog(this, "vô hiệu hóa pgg sửa thất bại");
+        }
 
+        loadDataToTable(phieuGiamGiaVMService.getAllPGGVM());
     }//GEN-LAST:event_btnVoHieuHoaPGGActionPerformed
 
     private void ClearFormPGGActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_ClearFormPGGActionPerformed
         // TODO add your handling code here:
+                clearForm();
+
     }//GEN-LAST:event_ClearFormPGGActionPerformed
 
     private void pnlGiamGiaMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_pnlGiamGiaMouseClicked
@@ -1110,7 +1669,28 @@ public class ViewHeThong extends javax.swing.JPanel {
     private void jTabbedPane1MouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_jTabbedPane1MouseClicked
         // TODO add your handling code here:
     }//GEN-LAST:event_jTabbedPane1MouseClicked
+    
+    private boolean startsWithIgnoreCase(String str, String prefix) {
+        return str.toLowerCase().startsWith(prefix.toLowerCase());
+    }
 
+    private boolean endsWithIgnoreCase(String str, String suffix) {
+        return suffix.length() > 1 && str.toLowerCase().endsWith(suffix.toLowerCase());
+    }
+
+    private void showDataCboLocTinhTrang() {
+        String[] gt = {"", "Làm việc", "Nghỉ việc"};
+        for (String string : gt) {
+            cbbLocTT.addItem(string);
+        }
+    }
+
+    private void showDataCboLocChucVu() {
+        String[] gt = {"", "Nhân viên", "Quản lý"};
+        for (String string : gt) {
+            cbbLocCV.addItem(string);
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton ClearFormPGG;
@@ -1123,6 +1703,8 @@ public class ViewHeThong extends javax.swing.JPanel {
     private javax.swing.JButton btnThemNV;
     private javax.swing.JButton btnThemPGG;
     private javax.swing.JButton btnVoHieuHoaPGG;
+    private javax.swing.ButtonGroup buttonGroup1;
+    private javax.swing.ButtonGroup buttonGroup2;
     private javax.swing.JComboBox<String> cbbChucVu;
     private javax.swing.JComboBox<String> cbbLocCV;
     private javax.swing.JComboBox<String> cbbLocTT;
@@ -1199,4 +1781,269 @@ public class ViewHeThong extends javax.swing.JPanel {
     private javax.swing.JTextField txtTimKiem;
     private javax.swing.JTextField txtTimKiemHT;
     // End of variables declaration//GEN-END:variables
+    private void loadDataToTable(List<PhieuGiamGiaVM> list) {
+        DefaultTableModel dtm = new DefaultTableModel();
+        dtm = (DefaultTableModel) tblQLPGGVM.getModel();
+        dtm.setRowCount(0);
+        List<PhieuGiamGiaVM> lst = list;
+        for (PhieuGiamGiaVM pggvm : lst) {
+            dtm.addRow(new Object[]{
+                pggvm.getMa(),
+                pggvm.getTen(),
+                pggvm.getNgaybatdau(),
+                pggvm.getNgayketthuc(),
+                pggvm.getLuotsudung(),
+                pggvm.getDieukhoan(),
+                pggvm.getGiatri(),
+                pggvm.getNgay(),});
+        }
+    }
+
+    private void loadDataToTableNV(List<NhanVienVM> lstnv) {
+        DefaultTableModel dtm = new DefaultTableModel();
+        dtm = (DefaultTableModel) tblQLNVVM.getModel();
+        dtm.setRowCount(0);
+        List<NhanVienVM> lst = lstnv;
+        for (NhanVienVM nvvm : lst) {
+            dtm.addRow(new Object[]{
+                nvvm.getMa(),
+                nvvm.getHoten(),
+                nvvm.getgt(),
+                nvvm.getSdt(),
+                nvvm.getCccd(),
+                nvvm.getNgaysinh(),
+                nvvm.getDiachi(),
+                nvvm.getEmail(),
+                nvvm.getcv(),
+                nvvm.getTendn(),
+                nvvm.getMatkhau(),
+                nvvm.gettt()
+            });
+        }
+    }
+
+    private void loadPT(int ht, int c) {
+        DefaultTableModel dtm = new DefaultTableModel();
+        dtm = (DefaultTableModel) tblQLNVVM.getModel();
+        dtm.setRowCount(0);
+        List<QLNhanVien> lst = service.getPhanTrang(ht, c);
+        for (QLNhanVien nvvm : lst) {
+            dtm.addRow(new Object[]{
+                nvvm.getMa(),
+                nvvm.getTen(),
+                nvvm.getGioiTinh() == 1 ? "Nam" : "Nữ",
+                nvvm.getSdt(),
+                nvvm.getCccd(),
+                nvvm.getNgaySinh(),
+                nvvm.getDiaChi(),
+                nvvm.getEmail(),
+                nvvm.getChucVu() == 1 ? "Quản lý" : "Nhân viên",
+                nvvm.getTenDN(),
+                nvvm.getMatKhau(),
+                nvvm.getTrangThai() == 1 ? "Làm việc" : "Nghỉ việc"
+            });
+        }
+    }
+
+    public void updatePT() {
+        int totalItems = repository.getTotalItems();
+        int maxpage = (int) Math.ceil((double) totalItems / size);
+
+        if (ht > maxpage) {
+            ht = (maxpage == 0) ? 1 : maxpage;
+        }
+        lblSo.setText(ht + "/" + maxpage);
+    }
+
+    public void showDetail() {
+        Integer selectedRow = tblQLPGGVM.getSelectedRow();
+        txtMa.setText(tblQLPGGVM.getValueAt(selectedRow, 0).toString());
+        txtTen.setText(tblQLPGGVM.getValueAt(selectedRow, 1).toString());
+        String ngayBatDauValue = tblQLPGGVM.getValueAt(selectedRow, 2).toString();
+        String ngayKetThucValue = tblQLPGGVM.getValueAt(selectedRow, 3).toString();
+
+        // Định dạng ngày tháng
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        try {
+            // Chuyển đổi chuỗi thành đối tượng Date
+            Date ngayBatDau = dateFormat.parse(ngayBatDauValue);
+            Date ngayKetThuc = dateFormat.parse(ngayKetThucValue);
+
+            // Đặt giá trị cho JDateChooser
+            jDateNgayBatDau.setDate(ngayBatDau);
+            jDateNgayKetThuc.setDate(ngayKetThuc);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        txtLuotSuDung.setText(tblQLPGGVM.getValueAt(selectedRow, 4).toString());
+        txtDieuKhoan.setText(tblQLPGGVM.getValueAt(selectedRow, 5).toString());
+        txtGiaTri.setText(tblQLPGGVM.getValueAt(selectedRow, 6).toString());
+        if (selectedRow >= 0) {
+            String trangthai = (String) tblQLPGGVM.getValueAt(selectedRow, 7);
+            if (trangthai.equalsIgnoreCase("Đang hoạt động")) {
+                chkTrangThai.setSelected(true);
+            }
+            if (trangthai.equalsIgnoreCase("Ngừng hoạt động")) {
+                chkTrangThai.setSelected(false);
+            }
+        }
+
+    }
+
+    public void showDetailNV() {
+        Integer row = tblQLNVVM.getSelectedRow();
+        txtMaNV.setText(tblQLNVVM.getValueAt(row, 0).toString());
+        txtTenNV.setText(tblQLNVVM.getValueAt(row, 1).toString());
+        String gioiTinh = tblQLNVVM.getValueAt(row, 2).toString();
+        if (gioiTinh.equalsIgnoreCase("Nam")) {
+            rdoNam.setSelected(true);
+        } else if (gioiTinh.equalsIgnoreCase("Nữ")) {
+            rdoNu.setSelected(true);
+        }
+        txtSDTNV.setText(tblQLNVVM.getValueAt(row, 3).toString());
+        txtCCCD.setText(tblQLNVVM.getValueAt(row, 4).toString());
+        String ngaySinhValue = tblQLNVVM.getValueAt(row, 5).toString();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        try {
+            // Chuyển đổi chuỗi thành đối tượng Date
+            Date ngaySinh = dateFormat.parse(ngaySinhValue);
+
+            // Đặt giá trị cho JDateChooser
+            jDateNgaySinh.setDate(ngaySinh);
+        } catch (ParseException e) {
+            e.printStackTrace();
+        }
+        txtDiaChi.setText(tblQLNVVM.getValueAt(row, 6).toString());
+        txtEmailNV.setText(tblQLNVVM.getValueAt(row, 7).toString());
+        cbbChucVu.setSelectedItem(tblQLNVVM.getValueAt(row, 8).toString());
+        txtTenDangNhap.setText(tblQLNVVM.getValueAt(row, 9).toString());
+        txtMatKhau.setText(tblQLNVVM.getValueAt(row, 10).toString());
+
+        if (row >= 0) {
+            String trangthai = tblQLNVVM.getValueAt(row, 11).toString();
+            if (trangthai.equalsIgnoreCase("Làm việc")) {
+                chkTrangThaiNV.setSelected(true);
+            }
+            if (trangthai.equalsIgnoreCase("Nghỉ việc")) {
+                chkTrangThaiNV.setSelected(false);
+            }
+        }
+
+    }
+
+    public PhieuGiamGiaVM getPhieuGiamGiaVMFormInput() {
+        PhieuGiamGiaVM pggvm = new PhieuGiamGiaVM();
+        pggvm.setMa(txtMa.getText());
+        pggvm.setTen(txtTen.getText());
+        LocalDate ngaybatdau = null;
+        LocalDate ngayketthuc = null;
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+// Chuyển đổi Date sang String với định dạng "yyyy-MM-dd"
+        String batDau = dateFormat.format(jDateNgayBatDau.getDate());
+        String ketThuc = dateFormat.format(jDateNgayKetThuc.getDate());
+
+// Chuyển đổi String sang LocalDate
+        pggvm.setNgaybatdau(LocalDate.parse(batDau));
+        pggvm.setNgayketthuc(LocalDate.parse(ketThuc));
+
+        try {
+            int luotSuDung = Integer.parseInt(txtLuotSuDung.getText());
+            pggvm.setLuotsudung(luotSuDung);
+        } catch (NumberFormatException e) {
+            // Hiển thị thông báo lỗi sử dụng hộp thoại
+            JOptionPane.showMessageDialog(this, "Vui lòng nhập một số nguyên hợp lệ!", "Lỗi", JOptionPane.ERROR_MESSAGE);
+
+        }
+
+        pggvm.setDieukhoan(txtDieuKhoan.getText());
+        pggvm.setGiatri(Integer.parseInt(txtGiaTri.getText()));
+        boolean myBooleanValue = chkTrangThai.isSelected(); // Giả sử có một biến boolean
+        int trangThai = myBooleanValue ? 1 : 0; // Ép kiểu boolean thành int (1 nếu true, 0 nếu false)
+
+        pggvm.setTrangthai(trangThai);
+
+        return pggvm;
+    }
+
+    public NhanVienVM getNhanVienVMFormInput() {
+        NhanVienVM nvvm = new NhanVienVM();
+        nvvm.setMa(txtMaNV.getText());
+        nvvm.setHoten(txtTenNV.getText());
+        if (rdoNam.isSelected()) {
+            nvvm.setGioitinh(1);
+        } else {
+            nvvm.setGioitinh(0);
+        }
+        nvvm.setSdt(txtSDTNV.getText());
+        nvvm.setCccd(txtCCCD.getText());
+
+        LocalDate ngaySinh;
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+// Chuyển đổi Date sang String với định dạng "yyyy-MM-dd"
+        String ngayS = dateFormat.format(jDateNgaySinh.getDate());
+// Chuyển đổi String sang LocalDate
+        nvvm.setNgaysinh(LocalDate.parse(ngayS));
+        nvvm.setDiachi(txtDiaChi.getText());
+        nvvm.setEmail(txtEmailNV.getText());
+//        String selectedChucVuStr = cbbChucVu.getSelectedItem().toString(); // Chuyển đổi sang String
+//        int selectedChucVu = Integer.parseInt(selectedChucVuStr); // Chuyển đổi String sang int
+//        nvvm.setChucvu(selectedChucVu);
+        String chucvu = (String) cbbChucVu.getSelectedItem();
+        if (chucvu.equalsIgnoreCase("Nhân viên")) {
+            nvvm.setChucvu(1);
+        } else {
+            nvvm.setChucvu(0);
+        }
+
+        nvvm.setTendn(txtTenDangNhap.getText());
+        nvvm.setMatkhau(hashPassword(txtMatKhau.getText()));
+        boolean myBooleanValue = chkTrangThaiNV.isSelected(); // Giả sử có một biến boolean
+        int trangThainv = myBooleanValue ? 1 : 0; // Ép kiểu boolean thành int (1 nếu true, 0 nếu false)
+        nvvm.setTrangthai(trangThainv);
+
+        return nvvm;
+    }
+
+    public String getPhieuGiamGiaVMFormSelectedRow() {
+        Integer row = tblQLPGGVM.getSelectedRow();
+        String PhieuGiamGiaID = (String) tblQLPGGVM.getValueAt(row, 0);
+        return PhieuGiamGiaID;
+    }
+
+    public String getNhanVienVMFormSelectedRow() {
+        Integer row = tblQLNVVM.getSelectedRow();
+        String nhanVienID = (String) tblQLNVVM.getValueAt(row, 0);
+        return nhanVienID;
+    }
+
+    private void clearForm() {
+        txtMa.setText("");
+        txtTen.setText("");
+        jDateNgayBatDau.setDate(null);
+        jDateNgayKetThuc.setDate(null);
+        txtLuotSuDung.setText("");
+        txtGiaTri.setText("");
+        chkTrangThai.setSelected(false);
+        tblQLPGGVM.clearSelection();
+    }
+
+    private void clearFormNV() {
+        txtMaNV.setText("");
+        txtTenNV.setText("");
+        rdoNam.setSelected(true);
+        txtSDTNV.setText("");
+        txtCCCD.setText("");
+        jDateNgaySinh.setDate(null);
+        txtDiaChi.setText("");
+        txtEmailNV.setText("");
+        cbbChucVu.setSelectedIndex(0);
+        txtTenDangNhap.setText("");
+        txtMatKhau.setText("");
+        chkTrangThaiNV.setSelected(false);
+        tblQLNVVM.clearSelection();
+    }
 }

@@ -112,7 +112,7 @@ public class NhanVienVMRepository {
 
     public List<NhanVienVM> locChucVu(int chucvu) {
         String sql = "SELECT nv.MA, nv.HOTEN, nv.GIOTINH, nv.SDT, nv.CCCD, nv.NGAYSINH, nv.DIACHI, nv.EMAIL, nv.CHUCVU, tk.TENDANGNHAP, tk.MATKHAU, nv.TRANGTHAI "
-                + "FROM NHAN_VIEN nv JOIN TAI_KHOAN tk ON nv.ID = tk.ID_NV WHERE CHUVU = ?";
+                + "FROM NHAN_VIEN nv JOIN TAI_KHOAN tk ON nv.ID = tk.ID_NV WHERE CHUCVU = ?";
         try ( Connection connection = DBConnect.getConnection();  PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, chucvu);
             ResultSet rs = statement.executeQuery();
@@ -140,7 +140,7 @@ public class NhanVienVMRepository {
         String sql = "SELECT nv.MA, nv.HOTEN, nv.GIOTINH, nv.SDT, nv.CCCD, nv.NGAYSINH, nv.DIACHI, nv.EMAIL, nv.CHUCVU, tk.TENDANGNHAP, tk.MATKHAU, nv.TRANGTHAI\n"
                 + "FROM NHAN_VIEN nv\n"
                 + "JOIN TAI_KHOAN tk ON nv.ID = tk.ID_NV\n"
-                + "WHERE nv.CHUVU = ? AND nv.TRANGTHAI = ?;";
+                + "WHERE nv.CHUCVU = ? AND nv.TRANGTHAI = ?;";
         try ( Connection connection = DBConnect.getConnection();  PreparedStatement statement = connection.prepareStatement(sql)) {
             statement.setInt(1, chucVu);
             statement.setInt(2, trangThai);

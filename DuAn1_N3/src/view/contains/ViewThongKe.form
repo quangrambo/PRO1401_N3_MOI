@@ -61,7 +61,7 @@
         <Component class="javax.swing.JTable" name="jTable1">
           <Properties>
             <Property name="model" type="javax.swing.table.TableModel" editor="org.netbeans.modules.form.editors2.TableModelEditor">
-              <Table columnCount="10" rowCount="4">
+              <Table columnCount="8" rowCount="4">
                 <Column editable="true" title="M&#xe3; s&#x1ea3;n ph&#x1ea9;m" type="java.lang.String"/>
                 <Column editable="true" title="T&#xea;n S&#x1ea3;n Ph&#x1ea9;m" type="java.lang.String"/>
                 <Column editable="true" title="Lo&#x1ea1;i S&#x1ea3;n Ph&#x1ea9;m" type="java.lang.String"/>
@@ -70,8 +70,6 @@
                 <Column editable="true" title="Ch&#x1ea5;t Li&#x1ec7;u" type="java.lang.String"/>
                 <Column editable="true" title="K&#xed;ch C&#x1ee1;" type="java.lang.Object"/>
                 <Column editable="true" title="S&#x1ed1; L&#x1b0;&#x1ee3;ng" type="java.lang.Object"/>
-                <Column editable="true" title="Gi&#xe1; B&#xe1;n" type="java.lang.Object"/>
-                <Column editable="true" title="Doanh Thu" type="java.lang.Object"/>
               </Table>
             </Property>
           </Properties>

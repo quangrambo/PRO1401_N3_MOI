@@ -12,7 +12,7 @@ import java.sql.ResultSet;
 import java.sql.PreparedStatement;
 import java.util.ArrayList;
 import java.util.List;
-//import viewmodel.SanPhamThongKe;
+import viewmodel.SanPhamThongKe;
 
 /**
  *
@@ -132,7 +132,7 @@ public class SanPhamRepository {
         String sql = "select sum(ct.SOLUONG) as soluong from SAN_PHAM_CHI_TIET ct where ct.Ma= ?";
         if(type == 1){
             sql = "select sum(ct.SOLUONG) as soluong from SAN_PHAM_CHI_TIET ct \n" +
-        "inner join SAN_PHAM s on s.ID = ct.ID_SP where s.LOAISANPHAM = ?";
+        "inner join SAN_PHAM s on s.ID = ct.ID_SP where ct.LOAISANPHAM = ?";
         }
         try {
             Connection cnn = DBConnect.getConnection();
@@ -167,7 +167,7 @@ public class SanPhamRepository {
                 "inner join SAN_PHAM_CHI_TIET spct on spct.ID = ct.ID_SPCT\n" +
                 "inner join SAN_PHAM sp on sp.ID = spct.ID_SP\n" +
                 "inner join HOA_DON h on h.ID = ct.ID_HD\n" +
-                "where sp.LOAISANPHAM = ? and h.NGAYTAO >= ? and h.NGAYTAO <= ? and h.TRANGTHAI=1";
+                "where ct.LOAISANPHAM = ? and h.NGAYTAO >= ? and h.NGAYTAO <= ? and h.TRANGTHAI=1";
         }
         try {
             Connection cnn = DBConnect.getConnection();
@@ -211,71 +211,72 @@ public class SanPhamRepository {
         }
         return 0;
     }
-//    public List<SanPhamThongKe> sanPhamThongKeTC() {
-//        List<SanPhamThongKe> list = new ArrayList<>();
-//        String sql = "select spct.MA, sp.TEN, ct.KICHCO,ct.SOLUONG,spct.GIABAN, ct.DONGIA as doanhthu \n" +
-//                    "from HOA_DON_CT ct\n" +
-//                    "inner join SAN_PHAM_CHI_TIET spct on spct.ID = ct.ID_SPCT\n" +
-//                    "inner join SAN_PHAM sp on sp.ID = spct.ID_SP\n" +
-//                    "inner join HOA_DON h on h.ID = ct.ID_HD\n" +
-//                    "where h.TRANGTHAI = 1 ";
-//        
-//         try {
-//            Connection cnn = DBConnect.getConnection();
-//            PreparedStatement ps = cnn.prepareStatement(sql);
-//            
-//            ps.execute();
-//            ResultSet rs = ps.getResultSet();
-//            while(rs.next()){
-//                list.add(new SanPhamThongKe(rs.getString("MA"), rs.getString("TEN"),
-//                        rs.getString("KICHCO"), rs.getInt("SOLUONG"), rs.getInt("GIABAN"), rs.getInt("doanhthu")));
-//            }
-//                    
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return list;
-//    }
+    public List<SanPhamThongKe> sanPhamThongKeTC() {
+        List<SanPhamThongKe> list = new ArrayList<>();
+        String sql = "select spct.MA, sp.TEN,ct.LOAISANPHAM,ct.THUONGHIEU,ct.MAUSAC, ct.KICHCO,ct.CHATLIEU,ct.SOLUONG,spct.GIABAN, ct.DONGIA as doanhthu \n" +
+                    "from HOA_DON_CT ct\n" +
+                    "inner join SAN_PHAM_CHI_TIET spct on spct.ID = ct.ID_SPCT\n" +
+                    "inner join SAN_PHAM sp on sp.ID = spct.ID_SP\n" +
+                    "inner join HOA_DON h on h.ID = ct.ID_HD\n" +
+                    "where h.TRANGTHAI = 1 ";
+        
+         try {
+            Connection cnn = DBConnect.getConnection();
+            PreparedStatement ps = cnn.prepareStatement(sql);
+            
+            ps.execute();
+            ResultSet rs = ps.getResultSet();
+            while(rs.next()){
+                list.add(new SanPhamThongKe(rs.getString("MA"), rs.getString("TEN"),rs.getString("LOAISANPHAM"),rs.getString("THUONGHIEU"),
+                     rs.getString("MAUSAC"),   rs.getString("KICHCO"),rs.getString("CHATLIEU"), rs.getInt("SOLUONG"), rs.getInt("GIABAN"), rs.getInt("doanhthu")));
+            }
+                    
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
     
-//    public List<SanPhamThongKe> sanPhamThongKe(String ma, Date start, Date end, int type) {
-//        List<SanPhamThongKe> list = new ArrayList<>();
-//        String sql = "select spct.MA, sp.TEN, ct.KICHCO,ct.SOLUONG,spct.GIABAN, ct.DONGIA  as doanhthu \n" +
-//                    "from HOA_DON_CT ct\n" +
-//                    "inner join SAN_PHAM_CHI_TIET spct on spct.ID = ct.ID_SPCT\n" +
-//                    "inner join SAN_PHAM sp on sp.ID = spct.ID_SP\n" +
-//                    "inner join HOA_DON h on h.ID = ct.ID_HD\n" +
-//                    "where spct.MA = ? and h.NGAYTHANHTOAN >= ? and h.NGAYTHANHTOAN <= ? and h.TRANGTHAI=1";
-//        if(type == 1){
-//            sql = "select spct.MA, sp.TEN, ct.KICHCO,ct.SOLUONG,spct.GIABAN, ct.DONGIA as doanhthu \n" +
-//                "from HOA_DON_CT ct\n" +
-//                "inner join SAN_PHAM_CHI_TIET spct on spct.ID = ct.ID_SPCT\n" +
-//                "inner join SAN_PHAM sp on sp.ID = spct.ID_SP\n" +
-//                "inner join HOA_DON h on h.ID = ct.ID_HD\n" +
-//                "where sp.LOAISANPHAM = ? and h.NGAYTHANHTOAN >= ? and h.NGAYTHANHTOAN <= ? and h.TRANGTHAI=1";
-//        }
-//         try {
-//            Connection cnn = DBConnect.getConnection();
-//            PreparedStatement ps = cnn.prepareStatement(sql);
-//            if(type == 1){
-//                ps.setString(1,ma);
-//            }
-//            else{
-//                ps.setString(1,ma);
-//            }
-//            ps.setDate(2, start);
-//            ps.setDate(3, end);
-//            ps.execute();
-//            ResultSet rs = ps.getResultSet();
-//            while(rs.next()){
-//                list.add(new SanPhamThongKe(rs.getString("MA"), rs.getString("TEN"),
-//                        rs.getString("KICHCO"), rs.getInt("SOLUONG"), rs.getInt("GIABAN"), rs.getInt("doanhthu")));
-//            }
-//                    
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//        return list;
-//    }
+    public List<SanPhamThongKe> sanPhamThongKe(String ma, Date start, Date end, int type) {
+        List<SanPhamThongKe> list = new ArrayList<>();
+        String sql = "select spct.MA, sp.TEN,ct.LOAISANPHAM,ct.THUONGHIEU,ct.MAUSAC, ct.KICHCO,ct.CHATLIEU,ct.SOLUONG,spct.GIABAN, ct.DONGIA as doanhthu \n" +
+                    "from HOA_DON_CT ct\n" +
+                    "inner join SAN_PHAM_CHI_TIET spct on spct.ID = ct.ID_SPCT\n" +
+                    "inner join SAN_PHAM sp on sp.ID = spct.ID_SP\n" +
+                    "inner join HOA_DON h on h.ID = ct.ID_HD\n" +
+                    "where spct.MA = ? and  h.NGAYTHANHTOAN >= ? and h.NGAYTHANHTOAN <= ? and h.TRANGTHAI=1 ";
+        if(type == 1){
+            sql = "select spct.MA, sp.TEN,ct.LOAISANPHAM,ct.THUONGHIEU,ct.MAUSAC, ct.KICHCO,ct.CHATLIEU,ct.SOLUONG,spct.GIABAN, ct.DONGIA as doanhthu \n" +
+                "from HOA_DON_CT ct\n" +
+                "inner join SAN_PHAM_CHI_TIET spct on spct.ID = ct.ID_SPCT\n" +
+                "inner join SAN_PHAM sp on sp.ID = spct.ID_SP\n" +
+                "inner join HOA_DON h on h.ID = ct.ID_HD\n" +
+                "where ct.LOAISANPHAM = ? and h.NGAYTHANHTOAN >= ? and h.NGAYTHANHTOAN <= ? and h.TRANGTHAI=1";
+        }
+         try {
+            Connection cnn = DBConnect.getConnection();
+            PreparedStatement ps = cnn.prepareStatement(sql);
+            if(type == 1){
+                ps.setString(1,ma);
+            }
+            else{
+                ps.setString(1,ma);
+            }
+            ps.setDate(2, start);
+            ps.setDate(3, end);
+            ps.execute();
+            ResultSet rs = ps.getResultSet();
+            while(rs.next()){
+                list.add(new SanPhamThongKe(rs.getString("MA"), rs.getString("TEN"),rs.getString("LOAISANPHAM"),rs.getString("THUONGHIEU"),
+                     rs.getString("MAUSAC"),   rs.getString("KICHCO"),rs.getString("CHATLIEU"), rs.getInt("SOLUONG"), rs.getInt("GIABAN"), rs.getInt("doanhthu")));
+          
+                 }
+                    
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return list;
+    }
     
     public Integer tinhDoanhThu(Date start, Date end) {
         String sql = "select SUM(h.TIENKHACHPHAITRA ) as tong from HOA_DON h \n" +
