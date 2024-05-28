@@ -4,17 +4,61 @@
  */
 package view.contains;
 
+import java.sql.Date;
+import java.text.DecimalFormat;
+import java.time.LocalDate;
+import java.util.List;
+import javax.swing.JFrame;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import service.SanPhamService;
+import service.impl.SanPhamServiceImpl;
+import viewmodel.SanPhamThongKe;
+
 /**
  *
  * @author Admin
  */
 public class ViewThongKe extends javax.swing.JPanel {
+        private SanPhamService sanPhamService = new SanPhamServiceImpl();
+
 
     /**
      * Creates new form ViewThongKe1
      */
     public ViewThongKe() {
         initComponents();
+         thongKeBD();
+
+    }
+    private void thongKeBD() {
+        
+        Integer soLuongDaBan = sanPhamService.tongSpDaBanTC();
+        jLabel12.setText(soLuongDaBan.toString() + " SP");
+        Integer tong = sanPhamService.tinhDoanhThu(Date.valueOf("2000-01-01"), Date.valueOf("2100-01-01"));
+        jLabel31.setText(formatMoney(tong) + " VNĐ");
+        startDate5.setDate(Date.valueOf(LocalDate.now()));
+        Integer doanhThu = sanPhamService.tinhDoanhThu1(Date.valueOf(LocalDate.now()));
+        jLabel25.setText(formatMoney(doanhThu) + " VNĐ");
+        List<SanPhamThongKe> list = sanPhamService.sanPhamThongKeTC();
+        Integer soLuong = sanPhamService.tongSpTC();
+        jLabel10.setText(soLuong.toString() + " SP");
+        loadTable(list);
+    }
+    public String formatMoney(int money) {
+        DecimalFormat formatter = new DecimalFormat("###,###,###");
+        return formatter.format(money);
+    }
+    public void loadTable(List<SanPhamThongKe> list) {
+        int rowCount = jTable1.getModel().getRowCount();
+        for (int i = rowCount - 1; i >= 0; i--) {
+            ((DefaultTableModel) jTable1.getModel()).removeRow(i);
+        }
+        for (SanPhamThongKe p : list) {
+            ((DefaultTableModel) jTable1.getModel()).addRow(new Object[]{p.getMaSp(), p.getTenSp(),p.getLoaiSp(),p.getThuongHieu(),p.getMauSac(),p.getChatLieu(), p.getKichCo(),
+                p.getSoLuongBan()});
+        }
+        jTable1.setRowHeight(25);
     }
 
     /**
@@ -70,17 +114,17 @@ public class ViewThongKe extends javax.swing.JPanel {
 
         jTable1.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null},
-                {null, null, null, null, null, null, null, null, null, null}
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null},
+                {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Mã sản phẩm", "Tên Sản Phẩm", "Loại Sản Phẩm", "Thương Hiệu", "Màu Sắc", "Chất Liệu", "Kích Cỡ", "Số Lượng", "Giá Bán", "Doanh Thu"
+                "Mã sản phẩm", "Tên Sản Phẩm", "Loại Sản Phẩm", "Thương Hiệu", "Màu Sắc", "Chất Liệu", "Kích Cỡ", "Số Lượng"
             }
         ) {
             Class[] types = new Class [] {
-                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class, java.lang.Object.class
+                java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.String.class, java.lang.Object.class, java.lang.Object.class
             };
 
             public Class getColumnClass(int columnIndex) {
@@ -552,15 +596,51 @@ public class ViewThongKe extends javax.swing.JPanel {
     }//GEN-LAST:event_jComboBox1ActionPerformed
 
     private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
-
+            String loai = (String) jComboBox1.getSelectedItem();
+        Date start = null;
+        Date end = null;
+        if (startDate.getDate() == null || startDate1.getDate() == null) {
+            start = Date.valueOf("2000-01-01");
+            end = Date.valueOf("2100-01-01");
+        }
+        if (startDate.getDate() != null || startDate1.getDate() != null) {
+            start = new Date(startDate.getDate().getTime());
+            end = new Date(startDate1.getDate().getTime());
+        }
+        if (loai.equalsIgnoreCase("Mã sản phẩm")) {
+            Integer soLuong = sanPhamService.tongSp(jTextField1.getText(), 0);
+            jLabel10.setText(soLuong.toString() + " SP");
+            Integer soLuongDaBan = sanPhamService.tongSpDaBan(jTextField1.getText(), start, end, 0);
+            jLabel12.setText(soLuongDaBan.toString() + " SP");
+            List<SanPhamThongKe> list = sanPhamService.sanPhamThongKe(jTextField1.getText(), start, end, 0);
+            loadTable(list);
+        }
+        if (loai.equalsIgnoreCase("Loại sản phẩm")) {
+            Integer soLuong = sanPhamService.tongSp(jTextField1.getText(), 1);
+            jLabel10.setText(soLuong.toString() + " SP");
+            Integer soLuongDaBan = sanPhamService.tongSpDaBan(jTextField1.getText(), start, end, 1);
+            jLabel12.setText(soLuongDaBan.toString() + " SP");
+            List<SanPhamThongKe> list = sanPhamService.sanPhamThongKe(jTextField1.getText(), start, end, 1);
+            loadTable(list);
+        }
     }//GEN-LAST:event_jButton2ActionPerformed
-
+    public void tinh7Ngay() {
+        Date start = new Date(System.currentTimeMillis());
+        Date end = null;
+        Long old = start.getTime() - (1000 * 60 * 60 * 24 * 7);
+        end = new Date(old);
+        Integer tong = sanPhamService.tinhDoanhThu(start, end);
+//        jLabel27.setText(formatMoney(tong) + " VNĐ");
+    }
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
+        thongKeBD();
 
     }//GEN-LAST:event_jButton12ActionPerformed
 
     private void jComboBox3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jComboBox3ActionPerformed
-
+        String val = (String) jComboBox3.getSelectedItem();
+        Integer doanhThu = sanPhamService.tinhDoanhThu2(Integer.valueOf(val));
+        jLabel29.setText(formatMoney(doanhThu) + " VNĐ");
     }//GEN-LAST:event_jComboBox3ActionPerformed
 
     private void jComboBox3PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_jComboBox3PropertyChange
@@ -568,11 +648,26 @@ public class ViewThongKe extends javax.swing.JPanel {
     }//GEN-LAST:event_jComboBox3PropertyChange
 
     private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
-
+        Date start = null;
+        Date end = null;
+        if (startDate6.getDate() == null || startDate7.getDate() == null) {
+            JOptionPane.showMessageDialog(new JFrame(), "Ngày không được để trống", "Dialog", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (startDate6.getDate() != null || startDate7.getDate() != null) {
+            start = new Date(startDate6.getDate().getTime());
+            end = new Date(startDate7.getDate().getTime());
+        }
+        Integer tong = sanPhamService.tinhDoanhThu(start, end);
+        jLabel31.setText(formatMoney(tong) + " VNĐ");
     }//GEN-LAST:event_jButton4ActionPerformed
 
     private void startDate5PropertyChange(java.beans.PropertyChangeEvent evt) {//GEN-FIRST:event_startDate5PropertyChange
-
+        if (startDate5.getDate() != null) {
+            Date start = new Date(startDate5.getDate().getTime());
+            Integer doanhThu = sanPhamService.tinhDoanhThu1(start);
+            jLabel25.setText(formatMoney(doanhThu) + " VNĐ");
+        }
     }//GEN-LAST:event_startDate5PropertyChange
 
 

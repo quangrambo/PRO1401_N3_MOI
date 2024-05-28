@@ -625,7 +625,7 @@ if (index >= 0 && index < listHDTable.size()) {
                 {null, null, null, null, null, null, null, null}
             },
             new String [] {
-                "Tên SP", "Loại SP", "Thương Hiệu", "Màu Sắc", "Kích Cỡ", "Chất Liệu", "Số Lượng", "Đơn Giá"
+                "Tên SP", "Loại SP", "Thương Hiệu", "Màu Sắc", "Kích Cỡ", "Chất Liệu", "Số Lượng", "Tổng Tiền"
             }
         ) {
             Class[] types = new Class [] {

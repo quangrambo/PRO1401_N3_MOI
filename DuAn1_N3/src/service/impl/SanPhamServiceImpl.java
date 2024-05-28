@@ -10,7 +10,7 @@ import java.util.List;
 import model.SanPhamModel;
 import repository.SanPhamRepository;
 import service.SanPhamService;
-//import viewmodel.SanPhamThongKe;
+import viewmodel.SanPhamThongKe;
 import viewmodel.SanPhamViewModel;
 
 /**
@@ -72,10 +72,10 @@ public class SanPhamServiceImpl implements SanPhamService{
         return spRpo.tongSpDaBan(ma, start, end, type);
     }
 
-//    @Override
-//    public List<SanPhamThongKe> sanPhamThongKe(String ma, Date start, Date end, int type) {
-//        return spRpo.sanPhamThongKe(ma, start, end, type);
-//    }
+    @Override
+    public List<SanPhamThongKe> sanPhamThongKe(String ma, Date start, Date end, int type) {
+        return spRpo.sanPhamThongKe(ma, start, end, type);
+    }
 
     @Override
     public Integer tinhDoanhThu(Date start, Date end) {
@@ -92,11 +92,11 @@ public class SanPhamServiceImpl implements SanPhamService{
         return spRpo.tinhDoanhThu2(month);
     }
 
-//    @Override
-//    public List<SanPhamThongKe> sanPhamThongKeTC() {
-//        return spRpo.sanPhamThongKeTC();
-//
-//    }
+    @Override
+    public List<SanPhamThongKe> sanPhamThongKeTC() {
+        return spRpo.sanPhamThongKeTC();
+
+    }
 
     @Override
     public Integer tongSpTC() {

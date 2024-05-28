@@ -586,7 +586,7 @@ GO
 select ID, MA, HOTEN, EMAIL, SDT, GIOTINH, NGAYSINH, DIACHI, TRANGTHAI from KHACH_HANG
 select * from SAN_PHAM
 select * from SAN_PHAM_CHI_TIET
-select * from HOA_DON where TRANGTHAI = 1
+select * from HOA_DON where TRANGTHAI = 0
 select * from HOA_DON_CT
 select * from TAI_KHOAN
 select * from THUONG_HIEU
@@ -670,3 +670,23 @@ SELECT SAN_PHAM_CHI_TIET.[ID]
                          ,[SOLUONG]
                          ,[DONGIA]
                      FROM [dbo].[HOA_DON_CT]
+
+					  SELECT HOA_DON.[ID]
+                                                     ,HOA_DON.[MA]
+                                                     ,NHAN_VIEN.HOTEN
+                                                     ,KHACH_HANG.HOTEN
+                                                     ,[MAPGG]
+                                                     ,[NGAYTAO]
+                                                     ,[NGAYTHANHTOAN]
+                                                     ,[TIENGIAM]
+                                                     ,[TONGTIEN]
+                                                     ,[TIENKHACHDUA]
+                                                     ,[TIENTHUA]
+                                                     ,[TIENKHACHPHAITRA]
+                                                     ,[HINHTHUCTHANHTOAN]
+                                                     ,[MACHUYENKHOAN]
+                                                     ,HOA_DON.[TRANGTHAI]
+                                                 FROM [dbo].[HOA_DON]
+                                                 join KHACH_HANG on KHACH_HANG.ID=HOA_DON.ID_KH
+                                                 join NHAN_VIEN on NHAN_VIEN.ID=HOA_DON.ID_NV
+                                              order by HOA_DON.ID Desc

@@ -24,7 +24,7 @@ public interface KhachHangService {
 
     public ArrayList<QLKhachHang> TimKiem(String name);
 
-//    public List<QLKhachHang> getPhanTrang(int offset, int fetchSize);
+    public List<QLKhachHang> getPhanTrang(int offset, int fetchSize);
 
     void khachHangTaoHD(int id);
 
