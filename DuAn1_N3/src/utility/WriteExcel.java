@@ -50,6 +50,7 @@ public class WriteExcel {
     public static final int COLUMN_INDEX_SOLUONG = 3;
     public static final int COLUMN_INDEX_DONGIA = 4;
     private static CellStyle cellStyleFormatNumber = null; // lưu trữ 1 ô, màu sắc các thứ
+    
 
     private HDTableService service=new HDTableSeriveImpl();
     private List<HDTableVIewModel> listHD=new ArrayList<>();
@@ -96,7 +97,12 @@ public class WriteExcel {
         rowIndex++;
         Row row = sheet.createRow(rowIndex);
         writeHD(hoaDon, row);
-        
+        rowIndex++;
+        sheet.createRow(rowIndex);
+        rowIndex++;
+        sheet.createRow(rowIndex);
+        rowIndex++;
+        sheet.createRow(rowIndex);
         rowIndex++;
         sheet.createRow(rowIndex);
         rowIndex++;
@@ -240,6 +246,10 @@ public class WriteExcel {
         cell = row.createCell(COLUMN_INDEX_TENSP);
         cell.setCellStyle(cellStyle);
         cell.setCellValue("Tên sản phẩm");
+        
+//        cell = row.createCell(COLUMN_INDEX_THUONGHIEU);
+//        cell.setCellStyle(cellStyle);
+//        cell.setCellValue("Thương Hiệu");
         
         cell = row.createCell(COLUMN_INDEX_KICHCO);
         cell.setCellStyle(cellStyle);
