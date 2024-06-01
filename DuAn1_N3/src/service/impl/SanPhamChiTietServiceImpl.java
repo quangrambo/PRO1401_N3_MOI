@@ -35,23 +35,46 @@ public class SanPhamChiTietServiceImpl implements SanPhamChiTietService{
 
     @Override
     public List<SPCTViewModel> getAllPhanTrang(int offset, int fetchSize) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+       List<SPCTModel> listAll = spRepo.getAllPhanTrang(offset, fetchSize);
+        List<SPCTViewModel> listTable = new ArrayList<>();
+        for (SPCTModel spct : listAll) {
+            listTable.add(new SPCTViewModel(spct.getId(), spct.getMa(), spct.getMaVach(), spct.getMoTa(), spct.getSoLuong(), 
+                    spct.getTenSP(), spct.getThuongHieu(), spct.getLoaiSanPham(), spct.getKichCo(), spct.getMauSac(), 
+                    spct.getChatLieu(), spct.getGiaNhap(), spct.getGiaBan(), spct.isTrangThai()));
+        }
+        return listTable;}
 
     @Override
     public String getAdd(SanPhamChiTietViewModel spct) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+       SanPhamChiTietModel sp = new SanPhamChiTietModel(spct.getId(), spct.getMa(), spct.getMaVach(), spct.getMoTa(), spct.getSoLuong(), spct.getIdSP(), spct.getIdTH(), spct.getIdLSP(), spct.getIdKC(), spct.getIdMS(), spct.getIdCL(), spct.getGiaNhap(), spct.getGiaBan(), spct.isTrangThai());
+        boolean them = spctRepo.getAdd(sp);
+        if (them) {
+            return "Them thanh cong";
+        } else {
+            return "Them that bai";
+        }}
 
     @Override
     public String getUpdate(SanPhamChiTietViewModel spct, int id) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+        SanPhamChiTietModel sp = new SanPhamChiTietModel(spct.getId(), 
+                spct.getMa(), spct.getMaVach(), spct.getMoTa(), spct.getSoLuong(), spct.getIdSP(),
+                spct.getIdTH(), spct.getIdLSP(), spct.getIdKC(), spct.getIdMS(), spct.getIdCL(), spct.getGiaNhap(), 
+                spct.getGiaBan(), spct.isTrangThai());
+        boolean sua = spctRepo.getUpdate(sp, id);
+        if (sua) {
+            return "Sua thanh cong";
+        } else {
+            return "Sua that bai";
+        }}
 
     @Override
     public String getDelete(int id) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+        boolean xoa = spctRepo.getDelete(id);
+        if (xoa) {
+            return "Xoa thanh cong";
+        } else {
+            return "Xoa that bai";
+        }}
 
     @Override
     public List<SPCTViewModel> getAllTable() {
@@ -64,13 +87,24 @@ List<SPCTModel> listAll = spRepo.getAll();
 
     @Override
     public List<SPCTViewModel> getSearch(String ma, String mavach, String moTa, String soLuong, String tenSp, String tenTH, String tenLSP, String tenKichCo, String mauSac, String chatLieu, String giaNhap, String giaBan, String trangThai) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+        List<SPCTModel> listSearch = spRepo.getSearch(ma, mavach, moTa, soLuong, tenSp, tenTH, tenLSP, tenKichCo, mauSac, 
+                chatLieu, giaNhap, giaBan, trangThai);
+        List<SPCTViewModel> listTable = new ArrayList<>();
+        for (SPCTModel spct : listSearch) {
+            listTable.add(new SPCTViewModel(spct.getId(), spct.getMa(), spct.getMaVach(), spct.getMoTa(), spct.getSoLuong(), 
+                    spct.getLoaiSanPham(), spct.getThuongHieu(), spct.getLoaiSanPham(), spct.getKichCo(), spct.getMauSac(), 
+                    spct.getChatLieu(), spct.getGiaNhap(), spct.getGiaBan(), spct.isTrangThai()));
+        }
+        return listTable;}
 
     @Override
     public String getUpdateSoLuong(int soLuong, int id, int giaNhap) {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
-    }
+       boolean sua = spctRepo.getUpdateSoLuong(soLuong, id, giaNhap);
+        if (sua) {
+            return "Sua Thành Công";
+        } else {
+            return "Sua thất bại";
+        }}
 
     @Override
     public String getUpdateSLMua(int soLuong, int id) {

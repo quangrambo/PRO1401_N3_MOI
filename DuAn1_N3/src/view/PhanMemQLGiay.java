@@ -12,12 +12,17 @@ import view.contains.ViewSanPham;
 import view.contains.ViewKhachHang;
 import view.contains.ViewHoaDon;
 import view.contains.ViewHeThong;
-import view.contains.ViewBanHang;
 import javax.swing.JPanel;
+import model.TaiKhoan;
+import service.NhanVienService;
 import service.NhanVienVMService;
+import service.TaiKhoanService;
+import service.impl.NhanVienServiceImpl;
+import service.impl.TaiKhoanServiceImpl;
 import view.contains.ViewBanHang;
 import viewmodel.NhanVienVM;
 import viewmodel.QLNhanVien;
+import viewmodel.QLTaiKhoan;
 
 
 
@@ -27,12 +32,20 @@ import viewmodel.QLNhanVien;
  * @author pc
  */
 public class PhanMemQLGiay extends javax.swing.JFrame {
-  private JPanel panel;
-  private List<NhanVienVM> lstNhanVienVM;
+ private JPanel panel;
+    private List<NhanVienVM> lstNhanVienVM;
     private NhanVienVM nhanVienVM;
     private NhanVienVMService nhanVienVMService;
+
+    private List<QLTaiKhoan> listTaiKhoan = new ArrayList<>();
+    private TaiKhoanService taiKhoanService = new TaiKhoanServiceImpl();
+    private QLTaiKhoan taiKhoan;
+    private TaiKhoan taiKhoanSua;
+
     private NhanVienVM nhanVien;
     private List<QLNhanVien> listnhanVien = new ArrayList<>();
+    private NhanVienService serviceNV = new NhanVienServiceImpl();
+    private int idNV = 0;
     
 
     
@@ -50,9 +63,27 @@ public class PhanMemQLGiay extends javax.swing.JFrame {
         jlbCV.setText("("+nv.getcv()+")");
         nhanVienVMService = new NhanVienVMService();
         lstNhanVienVM = nhanVienVMService.getAllNVVM();
-
+        listnhanVien = serviceNV.getList();
+        for (QLNhanVien nv1 : listnhanVien) {
+            if (nv1.getMa().trim().equals(nhanVienVM.getMa())) {
+                idNV = nv1.getId();
+            }
+        }
+        listTaiKhoan = taiKhoanService.getList();
+        for (QLTaiKhoan tk : listTaiKhoan) {
+            if (tk.getIdNV() == idNV) {
+                taiKhoan = tk;
+            }
          
-        
+        }
+    }
+    private boolean setQuyen(NhanVienVM nv) {
+        if (nv.getChucvu() == 1) {
+            JOptionPane.showMessageDialog(this, "Bạn chưa được cấp quyền");
+            return false;
+        } else {
+            return true;
+        }
     }
 
     /**
@@ -488,14 +519,19 @@ public class PhanMemQLGiay extends javax.swing.JFrame {
     }//GEN-LAST:event_btnHoaDonActionPerformed
 
     private void btnThongKeActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThongKeActionPerformed
-        panel = new ViewThongKe();
-        setPanel(panel);
+        if (setQuyen(nhanVienVM)) {
+            panel = new ViewThongKe();
+            setPanel(panel);
+        }
+
         
     }//GEN-LAST:event_btnThongKeActionPerformed
 
     private void btnHeThongActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHeThongActionPerformed
-       panel = new ViewHeThong();
-        setPanel(panel);
+       if (setQuyen(nhanVienVM)) {
+            panel = new ViewHeThong();
+            setPanel(panel);
+        }
     }//GEN-LAST:event_btnHeThongActionPerformed
 
     private void btnDoiMatKhauActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnDoiMatKhauActionPerformed

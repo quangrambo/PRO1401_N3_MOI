@@ -52,7 +52,7 @@ public class SanPhamRepository {
                                ,[TEN]
                                ,[SOLUONG])
                          VALUES
-                               (?,?,?,?)
+                               (?,?,?)
                     """;
         try ( Connection con = DBConnect.getConnection();  PreparedStatement pr = con.prepareStatement(qery)) {
             pr.setObject(1, sp.getMa());
@@ -72,7 +72,6 @@ public class SanPhamRepository {
                     UPDATE [dbo].[SAN_PHAM]
                        SET [MA] = ?
                           ,[TEN] = ?
-                      
                           ,[SOLUONG] =?
                      WHERE id=?
                     """;
