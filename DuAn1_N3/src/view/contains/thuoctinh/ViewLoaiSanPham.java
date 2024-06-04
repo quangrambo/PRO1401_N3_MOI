@@ -4,17 +4,61 @@
  */
 package view.contains.thuoctinh;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import service.LoaiSanPhamService;
+import service.impl.LoaiSanPhamServiceImpl;
+import viewmodel.LoaiSanPhamViewModel;
+
 /**
  *
  * @author Thang
  */
 public class ViewLoaiSanPham extends javax.swing.JFrame {
-
+List<LoaiSanPhamViewModel> listLTT=new ArrayList<>();
+    LoaiSanPhamService service=new LoaiSanPhamServiceImpl();
+    DefaultTableModel dtm=new DefaultTableModel();
     /**
      * Creates new form ViewLoaiSanPham
      */
     public ViewLoaiSanPham() {
         initComponents();
+         listLTT=service.getAll();
+        dtm=(DefaultTableModel) this.tblLoaiSanPham.getModel();
+        showDataTable(listLTT);
+        this.setLocationRelativeTo(null);
+    }
+    private void showDataTable(List<LoaiSanPhamViewModel> listShow) {
+        dtm.setRowCount(0);
+        for (LoaiSanPhamViewModel ltt : listShow) {
+            dtm.addRow(ltt.toRowData());
+        }
+    }
+    private void showDataFrom(int index) {
+        LoaiSanPhamViewModel ltt = listLTT.get(index);
+        txtMa.setText(ltt.getMa());
+        txtTen.setText(ltt.getTen());
+
+    }
+
+    private LoaiSanPhamViewModel nhapDuLieu() {
+        LoaiSanPhamViewModel ltt = new LoaiSanPhamViewModel();
+        int i=listLTT.size() - 1 ;
+        ltt.setMa("LSP"+listLTT.get(i).getId());
+        ltt.setTen(txtTen.getText());
+        return ltt;
+    }
+
+    private LoaiSanPhamViewModel updateData() {
+        LoaiSanPhamViewModel ltt = new LoaiSanPhamViewModel();
+        ltt.setMa(txtMa.getText());
+        ltt.setTen(txtTen.getText());
+        return ltt;
+    }
+    private boolean validateTable() {
+        return true;
     }
 
     /**
@@ -29,12 +73,12 @@ public class ViewLoaiSanPham extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        txtMa = new javax.swing.JTextField();
+        txtTen = new javax.swing.JTextField();
+        btnThem = new javax.swing.JButton();
+        btnSua = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblLoaiSanPham = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -47,21 +91,21 @@ public class ViewLoaiSanPham extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jLabel3.setText("Tên Loại Sản Phẩm");
 
-        jButton1.setText("Thêm");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnThem.setText("Thêm");
+        btnThem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnThemActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Sửa");
-        jButton2.addActionListener(new java.awt.event.ActionListener() {
+        btnSua.setText("Sửa");
+        btnSua.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton2ActionPerformed(evt);
+                btnSuaActionPerformed(evt);
             }
         });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblLoaiSanPham.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null},
                 {null, null},
@@ -72,7 +116,12 @@ public class ViewLoaiSanPham extends javax.swing.JFrame {
                 "Mã Loại Sản Phẩm", "Tên Loại Sản Phẩm"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        tblLoaiSanPham.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblLoaiSanPhamMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tblLoaiSanPham);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -89,9 +138,9 @@ public class ViewLoaiSanPham extends javax.swing.JFrame {
                                 .addGap(66, 66, 66)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                                     .addGroup(javax.swing.GroupLayout.Alignment.LEADING, layout.createSequentialGroup()
-                                        .addComponent(jButton1)
+                                        .addComponent(btnThem)
                                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 189, Short.MAX_VALUE)
-                                        .addComponent(jButton2)
+                                        .addComponent(btnSua)
                                         .addGap(21, 21, 21))
                                     .addGroup(layout.createSequentialGroup()
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -99,8 +148,8 @@ public class ViewLoaiSanPham extends javax.swing.JFrame {
                                             .addComponent(jLabel3))
                                         .addGap(23, 23, 23)
                                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                            .addComponent(jTextField1)
-                                            .addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE))))))
+                                            .addComponent(txtMa)
+                                            .addComponent(txtTen, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE))))))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 10, Short.MAX_VALUE)
@@ -115,15 +164,15 @@ public class ViewLoaiSanPham extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtMa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(43, 43, 43)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtTen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(54, 54, 54)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(btnThem)
+                    .addComponent(btnSua))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(30, Short.MAX_VALUE))
@@ -132,13 +181,39 @@ public class ViewLoaiSanPham extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+         if (validateTable()) {
+            int sul = JOptionPane.showConfirmDialog(this, "Co muon them ko");
+            if (sul == 0) {
+                LoaiSanPhamViewModel ltt = nhapDuLieu();
+                JOptionPane.showMessageDialog(this, service.getAdd(ltt));
+                listLTT = service.getAll();
+                showDataTable(listLTT);
+            }
+        }
+    }//GEN-LAST:event_btnThemActionPerformed
 
-    private void jButton2ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton2ActionPerformed
+    private void btnSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuaActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton2ActionPerformed
+        if (validateTable()) {
+            int index = tblLoaiSanPham.getSelectedRow();
+            LoaiSanPhamViewModel ltt = updateData();
+            LoaiSanPhamViewModel ltt1 = listLTT.get(index);
+            JOptionPane.showMessageDialog(this, service.getUpdate(ltt, ltt1.getId()));
+            listLTT = service.getAll();
+            showDataTable(listLTT);
+
+        }
+    }//GEN-LAST:event_btnSuaActionPerformed
+
+    private void tblLoaiSanPhamMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblLoaiSanPhamMouseClicked
+        // TODO add your handling code here:
+        int index = tblLoaiSanPham.getSelectedRow();
+        if (index >= 0 && index <= listLTT.size()) {
+            showDataFrom(index);
+        }
+    }//GEN-LAST:event_tblLoaiSanPhamMouseClicked
 
     /**
      * @param args the command line arguments
@@ -166,6 +241,7 @@ public class ViewLoaiSanPham extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(ViewLoaiSanPham.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -176,14 +252,14 @@ public class ViewLoaiSanPham extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton btnSua;
+    private javax.swing.JButton btnThem;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTable tblLoaiSanPham;
+    private javax.swing.JTextField txtMa;
+    private javax.swing.JTextField txtTen;
     // End of variables declaration//GEN-END:variables
 }

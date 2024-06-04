@@ -4,19 +4,99 @@
  */
 package view.contains.thuoctinh;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import service.KichCoService;
+import service.SanPhamService;
+import service.impl.KichCoServiceImpl;
+import service.impl.SanPhamServiceImpl;
+import viewmodel.KichCoViewModel;
+import viewmodel.SanPhamViewModel;
+
 /**
  *
  * @author Thang
  */
 public class ViewSize extends javax.swing.JFrame {
+List<KichCoViewModel> listKC = new ArrayList<>();
+    List<SanPhamViewModel> listSP = new ArrayList<>();
+    List<String> listLSP = new ArrayList<>();
+    List<String> listLKC = new ArrayList<>();
+    KichCoService service = new KichCoServiceImpl();
+    SanPhamService serviceSp = new SanPhamServiceImpl();
+    DefaultTableModel dtm = new DefaultTableModel();
+    DefaultComboBoxModel dcbLSP = new DefaultComboBoxModel();
+    DefaultComboBoxModel dcbLKC = new DefaultComboBoxModel();
 
     /**
      * Creates new form ViewSize
      */
     public ViewSize() {
         initComponents();
+         listKC = service.getAll();
+        listSP = serviceSp.getAll();
+        dtm = (DefaultTableModel) this.tblKicCo.getModel();
+
+//        dcbLKC = (DefaultComboBoxModel) this.cboKC.getModel();
+        this.setLocationRelativeTo(null);
+        for (SanPhamViewModel sp : listSP) {
+            listLSP.add(sp.getTen());
+
+        }
+
+
+        showDataCBO(listLKC, dcbLKC);
+        showDataTable(listKC);
+
+    }
+    private void showDataTable(List<KichCoViewModel> listTable) {
+        dtm.setRowCount(0);
+        for (KichCoViewModel kc : listTable) {
+            dtm.addRow(kc.toRowData());
+        }
     }
 
+    private void showDataCBO(List<String> lisString, DefaultComboBoxModel cbo) {
+        for (String string : lisString) {
+            cbo.addElement(string);
+        }
+    }
+
+    private void showDataFrom(int index) {
+        KichCoViewModel kc = listKC.get(index);
+        txtMa.setText(kc.getMa());
+        txtSize.setText(kc.getKichCo());
+        
+
+    }
+
+    private KichCoViewModel nhapDuLieu() {
+        KichCoViewModel kc = new KichCoViewModel();
+        int i = listKC.size() - 1 ;
+        kc.setMa("KC0" + listKC.get(i).getId());
+        kc.setKichCo(txtSize.getText());
+       
+
+        return kc;
+    }
+
+    private KichCoViewModel updateData() {
+        KichCoViewModel kc = new KichCoViewModel();
+
+        kc.setMa(txtMa.getText());
+        kc.setKichCo(txtSize.getText());
+        
+        return kc;
+    }
+
+    private boolean validateTable() {
+        return true;
+    }
+
+    
     /**
      * This method is called from within the constructor to initialize the form.
      * WARNING: Do NOT modify this code. The content of this method is always
@@ -29,12 +109,12 @@ public class ViewSize extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jButton3 = new javax.swing.JButton();
-        jButton4 = new javax.swing.JButton();
+        txtMa = new javax.swing.JTextField();
+        btnThem = new javax.swing.JButton();
+        btnSua = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
-        jTextField2 = new javax.swing.JTextField();
+        tblKicCo = new javax.swing.JTable();
+        txtSize = new javax.swing.JTextField();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -47,21 +127,21 @@ public class ViewSize extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jLabel3.setText("Size");
 
-        jButton3.setText("Thêm");
-        jButton3.addActionListener(new java.awt.event.ActionListener() {
+        btnThem.setText("Thêm");
+        btnThem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton3ActionPerformed(evt);
+                btnThemActionPerformed(evt);
             }
         });
 
-        jButton4.setText("Sửa");
-        jButton4.addActionListener(new java.awt.event.ActionListener() {
+        btnSua.setText("Sửa");
+        btnSua.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton4ActionPerformed(evt);
+                btnSuaActionPerformed(evt);
             }
         });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblKicCo.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null},
                 {null, null},
@@ -72,7 +152,12 @@ public class ViewSize extends javax.swing.JFrame {
                 "Mã Size", "Size"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        tblKicCo.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblKicCoMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tblKicCo);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -84,17 +169,17 @@ public class ViewSize extends javax.swing.JFrame {
                         .addGap(66, 66, 66)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING, false)
                             .addGroup(layout.createSequentialGroup()
-                                .addComponent(jButton3)
+                                .addComponent(btnThem)
                                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 181, Short.MAX_VALUE)
-                                .addComponent(jButton4))
+                                .addComponent(btnSua))
                             .addGroup(layout.createSequentialGroup()
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                                     .addComponent(jLabel2)
                                     .addComponent(jLabel3))
                                 .addGap(23, 23, 23)
                                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                                    .addComponent(jTextField1, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
-                                    .addComponent(jTextField2))))
+                                    .addComponent(txtMa, javax.swing.GroupLayout.DEFAULT_SIZE, 195, Short.MAX_VALUE)
+                                    .addComponent(txtSize))))
                         .addGap(0, 0, Short.MAX_VALUE))
                     .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                         .addGap(0, 14, Short.MAX_VALUE)
@@ -113,15 +198,15 @@ public class ViewSize extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtMa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(43, 43, 43)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtSize, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(54, 54, 54)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton3)
-                    .addComponent(jButton4))
+                    .addComponent(btnThem)
+                    .addComponent(btnSua))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 247, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap(30, Short.MAX_VALUE))
@@ -130,13 +215,36 @@ public class ViewSize extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jButton3ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton3ActionPerformed
+    private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton3ActionPerformed
+        if (validateTable()) {
+            KichCoViewModel kc = nhapDuLieu();
+            JOptionPane.showMessageDialog(this, service.getAdd(kc));
+            listKC = service.getAll();
+            showDataTable(listKC);
+        }
+    }//GEN-LAST:event_btnThemActionPerformed
 
-    private void jButton4ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton4ActionPerformed
+    private void btnSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuaActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton4ActionPerformed
+        if (validateTable()) {
+            int index = tblKicCo.getSelectedRow();
+            KichCoViewModel kc = updateData();
+            KichCoViewModel kc1 = listKC.get(index);
+            JOptionPane.showMessageDialog(this, service.getUpdate(kc, kc1.getId()));
+            listKC = service.getAll();
+            showDataTable(listKC);
+        }
+    }//GEN-LAST:event_btnSuaActionPerformed
+
+    private void tblKicCoMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblKicCoMouseClicked
+        // TODO add your handling code here:
+         int index = tblKicCo.getSelectedRow();
+        if (index >= 0 && index <= listKC.size()) {
+            showDataFrom(index);
+
+        }
+    }//GEN-LAST:event_tblKicCoMouseClicked
 
     /**
      * @param args the command line arguments
@@ -164,6 +272,7 @@ public class ViewSize extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(ViewSize.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -174,14 +283,14 @@ public class ViewSize extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton3;
-    private javax.swing.JButton jButton4;
+    private javax.swing.JButton btnSua;
+    private javax.swing.JButton btnThem;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTable tblKicCo;
+    private javax.swing.JTextField txtMa;
+    private javax.swing.JTextField txtSize;
     // End of variables declaration//GEN-END:variables
 }
