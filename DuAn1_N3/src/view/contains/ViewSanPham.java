@@ -4,12 +4,19 @@
  */
 package view.contains;
 
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import javax.swing.DefaultComboBoxModel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.table.DefaultTableModel;
+import org.apache.poi.ss.usermodel.Cell;
+import org.apache.poi.ss.usermodel.Row;
+import org.apache.poi.xssf.usermodel.XSSFSheet;
+import org.apache.poi.xssf.usermodel.XSSFWorkbook;
 import repository.SanPhamChiTietRepository;
 import service.ChatLieuService;
 import service.KichCoService;
@@ -1398,27 +1405,29 @@ public class ViewSanPham extends javax.swing.JPanel {
     }//GEN-LAST:event_cboMauSacActionPerformed
 
     private void btnChatLieuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnChatLieuActionPerformed
-        new ViewChatLieu().setVisible(true);
+        ViewChatLieu cl = new ViewChatLieu();
+        cl.setVisible(true);
     }//GEN-LAST:event_btnChatLieuActionPerformed
 
     private void btnKichCoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnKichCoActionPerformed
-        new ViewSize().setVisible(true);
+        ViewSize siz = new ViewSize();
+        siz.setVisible(true);
 
     }//GEN-LAST:event_btnKichCoActionPerformed
 
     private void btnMauSacActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnMauSacActionPerformed
-        new ViewMauSac().setVisible(true);
-
+        ViewMauSac ms = new ViewMauSac();
+        ms.setVisible(true);
     }//GEN-LAST:event_btnMauSacActionPerformed
 
     private void btnLoaiTheThaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoaiTheThaoActionPerformed
-        new ViewLoaiSanPham().setVisible(true);
-
+        ViewLoaiSanPham lsp = new ViewLoaiSanPham();
+        lsp.setVisible(true);
     }//GEN-LAST:event_btnLoaiTheThaoActionPerformed
 
     private void btnThuongHieuActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThuongHieuActionPerformed
-        new ViewThuongHieu().setVisible(true);
-
+        ViewThuongHieu th = new ViewThuongHieu();
+        th.setVisible(true);
     }//GEN-LAST:event_btnThuongHieuActionPerformed
 
     private void txtMaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMaActionPerformed
@@ -1465,7 +1474,63 @@ public class ViewSanPham extends javax.swing.JPanel {
     }//GEN-LAST:event_btnSuaThongTinSpActionPerformed
 
     private void btnLuuDanhSachActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLuuDanhSachActionPerformed
+int confirmResult = JOptionPane.showConfirmDialog(this, "Bạn có muốn lưu dữ liệu không?", "Xác nhận", JOptionPane.YES_NO_OPTION);
 
+        if (confirmResult == JOptionPane.YES_OPTION) {
+
+            System.out.println("Create file excel");
+            XSSFWorkbook workbook = new XSSFWorkbook();
+            XSSFSheet sheet = workbook.createSheet("Customer_Info");
+            int rowNum = 0;
+            Row firstRow = sheet.createRow(rowNum++);
+            Cell firstCell = firstRow.createCell(0);
+            firstCell.setCellValue("Danh Sách Sản Phẩm");
+            listSPCTtable = service.getAllTable();
+            for (SPCTViewModel spct : listSPCTtable) {
+                Row row = sheet.createRow(rowNum++);
+                Cell cell1 = row.createCell(0);
+                cell1.setCellValue(spct.getId());
+                Cell cell2 = row.createCell(1);
+                cell2.setCellValue(spct.getMa());
+                Cell cell3 = row.createCell(2);
+                cell3.setCellValue(spct.getMaVach());
+                Cell cell4 = row.createCell(3);
+                cell4.setCellValue(spct.getMoTa());
+                Cell cell5 = row.createCell(4);
+                cell5.setCellValue(spct.getSoLuong());
+                Cell cell6 = row.createCell(5);
+                cell6.setCellValue(spct.getLoaiSanPham());
+                Cell cell7 = row.createCell(6);
+                cell7.setCellValue(spct.getThuongHieu());
+                Cell cell8 = row.createCell(7);
+                cell8.setCellValue(spct.getLoaiSanPham());
+                Cell cell9 = row.createCell(8);
+                cell9.setCellValue(spct.getKichCo());
+                Cell cell10 = row.createCell(9);
+                cell10.setCellValue(spct.getMauSac());
+                Cell cell11 = row.createCell(10);
+                cell11.setCellValue(spct.getChatLieu());
+                Cell cell12 = row.createCell(11);
+                cell12.setCellValue(spct.getGiaNhap());
+                Cell cell13 = row.createCell(12);
+                cell13.setCellValue(spct.getGiaBan());
+                Cell cell14 = row.createCell(13);
+                cell14.setCellValue(spct.isTrangThai());
+            }
+            try {
+                FileOutputStream outputStream = new FileOutputStream("DanhSach.xlsx");
+                workbook.write(outputStream);
+                workbook.close();
+                JOptionPane.showMessageDialog(this, "Lưu Thành Công");
+            } catch (FileNotFoundException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Lưu Thất Bại");
+            } catch (IOException e) {
+                e.printStackTrace();
+                JOptionPane.showMessageDialog(this, "Lưu Thất Bại");
+            }
+            System.out.println("Done");
+        }
     }//GEN-LAST:event_btnLuuDanhSachActionPerformed
 
     private void btnClearActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnClearActionPerformed

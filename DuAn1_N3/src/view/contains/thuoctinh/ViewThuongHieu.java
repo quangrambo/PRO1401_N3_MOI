@@ -4,17 +4,66 @@
  */
 package view.contains.thuoctinh;
 
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+import service.ThuongHieuService;
+import service.impl.ThuongHieuServiceImpl;
+import viewmodel.ThuongHieuViewModel;
+
 /**
  *
  * @author Thang
  */
 public class ViewThuongHieu extends javax.swing.JFrame {
 
+    List<ThuongHieuViewModel> listTH = new ArrayList<>();
+    ThuongHieuService service = new ThuongHieuServiceImpl();
+    DefaultTableModel dtm = new DefaultTableModel();
+
     /**
      * Creates new form ViewThuongHieu
      */
     public ViewThuongHieu() {
         initComponents();
+        listTH = service.getAll();
+        dtm = (DefaultTableModel) this.tblThuongHieu.getModel();
+        showDataTable(listTH);
+        this.setLocationRelativeTo(null);
+    }
+
+    private void showDataTable(List<ThuongHieuViewModel> listShow) {
+        dtm.setRowCount(0);
+        for (ThuongHieuViewModel th : listShow) {
+            dtm.addRow(th.toRowData());
+        }
+    }
+
+    private void showDataFrom(int index) {
+        ThuongHieuViewModel th = listTH.get(index);
+        txtMa.setText(th.getMa());
+        txtTen.setText(th.getTen());
+
+    }
+
+    private ThuongHieuViewModel nhapDuLieu() {
+        ThuongHieuViewModel th = new ThuongHieuViewModel();
+        int i = listTH.size() - 1;
+        th.setMa("TH" + listTH.get(i).getId());
+        th.setTen(txtTen.getText());
+        return th;
+    }
+
+    private ThuongHieuViewModel upDateData() {
+        ThuongHieuViewModel th = new ThuongHieuViewModel();
+        th.setMa(txtMa.getText());
+        th.setTen(txtTen.getText());
+        return th;
+    }
+
+    private boolean validateTable() {
+        return true;
     }
 
     /**
@@ -29,12 +78,12 @@ public class ViewThuongHieu extends javax.swing.JFrame {
         jLabel1 = new javax.swing.JLabel();
         jLabel2 = new javax.swing.JLabel();
         jLabel3 = new javax.swing.JLabel();
-        jTextField1 = new javax.swing.JTextField();
-        jTextField2 = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        txtMa = new javax.swing.JTextField();
+        txtTen = new javax.swing.JTextField();
+        btnThem = new javax.swing.JButton();
+        btnSua = new javax.swing.JButton();
         jScrollPane1 = new javax.swing.JScrollPane();
-        jTable1 = new javax.swing.JTable();
+        tblThuongHieu = new javax.swing.JTable();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -47,22 +96,27 @@ public class ViewThuongHieu extends javax.swing.JFrame {
         jLabel3.setFont(new java.awt.Font("Tahoma", 0, 12)); // NOI18N
         jLabel3.setText("Tên Thương Hiệu");
 
-        jTextField1.addActionListener(new java.awt.event.ActionListener() {
+        txtMa.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jTextField1ActionPerformed(evt);
+                txtMaActionPerformed(evt);
             }
         });
 
-        jButton1.setText("Thêm");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        btnThem.setText("Thêm");
+        btnThem.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                btnThemActionPerformed(evt);
             }
         });
 
-        jButton2.setText("Sửa");
+        btnSua.setText("Sửa");
+        btnSua.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                btnSuaActionPerformed(evt);
+            }
+        });
 
-        jTable1.setModel(new javax.swing.table.DefaultTableModel(
+        tblThuongHieu.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
                 {null, null},
                 {null, null},
@@ -73,7 +127,12 @@ public class ViewThuongHieu extends javax.swing.JFrame {
                 "Mã Thương Hiệu", "Tên Thương Hiệu"
             }
         ));
-        jScrollPane1.setViewportView(jTable1);
+        tblThuongHieu.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblThuongHieuMouseClicked(evt);
+            }
+        });
+        jScrollPane1.setViewportView(tblThuongHieu);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
         getContentPane().setLayout(layout);
@@ -92,13 +151,13 @@ public class ViewThuongHieu extends javax.swing.JFrame {
                             .addComponent(jLabel3, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(27, 27, 27)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addComponent(jTextField1)
-                            .addComponent(jTextField2, javax.swing.GroupLayout.DEFAULT_SIZE, 181, Short.MAX_VALUE))
+                            .addComponent(txtMa)
+                            .addComponent(txtTen, javax.swing.GroupLayout.DEFAULT_SIZE, 181, Short.MAX_VALUE))
                         .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
                     .addGroup(layout.createSequentialGroup()
-                        .addComponent(jButton1)
+                        .addComponent(btnThem)
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                        .addComponent(jButton2)
+                        .addComponent(btnSua)
                         .addGap(65, 65, 65))))
             .addGroup(layout.createSequentialGroup()
                 .addContainerGap()
@@ -113,15 +172,15 @@ public class ViewThuongHieu extends javax.swing.JFrame {
                 .addGap(18, 18, 18)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel2)
-                    .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtMa, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(42, 42, 42)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jLabel3)
-                    .addComponent(jTextField2, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addComponent(txtTen, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
                 .addGap(58, 58, 58)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
+                    .addComponent(btnThem)
+                    .addComponent(btnSua))
                 .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 20, Short.MAX_VALUE)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 206, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(30, 30, 30))
@@ -130,13 +189,45 @@ public class ViewThuongHieu extends javax.swing.JFrame {
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
-    private void jTextField1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jTextField1ActionPerformed
+    private void txtMaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_txtMaActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jTextField1ActionPerformed
+    }//GEN-LAST:event_txtMaActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
         // TODO add your handling code here:
-    }//GEN-LAST:event_jButton1ActionPerformed
+        if (validateTable()) {
+            int sul = JOptionPane.showConfirmDialog(this, "Co muon them ko");
+            if (sul == 0) {
+                ThuongHieuViewModel th = nhapDuLieu();
+                JOptionPane.showMessageDialog(this, service.getAdd(th));
+                listTH = service.getAll();
+                showDataTable(listTH);
+            }
+        }
+    }//GEN-LAST:event_btnThemActionPerformed
+
+    private void btnSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuaActionPerformed
+        // TODO add your handling code here:
+        if (validateTable()) {
+            int index = tblThuongHieu.getSelectedRow();
+            ThuongHieuViewModel th = upDateData();
+            ThuongHieuViewModel th1 = listTH.get(index);
+            JOptionPane.showMessageDialog(this, service.getUpdate(th, th1.getId()));
+            listTH = service.getAll();
+            showDataTable(listTH);
+        }
+
+    }//GEN-LAST:event_btnSuaActionPerformed
+
+    private void tblThuongHieuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblThuongHieuMouseClicked
+        // TODO add your handling code here:
+
+        int index = tblThuongHieu.getSelectedRow();
+        if (index >= 0 && index <= listTH.size()) {
+            showDataFrom(index);
+        }
+
+    }//GEN-LAST:event_tblThuongHieuMouseClicked
 
     /**
      * @param args the command line arguments
@@ -164,6 +255,7 @@ public class ViewThuongHieu extends javax.swing.JFrame {
             java.util.logging.Logger.getLogger(ViewThuongHieu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
         //</editor-fold>
+        //</editor-fold>
 
         /* Create and display the form */
         java.awt.EventQueue.invokeLater(new Runnable() {
@@ -174,14 +266,14 @@ public class ViewThuongHieu extends javax.swing.JFrame {
     }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton btnSua;
+    private javax.swing.JButton btnThem;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
     private javax.swing.JLabel jLabel3;
     private javax.swing.JScrollPane jScrollPane1;
-    private javax.swing.JTable jTable1;
-    private javax.swing.JTextField jTextField1;
-    private javax.swing.JTextField jTextField2;
+    private javax.swing.JTable tblThuongHieu;
+    private javax.swing.JTextField txtMa;
+    private javax.swing.JTextField txtTen;
     // End of variables declaration//GEN-END:variables
 }

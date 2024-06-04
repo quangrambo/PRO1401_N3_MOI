@@ -105,7 +105,7 @@ public class ViewSP extends javax.swing.JFrame {
         txtMa = new javax.swing.JTextField();
         jLabel3 = new javax.swing.JLabel();
         txtTen = new javax.swing.JTextField();
-        btnXoa = new javax.swing.JButton();
+        btnSua = new javax.swing.JButton();
         btnThem = new javax.swing.JButton();
 
         btnLoaiTheThao.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/plus (1).png"))); // NOI18N
@@ -165,14 +165,14 @@ public class ViewSP extends javax.swing.JFrame {
         txtTen.setFont(new java.awt.Font("Segoe UI", 0, 14)); // NOI18N
         txtTen.setBorder(javax.swing.BorderFactory.createMatteBorder(0, 0, 2, 0, new java.awt.Color(0, 0, 0)));
 
-        btnXoa.setBackground(new java.awt.Color(0, 0, 0));
-        btnXoa.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        btnXoa.setForeground(new java.awt.Color(255, 255, 255));
-        btnXoa.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-pencil-20.png"))); // NOI18N
-        btnXoa.setText("Sửa");
-        btnXoa.addActionListener(new java.awt.event.ActionListener() {
+        btnSua.setBackground(new java.awt.Color(0, 0, 0));
+        btnSua.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        btnSua.setForeground(new java.awt.Color(255, 255, 255));
+        btnSua.setIcon(new javax.swing.ImageIcon(getClass().getResource("/img/icons8-pencil-20.png"))); // NOI18N
+        btnSua.setText("Sửa");
+        btnSua.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnXoaActionPerformed(evt);
+                btnSuaActionPerformed(evt);
             }
         });
 
@@ -210,7 +210,7 @@ public class ViewSP extends javax.swing.JFrame {
                                 .addGap(67, 67, 67)))
                         .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 61, Short.MAX_VALUE)
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                            .addComponent(btnXoa, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
+                            .addComponent(btnSua, javax.swing.GroupLayout.PREFERRED_SIZE, 100, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtMa, javax.swing.GroupLayout.PREFERRED_SIZE, 176, javax.swing.GroupLayout.PREFERRED_SIZE)
                             .addComponent(txtTen, javax.swing.GroupLayout.PREFERRED_SIZE, 178, javax.swing.GroupLayout.PREFERRED_SIZE))
                         .addGap(166, 166, 166))))
@@ -231,7 +231,7 @@ public class ViewSP extends javax.swing.JFrame {
                 .addGap(36, 36, 36)
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(btnThem)
-                    .addComponent(btnXoa))
+                    .addComponent(btnSua))
                 .addGap(26, 26, 26)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 269, javax.swing.GroupLayout.PREFERRED_SIZE))
         );
@@ -266,7 +266,7 @@ public class ViewSP extends javax.swing.JFrame {
         }
     }//GEN-LAST:event_btnThemActionPerformed
 
-    private void btnXoaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnXoaActionPerformed
+    private void btnSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuaActionPerformed
         if (validateTable()) {
             int index = tblSanPham.getSelectedRow();
             SanPhamViewModel sp1 = listSp.get(index);
@@ -275,10 +275,9 @@ public class ViewSP extends javax.swing.JFrame {
             listSp = service.getAll();
             showDataTable(listSp);
         }
-    }//GEN-LAST:event_btnXoaActionPerformed
+    }//GEN-LAST:event_btnSuaActionPerformed
 
     private void btnLoaiTheThaoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnLoaiTheThaoActionPerformed
-        new ViewLoaiSanPham().setVisible(true);
     }//GEN-LAST:event_btnLoaiTheThaoActionPerformed
 
     /**
@@ -319,8 +318,8 @@ public class ViewSP extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnLoaiTheThao;
+    private javax.swing.JButton btnSua;
     private javax.swing.JButton btnThem;
-    private javax.swing.JButton btnXoa;
     private javax.swing.ButtonGroup buttonGroup1;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JLabel jLabel2;
