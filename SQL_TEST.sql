@@ -690,3 +690,98 @@ SELECT SAN_PHAM_CHI_TIET.[ID]
                                                  join KHACH_HANG on KHACH_HANG.ID=HOA_DON.ID_KH
                                                  join NHAN_VIEN on NHAN_VIEN.ID=HOA_DON.ID_NV
                                               order by HOA_DON.ID Desc
+
+											 SELECT SAN_PHAM_CHI_TIET.[ID]
+                                                    ,SAN_PHAM_CHI_TIET.[MA]
+                                                    ,[MAVACH]
+                                                    ,[MOTA]
+                                                    ,SAN_PHAM_CHI_TIET.[SOLUONG]
+                                                    ,SAN_PHAM.[TEN] AS TENSANPHAM
+                                                    ,THUONG_HIEU.[TEN] AS THUONGHIEU
+                                                    ,LOAISANPHAM.[TEN] AS LOAISANPHAM
+                                                    ,KICH_CO.[KICHCO] AS KICHCO
+                                                    ,MAU_SAC.[TEN] AS MAUSAC
+                                                    ,CHAT_LIEU.[TEN] AS CHATLIEU
+                                                    ,[GIANHAP]
+                                                    ,[GIABAN]
+                                                    ,SAN_PHAM_CHI_TIET.[TRANGTHAI]
+                                                FROM [dbo].[SAN_PHAM_CHI_TIET]
+                                              	JOIN SAN_PHAM ON SAN_PHAM.ID=SAN_PHAM_CHI_TIET.ID_SP
+                                              	JOIN THUONG_HIEU ON THUONG_HIEU.ID=SAN_PHAM_CHI_TIET.ID_TH
+                                              	JOIN LOAISANPHAM ON LOAISANPHAM.ID=SAN_PHAM_CHI_TIET.ID_LSP
+                                              	JOIN KICH_CO ON KICH_CO.ID=SAN_PHAM_CHI_TIET.ID_KC
+                                              	JOIN MAU_SAC ON MAU_SAC.ID=SAN_PHAM_CHI_TIET.ID_MS
+                                              	JOIN CHAT_LIEU ON CHAT_LIEU.ID=SAN_PHAM_CHI_TIET.ID_CL
+                        						--where SAN_PHAM_CHI_TIET.TRANGTHAI = 1
+                                             	order by id 
+												                     	
+																		SELECT COUNT(*) FROM SAN_PHAM_CHI_TIET WHERE SAN_PHAM_CHI_TIET.TRANGTHAI = 1;
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROC [dbo].[SP_THONGKE2]
+@TKTHEO INT, @NGAYBD DATE, @NGAYKT DATE
+AS
+BEGIN
+DECLARE @NGAYTAM DATE
+DECLARE @TONGTIEN FLOAT
+DECLARE @BANGTAM TABLE(
+	NGAY DATE, TONGTIEN FLOAT
+)
+	
+	INSERT INTO @BANGTAM SELECT h.NGAYTHANHTOAN, SUM(h.TIENKHACHPHAITRA ) as tong from HOA_DON h
+				where TRANGTHAI = 1 
+				group by h.NGAYTHANHTOAN
+
+	IF(@TKTHEO = 0)
+	BEGIN
+		SELECT NGAY,SUM(TONGTIEN) FROM @BANGTAM
+		WHERE NGAY >= @NGAYBD AND NGAY <= @NGAYKT
+		GROUP BY NGAY
+	END
+	
+	IF(@TKTHEO =1)
+	BEGIN
+		SELECT CONCAT(YEAR(NGAY),'-',MONTH(NGAY)),SUM(TONGTIEN) FROM @BANGTAM
+		WHERE NGAY >= @NGAYBD AND NGAY <= @NGAYKT
+		GROUP BY YEAR(NGAY),MONTH(NGAY)
+	END
+
+	IF(@TKTHEO = 2)
+	BEGIN
+		SELECT YEAR(NGAY),SUM(TONGTIEN) FROM @BANGTAM
+		WHERE (NGAY) >= (@NGAYBD) AND (NGAY) <= (@NGAYKT)
+		GROUP BY YEAR(NGAY)
+	END
+END
+GO
+
+SET ANSI_NULLS ON
+GO
+SET QUOTED_IDENTIFIER ON
+GO
+CREATE PROC [dbo].[SP_THONGKESPBANCHAY]
+AS
+BEGIN
+DECLARE @NGAYTAM DATE
+DECLARE @TONGTIEN FLOAT
+DECLARE @BANGTAM TABLE(
+	MASP VARCHAR(20), TENSP NVARCHAR(50), SL INT
+)	
+
+	
+
+	INSERT INTO @BANGTAM select spct.MA, sp.TEN,ct.SOLUONG from HOA_DON_CT ct
+	inner join SAN_PHAM_CHI_TIET spct on spct.ID = ct.ID_SPCT
+	inner join SAN_PHAM sp on sp.ID = spct.ID_SP
+	inner join HOA_DON h on h.ID = ct.ID_HD
+	where h.TRANGTHAI = 1
+	SELECT TOP 10 SUM(SL),TENSP, MASP FROM @BANGTAM
+	GROUP BY MASP,TENSP
+	
+END
+GO
+
+
