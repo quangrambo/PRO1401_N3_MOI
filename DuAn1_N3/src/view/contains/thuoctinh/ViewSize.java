@@ -50,6 +50,7 @@ List<KichCoViewModel> listKC = new ArrayList<>();
 
         showDataCBO(listLKC, dcbLKC);
         showDataTable(listKC);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
 
     }
     private void showDataTable(List<KichCoViewModel> listTable) {

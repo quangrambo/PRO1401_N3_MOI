@@ -31,6 +31,7 @@ public class ViewThuongHieu extends javax.swing.JFrame {
         dtm = (DefaultTableModel) this.tblThuongHieu.getModel();
         showDataTable(listTH);
         this.setLocationRelativeTo(null);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
     }
 
     private void showDataTable(List<ThuongHieuViewModel> listShow) {

@@ -812,10 +812,12 @@ if (index >= 0 && index < listHDTable.size()) {
     private void jButton12ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton12ActionPerformed
 
         listHDTable=serviceHDTable.getAll();
-        showDataTable(listHDTable);
         txt_ma.setText("");
         starlDate.setDate(null);
         endDate.setDate(null);
+        loadTable(iHoaDonService.getall());
+        showDataTable(listHDTable);
+        ClickRow();
     }//GEN-LAST:event_jButton12ActionPerformed
 
     private void jButton11ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton11ActionPerformed

@@ -6,6 +6,7 @@ package view.contains.thuoctinh;
 
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.JOptionPane;
 import javax.swing.table.DefaultTableModel;
 import service.ChatLieuService;
 import service.impl.ChatLieuServiceImpl;
@@ -16,6 +17,7 @@ import viewmodel.ChatLieuViewModel;
  * @author Thang
  */
 public class ViewChatLieu extends javax.swing.JFrame {
+
     List<ChatLieuViewModel> listCL = new ArrayList<>();
     ChatLieuService service = new ChatLieuServiceImpl();
     DefaultTableModel dtm = new DefaultTableModel();
@@ -24,13 +26,14 @@ public class ViewChatLieu extends javax.swing.JFrame {
      * Creates new form ViewChatLieu
      */
     public ViewChatLieu() {
-       initComponents();
-        listCL = service.getAll();
+        initComponents();
+          listCL = service.getAll();
         dtm = (DefaultTableModel) this.tblChatLieu.getModel();
         showDataTable(listCL);
         this.setLocationRelativeTo(null);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
     }
-     private void showDataTable(List<ChatLieuViewModel> listShow) {
+    private void showDataTable(List<ChatLieuViewModel> listShow) {
         dtm.setRowCount(0);
         for (ChatLieuViewModel cl : listShow) {
             dtm.addRow(cl.toRowData());
@@ -46,7 +49,7 @@ public class ViewChatLieu extends javax.swing.JFrame {
 
     private ChatLieuViewModel nhapDuLieu() {
         ChatLieuViewModel cl = new ChatLieuViewModel();
-        int i=listCL.size()- 1;
+        int i=listCL.size()-1;
         cl.setMa("CL"+listCL.get(i).getId());
         cl.setTen(txtTen.getText());
         return cl;
@@ -61,7 +64,6 @@ public class ViewChatLieu extends javax.swing.JFrame {
     private boolean validateTable() {
         return true;
     }
-
 
     /**
      * This method is called from within the constructor to initialize the form.
@@ -118,6 +120,11 @@ public class ViewChatLieu extends javax.swing.JFrame {
                 "Mã Chất Liệu", "Tên Chất Liệu"
             }
         ));
+        tblChatLieu.addMouseListener(new java.awt.event.MouseAdapter() {
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                tblChatLieuMouseClicked(evt);
+            }
+        });
         jScrollPane1.setViewportView(tblChatLieu);
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(getContentPane());
@@ -179,11 +186,39 @@ public class ViewChatLieu extends javax.swing.JFrame {
 
     private void btnThemActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnThemActionPerformed
         // TODO add your handling code here:
+         if (validateTable()) {
+            int sul = JOptionPane.showConfirmDialog(this, "Co muon them ko");
+            if (sul == 0) {
+                ChatLieuViewModel cl = nhapDuLieu();
+                JOptionPane.showMessageDialog(this, service.getAdd(cl));
+                listCL = service.getAll();
+                showDataTable(listCL);
+            }
+        }
+
     }//GEN-LAST:event_btnThemActionPerformed
 
     private void btnSuaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnSuaActionPerformed
         // TODO add your handling code here:
+        if (validateTable()) {
+            int index = tblChatLieu.getSelectedRow();
+            ChatLieuViewModel cl = updateData();
+            ChatLieuViewModel cl1 = listCL.get(index);
+            JOptionPane.showMessageDialog(this, service.getUpdate(cl, cl1.getId()));
+            listCL = service.getAll();
+            showDataTable(listCL);
+
+        }
+        
     }//GEN-LAST:event_btnSuaActionPerformed
+
+    private void tblChatLieuMouseClicked(java.awt.event.MouseEvent evt) {//GEN-FIRST:event_tblChatLieuMouseClicked
+        // TODO add your handling code here:
+         int index = tblChatLieu.getSelectedRow();
+        if (index >= 0 && index <= listCL.size()) {
+            showDataFrom(index);
+        }
+    }//GEN-LAST:event_tblChatLieuMouseClicked
 
     /**
      * @param args the command line arguments
@@ -210,6 +245,7 @@ public class ViewChatLieu extends javax.swing.JFrame {
         } catch (javax.swing.UnsupportedLookAndFeelException ex) {
             java.util.logging.Logger.getLogger(ViewChatLieu.class.getName()).log(java.util.logging.Level.SEVERE, null, ex);
         }
+        //</editor-fold>
         //</editor-fold>
 
         /* Create and display the form */

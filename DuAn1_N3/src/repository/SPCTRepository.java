@@ -12,6 +12,7 @@ import java.util.List;
 import model.SPCTModel;
 import utility.DBConnect;
 import utility.JDBCHelper;
+import viewmodel.SPCTViewModel;
 
 /**
  *
@@ -166,5 +167,54 @@ public class SPCTRepository {
         }
         return null;
     }
+
+    public List<SPCTViewModel> getSearchById(int id) {
+    String query = """
+        SELECT SAN_PHAM_CHI_TIET.[ID], SAN_PHAM_CHI_TIET.[MA], [MAVACH], [MOTA], 
+               SAN_PHAM_CHI_TIET.[SOLUONG], SAN_PHAM.[TEN] AS TENSANPHAM, 
+               THUONG_HIEU.[TEN] AS THUONGHIEU, LOAISANPHAM.[TEN] AS LOAISANPHAM, 
+               KICH_CO.[KICHCO] AS KICHCO, MAU_SAC.[TEN] AS MAUSAC, 
+               CHAT_LIEU.[TEN] AS CHATLIEU, [GIANHAP], [GIABAN], 
+               SAN_PHAM_CHI_TIET.[TRANGTHAI]
+        FROM [dbo].[SAN_PHAM_CHI_TIET]
+        JOIN SAN_PHAM ON SAN_PHAM.ID = SAN_PHAM_CHI_TIET.ID_SP
+        JOIN THUONG_HIEU ON THUONG_HIEU.ID = SAN_PHAM_CHI_TIET.ID_TH
+        JOIN LOAISANPHAM ON LOAISANPHAM.ID = SAN_PHAM_CHI_TIET.ID_LSP
+        JOIN KICH_CO ON KICH_CO.ID = SAN_PHAM_CHI_TIET.ID_KC
+        JOIN MAU_SAC ON MAU_SAC.ID = SAN_PHAM_CHI_TIET.ID_MS
+        JOIN CHAT_LIEU ON CHAT_LIEU.ID = SAN_PHAM_CHI_TIET.ID_CL
+        WHERE SAN_PHAM_CHI_TIET.ID_SP = ?
+    """;
+
+    List<SPCTViewModel> result = new ArrayList<>();
+
+    try (Connection con = DBConnect.getConnection(); PreparedStatement pr = con.prepareStatement(query)) {
+        pr.setInt(1, id);
+        ResultSet rs = pr.executeQuery();
+        
+        while (rs.next()) {
+            SPCTViewModel spct = new SPCTViewModel(
+                rs.getInt("ID"), 
+                rs.getString("MA"), 
+                rs.getString("MAVACH"), 
+                rs.getString("MOTA"), 
+                rs.getInt("SOLUONG"), 
+                rs.getString("TENSANPHAM"), 
+                rs.getString("THUONGHIEU"), 
+                rs.getString("LOAISANPHAM"), 
+                rs.getString("KICHCO"), 
+                rs.getString("MAUSAC"), 
+                rs.getString("CHATLIEU"), 
+                rs.getFloat("GIANHAP"), 
+                rs.getFloat("GIABAN"), 
+                rs.getBoolean("TRANGTHAI")
+            );
+            result.add(spct);
+        }
+    } catch (Exception e) {
+        e.printStackTrace(System.out);
+    }
+    return result;
+}
 
 }

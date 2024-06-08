@@ -37,7 +37,7 @@ DefaultTableModel defaultTableModel;
     public ViewKhachHang() {
         initComponents();
         loadDataTable(service.getList());
-        loadPT(ht, 5);
+//        loadPT(ht, 5);
     }
     public void loadDataTable(ArrayList<QLKhachHang> listKH) {
         defaultTableModel = (DefaultTableModel) tblKhachHang.getModel();
@@ -65,15 +65,15 @@ DefaultTableModel defaultTableModel;
         }
     }
 
-    public void updatePT() {
-        int totalItems = repository.getTotalItems();
-        int maxpage = (int) Math.ceil((double) totalItems / size);
-
-        if (ht > maxpage) {
-            ht = (maxpage == 0) ? 1 : maxpage;
-        }
-        lblSo.setText(ht + "/" + maxpage);
-    }
+//    public void updatePT() {
+//        int totalItems = repository.getTotalItems();
+//        int maxpage = (int) Math.ceil((double) totalItems / size);
+//
+//        if (ht > maxpage) {
+//            ht = (maxpage == 0) ? 1 : maxpage;
+//        }
+//        lblSo.setText(ht + "/" + maxpage);
+//    }
 
     private boolean validateThem() {
 
@@ -184,9 +184,6 @@ DefaultTableModel defaultTableModel;
         jTextField1 = new javax.swing.JTextField();
         jComboBox1 = new javax.swing.JComboBox<>();
         btnSearch = new javax.swing.JButton();
-        btnPre = new javax.swing.JButton();
-        lblSo = new javax.swing.JLabel();
-        btnNext = new javax.swing.JButton();
         btnHoanTac = new javax.swing.JButton();
         jLabel5 = new javax.swing.JLabel();
         jLabel4 = new javax.swing.JLabel();
@@ -443,22 +440,6 @@ DefaultTableModel defaultTableModel;
             }
         });
 
-        btnPre.setText("<<");
-        btnPre.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnPreActionPerformed(evt);
-            }
-        });
-
-        lblSo.setText("1");
-
-        btnNext.setText(">>");
-        btnNext.addActionListener(new java.awt.event.ActionListener() {
-            public void actionPerformed(java.awt.event.ActionEvent evt) {
-                btnNextActionPerformed(evt);
-            }
-        });
-
         btnHoanTac.setBackground(new java.awt.Color(0, 0, 0));
         btnHoanTac.setFont(new java.awt.Font("SansSerif", 1, 12)); // NOI18N
         btnHoanTac.setForeground(new java.awt.Color(255, 255, 255));
@@ -477,28 +458,19 @@ DefaultTableModel defaultTableModel;
             .addGroup(jPanel1Layout.createSequentialGroup()
                 .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(jPanel1Layout.createSequentialGroup()
+                        .addContainerGap()
                         .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                            .addComponent(jLabel1)
                             .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addContainerGap()
-                                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-                                    .addComponent(jLabel1)
-                                    .addGroup(jPanel1Layout.createSequentialGroup()
-                                        .addComponent(jLabel6)
-                                        .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
-                                        .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(18, 18, 18)
-                                        .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                        .addGap(45, 45, 45)
-                                        .addComponent(btnSearch)
-                                        .addGap(41, 41, 41)
-                                        .addComponent(btnHoanTac))))
-                            .addGroup(jPanel1Layout.createSequentialGroup()
-                                .addGap(274, 274, 274)
-                                .addComponent(btnPre)
-                                .addGap(57, 57, 57)
-                                .addComponent(lblSo, javax.swing.GroupLayout.PREFERRED_SIZE, 25, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(47, 47, 47)
-                                .addComponent(btnNext)))
+                                .addComponent(jLabel6)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
+                                .addComponent(jTextField1, javax.swing.GroupLayout.PREFERRED_SIZE, 172, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(18, 18, 18)
+                                .addComponent(jComboBox1, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                                .addGap(45, 45, 45)
+                                .addComponent(btnSearch)
+                                .addGap(41, 41, 41)
+                                .addComponent(btnHoanTac)))
                         .addGap(0, 246, Short.MAX_VALUE))
                     .addComponent(jScrollPane1))
                 .addContainerGap())
@@ -523,12 +495,7 @@ DefaultTableModel defaultTableModel;
                         .addGap(0, 0, Short.MAX_VALUE)))
                 .addGap(18, 18, 18)
                 .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 249, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
-                .addGroup(jPanel1Layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(btnNext)
-                    .addComponent(btnPre)
-                    .addComponent(lblSo))
-                .addGap(17, 17, 17))
+                .addGap(52, 52, 52))
         );
 
         jLabel5.setFont(new java.awt.Font("SansSerif", 1, 18)); // NOI18N
@@ -781,31 +748,6 @@ DefaultTableModel defaultTableModel;
         }
     }//GEN-LAST:event_btnSearchActionPerformed
 
-    private void btnPreActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPreActionPerformed
-        if (ht > 1) {
-            ht--;
-
-        }
-        int page = (ht - 1) * size;
-        loadPT(page, size);
-        updatePT();
-    }//GEN-LAST:event_btnPreActionPerformed
-
-    private void btnNextActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnNextActionPerformed
-        int totalPageTime = repository.getTotalItems();
-        int totalPage = totalPageTime / size;
-        if (ht < totalPage) {
-            ht++;
-            int page = (ht - 1) * size;
-            loadPT(page, size);
-            updatePT();
-        } else {
-            ht = 1;
-            loadPT(0, size);
-            updatePT();
-        }
-    }//GEN-LAST:event_btnNextActionPerformed
-
     private void btnHoanTacActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnHoanTacActionPerformed
         loadDataTable(service.getList());
     }//GEN-LAST:event_btnHoanTacActionPerformed
@@ -824,8 +766,6 @@ DefaultTableModel defaultTableModel;
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton btnClearForm;
     private javax.swing.JButton btnHoanTac;
-    private javax.swing.JButton btnNext;
-    private javax.swing.JButton btnPre;
     private javax.swing.JButton btnSearch;
     private javax.swing.JButton btnSua;
     private javax.swing.JButton btnThem;
@@ -852,7 +792,6 @@ DefaultTableModel defaultTableModel;
     private javax.swing.JPanel jPanel4;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextField jTextField1;
-    private javax.swing.JLabel lblSo;
     private javax.swing.JRadioButton rdNam;
     private javax.swing.JRadioButton rdNu;
     private javax.swing.JTable tblKhachHang;
