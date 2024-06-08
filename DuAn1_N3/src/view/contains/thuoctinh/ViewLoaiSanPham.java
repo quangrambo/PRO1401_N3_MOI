@@ -29,6 +29,7 @@ List<LoaiSanPhamViewModel> listLTT=new ArrayList<>();
         dtm=(DefaultTableModel) this.tblLoaiSanPham.getModel();
         showDataTable(listLTT);
         this.setLocationRelativeTo(null);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
     }
     private void showDataTable(List<LoaiSanPhamViewModel> listShow) {
         dtm.setRowCount(0);

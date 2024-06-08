@@ -3297,6 +3297,7 @@ if (index == -1) {
         cbbLocMauSacc.setSelectedIndex(0);
         listSPThemGioHang = listSPCT;
         showDataTable(listSPCT);
+        initWebcam();
 
     }//GEN-LAST:event_jButton6ActionPerformed
 

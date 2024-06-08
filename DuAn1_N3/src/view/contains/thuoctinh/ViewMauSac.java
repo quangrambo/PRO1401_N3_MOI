@@ -29,6 +29,7 @@ List<MauSacViewModel> listMS = new ArrayList<>();
         dtm = (DefaultTableModel) this.tblMauSac.getModel();
         showDataTable(listMS);
         this.setLocationRelativeTo(null);
+        setDefaultCloseOperation(javax.swing.WindowConstants.DISPOSE_ON_CLOSE);
     }
     private void showDataTable(List<MauSacViewModel> listShow) {
         dtm.setRowCount(0);

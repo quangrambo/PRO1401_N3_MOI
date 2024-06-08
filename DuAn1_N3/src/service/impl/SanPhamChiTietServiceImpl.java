@@ -115,5 +115,11 @@ List<SPCTModel> listAll = spRepo.getAll();
             return "Sua thất bại";
         }
     }
+    @Override
+    public List<SPCTViewModel> findbyId(int id) {
+       List<SPCTViewModel> list = spRepo.getSearchById(id);
+            return list;
+       
+    }
     
 }

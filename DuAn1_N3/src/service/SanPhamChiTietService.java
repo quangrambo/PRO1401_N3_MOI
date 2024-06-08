@@ -30,4 +30,6 @@ public interface SanPhamChiTietService {
     String getUpdateSoLuong(int soLuong, int id, int giaNhap);
 
     String getUpdateSLMua(int soLuong, int id);
+        List<SPCTViewModel> findbyId(int id);
+
 }
